@@ -1,6 +1,6 @@
-interface ImagePropI {
+import PropI from '../PropI'
+interface ImagePropI extends PropI{
     src:string;
-    alt:string;
 }
 
 export default ImagePropI;

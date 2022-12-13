@@ -1,25 +1,35 @@
-import './App.css'
-import Button from './components/ui/Button'
-import Card from './components/ui/Card'
-import VirtualRoomThumbnail from './components/displays/VirtualRoomThumbnail'
+import './App.css';
+import Button from './components/ui/Button';
+import Card from './components/ui/Card';
+import VirtualRoomThumbnail from './components/displays/VirtualRoomThumbnail';
+import LoadingModalOverlay from './components/overlays/LoadingModalOverlay';
+import {
+  loadingContext,
+  LoadingContextProvider,
+} from './context/loading-context';
+
+import { Fragment, useContext, useState } from 'react';
 
 function App() {
-  
-  const title:string = 'button';
+  const title: string = 'button';
 
-  function onClickHandler(event:React.MouseEvent) {
-    console.log('clicked');
+  const ctx = useContext(loadingContext);
+
+  function onClickHandler(event: React.MouseEvent) {
+    ctx.setIsLoadingContext(true);
   }
 
   return (
-    <div>
-      hi
-      {/* <VirtualRoomThumbnail src='#' alt='hihi'/> */}
+    <Fragment>
+      {ctx.isLoading && (
+        <LoadingModalOverlay title='Please wait' message='LOADING...' />
+      )}
+      <VirtualRoomThumbnail src='./assets/react.svg' />
       <Card>
-        <Button onClickHandler={onClickHandler}>Button</Button>
+        <Button onClick={onClickHandler}>Button</Button>
       </Card>
-    </div>
-  )
+    </Fragment>
+  );
 }
 
-export default App
+export default App;

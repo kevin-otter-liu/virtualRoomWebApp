@@ -3,7 +3,7 @@ import VirtualRoomThumbnailPropI from '../../types/displays/VirtualRoomThumbnail
 
 const VirtualRoomThumbnail:React.FC<VirtualRoomThumbnailPropI> = (props) =>{
     return(<div>
-        <img loading='eager' src={props.src} alt={props.alt}></img>
+        <img src={props.src} width='200px' height='200px'></img>
     </div>)
 }
 
