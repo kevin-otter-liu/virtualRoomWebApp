@@ -74,6 +74,7 @@ const renderVirtualRoom =(canvasRef:HTMLCanvasElement):void=>{
     animate();
 }
 
+// Virtual Room Component
 const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
   
     const componentRef = useRef() as React.RefObject<HTMLCanvasElement>;
@@ -84,8 +85,8 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
   }, []);
 
   // button to close virtual Room
-  const onClickHandler = (): void => {
-    props.setShowVirtualRoom(false);
+  const onClickHandler = (event:React.MouseEvent): void => {
+    props.onExitVirtualRoomHandler(event);
     componentRef.current?.remove();
   };
 
