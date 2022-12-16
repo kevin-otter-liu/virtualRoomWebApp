@@ -1,10 +1,11 @@
 import express, { Express, Request, Response, Router } from 'express';
 import 'dotenv/config';
-import router from './api/routes/testRoute';
 import userRouter from './api/routes/user';
+import virtualRoomRouter from './api/routes/virtualRoom';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
 import * as Models from './db/models';
+import cors from 'cors';
 
 const port: number = parseInt(process.env.SERVER_PORT!) || 3000;
 
@@ -18,6 +19,13 @@ class Server {
     Server.server = express();
 
     // register middleware for parsing request body to json
+
+    Server.server.use(
+      cors({
+        origin: 'http://localhost:5173',
+        optionsSuccessStatus: 200,
+      })
+    );
     Server.server.use(express.json());
     Server.server.use(express.urlencoded({ extended: true }));
 
@@ -57,10 +65,11 @@ class Server {
 }
 
 // initialise server
+
 const AppServer = new Server(port, dbConn);
 
 // registering all routes
-AppServer.registerRoute('/', router);
 AppServer.registerRoute('/user', userRouter);
+AppServer.registerRoute('/virtual-room', virtualRoomRouter);
 
 AppServer.start();
