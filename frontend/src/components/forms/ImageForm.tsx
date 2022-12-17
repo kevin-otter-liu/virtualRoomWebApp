@@ -1,6 +1,8 @@
 import ImageFormPropI from '../../types/forms/ImageFormPropI';
 import React,{useState} from 'react';
 import axios from 'axios';
+import './ImageForm.css';
+import Button from '../ui/Button'
 
 const ImageForm: React.FC = () => {
   const [file,setFile] = useState<File>();
@@ -33,10 +35,13 @@ const ImageForm: React.FC = () => {
   }
 
 
-  return (<form onSubmit={onFormSubmitHandler}>
-    <input onChange={onImageInputChangeHandler} type='file' accept='image/*'></input>
+  return (<form className='form' onSubmit={onFormSubmitHandler}>
+    <label className='custom-file-upload' htmlFor="imageInput">
+      <img ></img>
+      <input id="imageInput" onChange={onImageInputChangeHandler} type='file' accept='image/*'></input>
+    </label>
     <input value={description} onChange={onTextInputChangeHandler} type='text' placeholder='description'></input>
-    <button type='submit'>Submit</button>
+    <Button type='submit'>Submit</Button>
   </form>)
 };
 

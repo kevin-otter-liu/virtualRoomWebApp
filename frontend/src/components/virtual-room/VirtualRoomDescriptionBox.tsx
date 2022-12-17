@@ -2,7 +2,7 @@ import VirtualRoomDescriptionBoxPropI from '../../types/virtual-room/VirtualRoom
 import './VirtualRoomDescriptionBox.css'
 import Button from '../ui/Button'
 import React,{useState} from 'react'
-import VirtualRoomCanvas from '../../components/displays/VirtualRoomCanvas';
+import VirtualRoomCanvas from './VirtualRoomCanvas';
 
 
 const VirtualRoomDescriptionBox:React.FC<VirtualRoomDescriptionBoxPropI> = (props) =>{
@@ -24,7 +24,7 @@ const VirtualRoomDescriptionBox:React.FC<VirtualRoomDescriptionBoxPropI> = (prop
           
           <div className='virtual-room-description-box'>
             <img src={props.imageSrc}></img>
-            <Button onClick={onEnterVirtualRoomHandler}>Enter Room</Button>
+            <Button type='button' onClick={onEnterVirtualRoomHandler}>Enter Room</Button>
             <div>Hi</div>
         </div>
         </React.Fragment>

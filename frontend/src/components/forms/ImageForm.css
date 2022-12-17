@@ -1,0 +1,49 @@
+.form {
+    display:flex;
+    flex-direction: row;
+    background-color: #C3B1E1;
+    border: 5px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    padding:0;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 5px solid white;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.custom-file-upload img{
+    content: url('./assets/static-upload.png');
+    width: 70px;
+    height: 70px;
+}
+
+.custom-file-upload img:hover{
+    content: url('./assets/upload-file.gif');
+    border-color: cyan;
+}
+
+input[type="text"] {
+    border: 5px solid white;
+    background-color:#C3B1E1;
+}
+
+input[type="text"]:active {
+    border-color: cyan;
+}
+
+input[type="text"]:hover {
+    border-color: cyan;
+}
+
+input[type="text"]:focus {
+    outline:none;
+    border-color: cyan;
+}
+
+

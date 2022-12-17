@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import VirtualRoomCanvasPropI from '../../types/displays/VirtualRoomCanvasPropI';
 import VirtualRoomButton from '../ui/VirtualRoomButton';
 import './VirtualRoomCanvas.css';
+import { ExtrudeGeometry } from 'three';
 
 const renderVirtualRoom =(canvasRef:HTMLCanvasElement):void=>{
     const scene = new THREE.Scene();
@@ -39,26 +40,28 @@ const renderVirtualRoom =(canvasRef:HTMLCanvasElement):void=>{
       antialias: true,
       canvas: canvasRef,
     });
+
+    const text = "random text"
+    const parameters = {
+      font: 'helvetiker',
+      size:100,
+
+    }
+
+
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     new OrbitControls(camera, renderer.domElement);
 
     window.addEventListener('resize', onWindowResize, false);
+
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
       render();
     }
-
-    const options = {
-      side: {
-        FrontSide: THREE.FrontSide,
-        BackSide: THREE.BackSide,
-        DoubleSide: THREE.DoubleSide,
-      },
-    };
 
 
     function animate() {
@@ -92,7 +95,7 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
 
   return (
     <div>
-      <VirtualRoomButton onClick={onClickHandler}>Exit Virtual Room</VirtualRoomButton>
+      <VirtualRoomButton type='button' onClick={onClickHandler}>Exit Virtual Room</VirtualRoomButton>
       <canvas className='container' ref={componentRef}></canvas>
     </div>
   );
