@@ -4,25 +4,7 @@ import ImageModel from '../../db/models/Image';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
-const accessKeyId = process.env.S3_ACCESS_KEY!;
-const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY!;
-const region = process.env.BUCKET_REGION!;
-const bucketName = process.env.BUCKET_NAME!;
-
-const s3client = new S3Client({
-  credentials: {
-    accessKeyId,
-    secretAccessKey,
-  },
-  region,
-});
+import s3Service from '../services/s3Client';
 
 // for generating url
 
@@ -44,16 +26,7 @@ virtualRoomRouter.post(
     // create a new unique id to store image in s3
     const image_id = uuidv4();
 
-    const params = {
-      Bucket: bucketName,
-      Key: image_id,
-      Body: buffer,
-      ContentType: req.file?.mimetype,
-    };
-
-    // get function to upload to s3
-    const command = new PutObjectCommand(params);
-    await s3client.send(command);
+    s3Service.storeImageInBucket(image_id, buffer, req.file!.mimetype);
 
     // save image details to db
     await ImageModel.create({
@@ -71,15 +44,13 @@ virtualRoomRouter.post(
 virtualRoomRouter.get(
   '/image',
   async (req: Request, res: Response, next: NextFunction) => {
+    // find image id in database
     const image = await ImageModel.findOne();
 
-    const getObjectParams = {
-      Bucket: bucketName,
-      Key: image?.id,
-    };
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3client, command, { expiresIn: 3600 });
+    // get image from s3 using id
+    const url = await s3Service.generateImageUrlFromBucket(image!.id, 3600);
 
+    // send the information of the image with the url
     res.send({
       ...image?.dataValues,
       url,
