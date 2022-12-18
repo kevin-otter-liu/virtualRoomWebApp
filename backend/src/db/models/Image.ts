@@ -19,10 +19,14 @@ class Image extends Model<
   declare url: CreationOptional<string>;
   declare caption: string | null;
   declare description: string | null;
+  declare direction: 0 | 1 | 2 | 3 | 4 | 5 | null;
 }
 
 Image.init(
   {
+    direction: {
+      type: DataTypes.NUMBER,
+    },
     image_able: {
       type: DataTypes.STRING,
     },
