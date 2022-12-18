@@ -2,6 +2,7 @@ import VirtualRoomDescriptionBoxPropI from '../../types/virtual-room/VirtualRoom
 import './VirtualRoomDescriptionBox.css'
 import Button from '../ui/Button'
 import React,{useState} from 'react'
+import ImageForm from '../forms/ImageForm'
 import VirtualRoomCanvas from './VirtualRoomCanvas';
 
 
@@ -19,6 +20,7 @@ const VirtualRoomDescriptionBox:React.FC<VirtualRoomDescriptionBoxPropI> = (prop
 
     return(
         <React.Fragment>
+          <ImageForm/>
             {showVirtualRoom && <VirtualRoomCanvas
           onExitVirtualRoomHandler={onExitVirtualRoomHandler}></VirtualRoomCanvas>}
           

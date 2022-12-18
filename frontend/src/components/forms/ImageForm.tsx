@@ -1,9 +1,7 @@
-import ImageFormPropI from '../../types/forms/ImageFormPropI';
 import React,{useState} from 'react';
 import axios from 'axios';
 import './ImageForm.css';
 import Button from '../ui/Button'
-
 const ImageForm: React.FC = () => {
   const [file,setFile] = useState<File>();
   const [description,setDescription] = useState("")
@@ -14,7 +12,7 @@ const ImageForm: React.FC = () => {
       const formData = new FormData()
       formData.append("image",file)
       formData.append("description",description)
-      await axios.post("http://localhost:3000/virtual-room/image",formData,{
+      await axios.post(`http://localhost:3000/virtual-room/image`,formData,{
         headers: {
           'Content-Type': 'multipart/form-data'
         }})
