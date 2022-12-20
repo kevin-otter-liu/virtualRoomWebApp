@@ -2,7 +2,9 @@ import React,{useState} from 'react';
 import axios from 'axios';
 import './ImageForm.css';
 import Button from '../ui/Button'
-const ImageForm: React.FC = () => {
+import ImageFormPropI from '../../types/forms/ImageFormPropI';
+
+const ImageForm: React.FC<ImageFormPropI> = (props) => {
   const [file,setFile] = useState<File>();
   const [description,setDescription] = useState("")
 
@@ -39,7 +41,9 @@ const ImageForm: React.FC = () => {
       <input id="imageInput" onChange={onImageInputChangeHandler} type='file' accept='image/*'></input>
     </label>
     <input value={description} onChange={onTextInputChangeHandler} type='text' placeholder='description'></input>
-    <Button type='submit'>Submit</Button>
+    <Button type='submit'>Upload image</Button>
+    <p className='input-text'>{`Face index selected: ${props.text}`}</p>
+    <Button type='button' onClick={props.onClick}>Exit form</Button>
   </form>)
 };
 

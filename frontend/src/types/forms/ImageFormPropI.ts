@@ -1,3 +1,4 @@
 export default interface ImageFormPropI {
-  onSubmit: React.MouseEventHandler;
+  onClick: () => void;
+  text: string;
 }

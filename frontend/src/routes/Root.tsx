@@ -11,7 +11,7 @@ function Root() {
 
   return (
     <Fragment>
-      <VirtualRoomDescriptionBox imageSrc='./img/xn.jpg' description='Virtual Room'/>
+      <VirtualRoomDescriptionBox imageSrc='./assets/img/4.jpg' description='Virtual Room'/>
     </Fragment>
   );
 }

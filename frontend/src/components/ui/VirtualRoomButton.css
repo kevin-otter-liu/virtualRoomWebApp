@@ -1,9 +1,7 @@
 .virtual-button {
+    position: absolute;
     border: 5px solid #C3B1E1;
     margin: 5px;
     z-index:20;
-    position: absolute;
-	top: 10px;
 	text-align: center;
-	display:block;
 }
