@@ -33,7 +33,6 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
     <React.Fragment>
       {showVirtualRoom && (
         <div className='container'>
-          {showForm && <ImageForm text={`face index selected: ${faceIndex}`} onClick={onExitImageFormHandler}></ImageForm>}
           <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>Exit Virtual Room </VirtualRoomButton>
           <Canvas>
             <VirtualRoomCanvas setFaceIndex={setFaceIndex} setShowForm={setShowForm}></VirtualRoomCanvas>

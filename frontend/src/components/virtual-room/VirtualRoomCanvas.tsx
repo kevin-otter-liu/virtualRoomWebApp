@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import VirtualRoomCanvasPropI from '../../types/displays/VirtualRoomCanvasPropI';
 import './VirtualRoomCanvas.css';
-import ThreeCubeObject from './ThreeCubeObject';
+import VirtualHouseObject from './VirtualHouseObject';
 import {
   PerspectiveCamera,
   PresentationControls,
@@ -22,19 +22,11 @@ const calculateCubeCenterPosition=(cubeTopLeftPosition:Vector3,cubeLength:number
 }
 
 const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
-  console.log('viurtualroomcanvas called');
 
   // const image_urls = Array(6).fill('assets/default-walls/default.png');
   const image_urls = ['assets/img/0.jpg','assets/img/1.jpg','assets/img/2.jpg','assets/img/3.jpg','assets/img/4.jpg','assets/img/5.jpg'];
  
-  const boxArgs: [
-    width?: number | undefined,
-    height?: number | undefined,
-    depth?: number | undefined,
-    widthSegments?: number | undefined,
-    heightSegments?: number | undefined,
-    depthSegments?: number | undefined
-  ] = [5, 5, 5];
+  const boxArgs: Array<number> = [5, 5, 5];
 
   // vairables
   const ref:React.Ref<Group> =useRef(null!)
@@ -66,13 +58,16 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
 
   });
 
-  const onFaceClickHandler = (e:ThreeEvent<MouseEvent>)=>{
-    const faceIndex = Math.floor(e.faceIndex!/2)
-    const currentMeshFace:MeshBasicMaterial = ref.current?.children[0].geometry.groups[faceIndex]
-    console.log(currentMeshFace)
-    props.setShowForm(true)
-    props.setFaceIndex(faceIndex)
-  }
+  // const onFaceClickHandler = (e:ThreeEvent<MouseEvent>)=>{
+  //   const faceIndex = Math.floor(e.faceIndex!/2)
+  //   const currentMeshFace:MeshBasicMaterial = ref.current?.children[0].geometry.groups[faceIndex]
+  //   console.log(currentMeshFace)
+  //   props.setShowForm(true)
+  //   props.setFaceIndex(faceIndex)
+  // }
+
+  // ThreeDetails{position:[]}
+  // const ThreeDetails: Array<ThreeDetails>
   
 
   return (
@@ -89,7 +84,7 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
         azimuth={[-Infinity, Infinity]} // Horizontal limits
       >
         <group ref={ref}>
-          <ThreeCubeObject onFaceClick={onFaceClickHandler} position={[0,0,0]} urls={image_urls} boxArgs={boxArgs}></ThreeCubeObject>
+          <VirtualHouseObject position={[0,0,0]} urls={image_urls} boxArgs={boxArgs}></VirtualHouseObject>
         </group>
       </PresentationControls>
     </PerspectiveCamera>
