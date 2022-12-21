@@ -6,29 +6,17 @@ import {
   PerspectiveCamera,
   PresentationControls,
 } from '@react-three/drei';
-import { ThreeEvent, useFrame} from '@react-three/fiber';
+import { useFrame} from '@react-three/fiber';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
-import { Group, MeshBasicMaterial, Vector3 } from 'three';
+import { Group} from 'three';
 
-const calculateCameraPosition = (cubeTopLeftPosition:Vector3,boxLength:number,boxWidth:number,boxHeight:number)=>{
-  const cameraPosition =  new Vector3(cubeTopLeftPosition.x+boxLength/2,cubeTopLeftPosition.y+boxWidth/2,1)
-  return cameraPosition
-}
 
-const calculateCubeCenterPosition=(cubeTopLeftPosition:Vector3,cubeLength:number,cubeWidth:number,cubeHeight:number)=>{
-  const cubeCenterPosition =  new Vector3(cubeTopLeftPosition.x+cubeLength/2,cubeTopLeftPosition.y+cubeWidth/2,cubeTopLeftPosition.z+cubeHeight/2)
-  // console.log(cubeCenterPosition)w
-  return cubeCenterPosition
-}
+const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = () => {
 
-const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
-
-  // const image_urls = Array(6).fill('assets/default-walls/default.png');
   const image_urls = ['assets/img/0.jpg','assets/img/1.jpg','assets/img/2.jpg','assets/img/3.jpg','assets/img/4.jpg','assets/img/5.jpg'];
  
   const boxArgs: Array<number> = [5, 5, 5];
 
-  // vairables
   const ref:React.Ref<Group> =useRef(null!)
 
 
@@ -57,18 +45,6 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = (props) => {
     }
 
   });
-
-  // const onFaceClickHandler = (e:ThreeEvent<MouseEvent>)=>{
-  //   const faceIndex = Math.floor(e.faceIndex!/2)
-  //   const currentMeshFace:MeshBasicMaterial = ref.current?.children[0].geometry.groups[faceIndex]
-  //   console.log(currentMeshFace)
-  //   props.setShowForm(true)
-  //   props.setFaceIndex(faceIndex)
-  // }
-
-  // ThreeDetails{position:[]}
-  // const ThreeDetails: Array<ThreeDetails>
-  
 
   return (
     <PerspectiveCamera >

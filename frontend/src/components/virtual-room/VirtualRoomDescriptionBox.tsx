@@ -2,7 +2,6 @@ import VirtualRoomDescriptionBoxPropI from '../../types/virtual-room/VirtualRoom
 import './VirtualRoomDescriptionBox.css';
 import Button from '../ui/Button';
 import React, { useState } from 'react';
-import ImageForm from '../forms/ImageForm';
 import VirtualRoomCanvas from './VirtualRoomCanvas';
 import { Canvas } from '@react-three/fiber';
 import VirtualRoomButton from '../ui/VirtualRoomButton';
@@ -12,9 +11,6 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
   props
 ) => {
   const [showVirtualRoom, setShowVirtualRoom] = useState<boolean>(false);
-  const [faceIndex, setFaceIndex] = useState<number|null>(null);
-
-  const [showForm,setShowForm] = useState<boolean>(false);
 
   const onEnterVirtualRoomHandler = (event: React.MouseEvent) => {
     setShowVirtualRoom(true);
@@ -24,10 +20,6 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
     setShowVirtualRoom(false);
   };
 
-  const onExitImageFormHandler = () => {
-    setShowForm(false);
-  };
-
 
   return (
     <React.Fragment>
@@ -35,7 +27,7 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
         <div className='container'>
           <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>Exit Virtual Room </VirtualRoomButton>
           <Canvas>
-            <VirtualRoomCanvas setFaceIndex={setFaceIndex} setShowForm={setShowForm}></VirtualRoomCanvas>
+            <VirtualRoomCanvas ></VirtualRoomCanvas>
           </Canvas>
         </div>
       )}
@@ -45,7 +37,7 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
         <Button type='button' onClick={onEnterVirtualRoomHandler}>
           Enter Room
         </Button>
-        <div>Hi</div>
+        <div>Lorem Ipsum and a bunch of other stuff</div>
       </div>
     </React.Fragment>
   );
