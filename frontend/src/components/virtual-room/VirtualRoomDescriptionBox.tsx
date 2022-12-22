@@ -2,7 +2,7 @@ import VirtualRoomDescriptionBoxPropI from '../../types/virtual-room/VirtualRoom
 import './VirtualRoomDescriptionBox.css';
 import Button from '../ui/Button';
 import React, { useState } from 'react';
-import VirtualRoomCanvas from './VirtualRoomCanvas';
+import VirtualHouseCanvas from './VirtualHouseCanvas';
 import { Canvas } from '@react-three/fiber';
 import VirtualRoomButton from '../ui/VirtualRoomButton';
 
@@ -27,7 +27,7 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
         <div className='container'>
           <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>Exit Virtual Room </VirtualRoomButton>
           <Canvas>
-            <VirtualRoomCanvas ></VirtualRoomCanvas>
+            <VirtualHouseCanvas ></VirtualHouseCanvas>
           </Canvas>
         </div>
       )}

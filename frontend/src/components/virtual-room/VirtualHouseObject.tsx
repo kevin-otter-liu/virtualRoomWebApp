@@ -1,5 +1,5 @@
 import { VirtualHouseObjectPropI } from '../../types/virtual-room/VirtualHouseObjectPropI';
-import { Fragment, MouseEvent, useState } from 'react';
+import { Fragment} from 'react';
 import VirtualRoomObject from './VirtualRoomObject';
 
 

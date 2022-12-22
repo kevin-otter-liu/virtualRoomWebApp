@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-import VirtualRoomCanvasPropI from '../../types/displays/VirtualRoomCanvasPropI';
-import './VirtualRoomCanvas.css';
+import VirtualHouseCanvasPropI from '../../types/displays/VirtualHouseCanvasPropI';
+import './VirtualHouseCanvas.css';
 import VirtualHouseObject from './VirtualHouseObject';
 import {
   PerspectiveCamera,
@@ -11,7 +11,7 @@ import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import { Group} from 'three';
 
 
-const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = () => {
+const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = () => {
 
   const image_urls = ['assets/img/0.jpg','assets/img/1.jpg','assets/img/2.jpg','assets/img/3.jpg','assets/img/4.jpg','assets/img/5.jpg'];
  
@@ -67,4 +67,4 @@ const VirtualRoomCanvas: React.FC<VirtualRoomCanvasPropI> = () => {
   );
 };
 
-export default VirtualRoomCanvas;
+export default VirtualHouseCanvas;

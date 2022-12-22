@@ -1,6 +1,7 @@
 import { Html } from '@react-three/drei';
 import { Euler, Vector3 } from 'three';
 import { WallTextObjectPropI } from '../../types/virtual-room/WallTextObjectPropI';
+import './WallTextObject.css';
 
 const WallTextObject: React.FC<WallTextObjectPropI> = (props) => {
   return (
@@ -9,7 +10,7 @@ const WallTextObject: React.FC<WallTextObjectPropI> = (props) => {
       rotation={new Euler(...props.doorRotation)}
       position={new Vector3(...props.doorPosition)}
       transform>
-      <div>Wall {props.index}</div>
+      <div className='wall-texts'>Wall {props.index}</div>
       <button value={props.index} type='button'>
         Door {props.index}
       </button>
