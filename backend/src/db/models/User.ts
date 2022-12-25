@@ -8,13 +8,12 @@ import {
 
 import dbConn from '../config';
 import Image from './Image';
-import VirtualRoom from './VirtualRoom';
-import Token from './Token';
-import { v4 as uuidv4 } from 'uuid';
+
+// import Token from './Token';
 
 // defining Models: attributes at creation and attributes output from DB
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
+  declare id: string;
   declare username: string;
   declare email?: string;
   declare password: string;
@@ -39,7 +38,6 @@ User.init(
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
     },
   },
   { sequelize: dbConn }
@@ -47,7 +45,5 @@ User.init(
 
 // define relationship, foreign key UserId will be added to Image Model
 User.hasMany(Image);
-User.hasMany(VirtualRoom);
-User.hasMany(Token);
 
 export default User;

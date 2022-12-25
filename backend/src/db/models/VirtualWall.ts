@@ -17,24 +17,24 @@ class VirtualWall extends Model<
   InferCreationAttributes<VirtualWall>
 > {
   declare id: string;
-  declare direction: number;
+  declare face: number;
   declare is_door: boolean;
   declare next_room: string;
 }
 
 VirtualWall.init(
   {
+    // Virtual Wall Id of the next room behind the door
     next_room: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
     },
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
     },
-    direction: {
-      type: DataTypes.NUMBER,
+    face: {
+      type: DataTypes.INTEGER,
     },
     is_door: {
       type: DataTypes.BOOLEAN,

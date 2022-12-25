@@ -10,6 +10,7 @@ import Image from './Image';
 
 import dbConn from '../config';
 import { v4 as uuidv4 } from 'uuid';
+import VirtualWall from './VirtualWall';
 
 // defining Models: attributes at creation and attributes output from DB
 class VirtualRoom extends Model<
@@ -17,6 +18,7 @@ class VirtualRoom extends Model<
   InferCreationAttributes<VirtualRoom>
 > {
   declare id: string;
+  declare userId: string;
   declare description: string | null;
   declare wallNo: number;
   declare completedWalls: number;
@@ -25,10 +27,10 @@ class VirtualRoom extends Model<
 VirtualRoom.init(
   {
     wallNo: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     completedWalls: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     description: {
       type: DataTypes.TEXT,
@@ -37,7 +39,10 @@ VirtualRoom.init(
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
+    },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
   },
   { sequelize: dbConn }
@@ -45,6 +50,6 @@ VirtualRoom.init(
 
 // define relationships
 VirtualRoom.hasMany(Image);
-VirtualRoom.hasMany(VirtualRoom);
+VirtualRoom.hasMany(VirtualWall);
 
 export default VirtualRoom;

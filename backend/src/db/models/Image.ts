@@ -17,34 +17,31 @@ class Image extends Model<
   declare id: string;
   declare image_able: string; //"virtual-room-image" || "avatar-image"
   declare url: CreationOptional<string>;
-  declare caption: string | null;
-  declare description: string | null;
-  declare direction: 0 | 1 | 2 | 3 | 4 | 5 | null;
+  // declare userId: string;
+  // declare virtualWallId: string;
 }
 
 Image.init(
   {
-    direction: {
-      type: DataTypes.NUMBER,
-    },
     image_able: {
       type: DataTypes.STRING,
     },
     url: {
       type: DataTypes.STRING,
     },
-    caption: {
-      type: DataTypes.TEXT,
-    },
-    description: {
-      type: DataTypes.TEXT,
-    },
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
     },
+    // userId: {
+    //   type: DataTypes.UUID,
+    //   allowNull: false,
+    // },
+    // virtualWallId: {
+    //   type: DataTypes.UUID,
+    //   allowNull: false,
+    // },
   },
   { sequelize: dbConn }
 );
