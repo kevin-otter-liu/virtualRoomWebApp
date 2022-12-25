@@ -13,8 +13,10 @@ import { Group} from 'three';
 
 const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = () => {
 
+  // fetch a user's virtualHouse
+
   const image_urls = ['assets/img/0.jpg','assets/img/1.jpg','assets/img/2.jpg','assets/img/3.jpg','assets/img/4.jpg','assets/img/5.jpg'];
- 
+ // fetch a user's virtual room urls
   const boxArgs: Array<number> = [5, 5, 5];
 
   const ref:React.Ref<Group> =useRef(null!)

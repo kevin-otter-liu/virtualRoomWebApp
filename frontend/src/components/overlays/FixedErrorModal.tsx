@@ -1,0 +1,22 @@
+import React from 'react';
+import './FixedModal.css';
+import FixedModalPropI from '../../types/ui/FixedModalPropI';
+import Button from '../ui/Button';
+
+
+const FixedModal: React.FC<FixedModalPropI> = (props) => {
+  return (
+      <div className='modal'>
+        <header className='header'>
+          <h2 className='header h2'>{props.title}</h2>
+        </header>
+        <div className='content'>
+          <p>{props.message}</p>
+          <div className='content loading'></div>
+        </div>
+        <Button type='button' onClick={props.onClick}>Exit</Button>
+      </div>
+  );
+};
+
+export default FixedModal;

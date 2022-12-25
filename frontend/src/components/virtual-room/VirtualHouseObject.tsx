@@ -8,7 +8,7 @@ const VirtualHouseObject: React.FC<VirtualHouseObjectPropI> = (props) => {
 
   // call APi to load all VirtualRoomObjects from database
   // const virtualRoomObjects:<VirtualRoomData>=[];
-
+  
   return (
     <Fragment>
       {/* Load all virtual Room Objects */}

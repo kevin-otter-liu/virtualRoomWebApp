@@ -1,7 +1,7 @@
 interface AuthContextI {
     isLoggedIn:boolean;
-    loginHandler: () => void;
-    logoutHandler: () => void;
+    login: (access_token:string) => void;
+    logout: () => void;
 }
 
 export default AuthContextI;

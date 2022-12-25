@@ -19,6 +19,7 @@
     "three": "^0.147.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/dat.gui": "^0.7.7",
     "@types/node": "^18.11.16",
     "@types/react": "^18.0.26",

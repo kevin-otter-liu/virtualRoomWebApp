@@ -1,4 +1,6 @@
 import { Html, useTexture } from '@react-three/drei';
+import axios from 'axios';
+import React, { useEffect } from 'react';
 import { Fragment, useState } from 'react';
 import { BackSide, Euler, Vector3 } from 'three';
 import { VirtualRoomObjectPropI } from '../../types/virtual-room/VirtualRoomObjectPropI';
@@ -40,9 +42,28 @@ type ImageFormData = {
 
 const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   // put default pic as empty pics
-  props.urls.map((url) => {
-    url === '' ? 'assets/default-walls/default.png' : url;
+  const [file, setFile] = useState<File>();
+  const [description, setDescription] = useState('');
+  const [textureUrls, setTextureUrls] = useState<Array<string>>([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]);
+
+  const [imageFormData, setImageFormData] = useState<ImageFormData>({
+    showImageForm: false,
+    faceIndex: null,
   });
+
+  useEffect(() => {
+    textureUrls.map((url) => {
+      url === '' ? 'assets/default-walls/default.png' : url;
+    });
+  }, [textureUrls]);
+
   const textures = useTexture<string[]>(props.urls);
 
   const doorPositions = calculateHTMLDoorLocation(
@@ -50,20 +71,31 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
     props.boxArgs
   );
 
-  // handlers for wall texts
+  // change event for changing the image input into the form
+  const onImageInputChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    if (!event.target.files) {
+      return;
+    }
+    setFile(event.target.files[0]);
+  };
+
+  // Handler for
   const onImageButtonClick = (e: React.MouseEvent) => {
     const index = e.currentTarget.getAttribute('value');
 
-    if(index){
-        setImageFormData({
-          faceIndex: parseInt(index),
-          showImageForm: true,
-        });
-    }else{
-        console.log(`no index found`)
+    if (index) {
+      setImageFormData({
+        faceIndex: parseInt(index),
+        showImageForm: true,
+      });
+    } else {
+      console.log(`no index found`);
     }
   };
 
+  // handler for the onclick event on the exit button to exit the image form
   const imageFormExitHandler = () => {
     setImageFormData((state) => {
       return {
@@ -71,6 +103,46 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
         showImageForm: false,
       };
     });
+  };
+
+  // hanlder for submitting the image form
+  const onSubmitFormHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
+    event.preventDefault();
+    setImageFormData((state) => {
+      return {
+        ...state,
+        showImageForm: false,
+      };
+    });
+    if (file) {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('data', JSON.stringify({description,caption:"random caption", face:imageFormData.faceIndex, virtual_room_id:"f5c301f5-d289-46ea-a7f3-e556f1eee453"}));
+      console.log(formData);
+      const res = await axios.post(
+        'http://localhost:3000/virtual-room/image',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZjVjMzAxZjUtZDI4OS00NmVhLWE3ZjMtZTU1NmYxZWVlNDUzIiwiaWF0IjoxNjcxOTEyMjYyLCJleHAiOjE2NzE5MTU4NjJ9.KD793E7VJ1Bcxdlde8uyW4zz0zJ-D1QMS-yHqxt40Hs",
+          },
+        }
+      );
+
+      console.log(res)
+    }
+  };
+
+  // image description text change handler
+  const onTextInputChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setDescription(event.target.value);
+    console.log(description);
   };
 
   const wallTexts = doorPositions.map((doorPosition, index) => {
@@ -83,14 +155,6 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
       />
     );
   });
-
-
-  const [imageFormData, setImageFormData] = useState<ImageFormData>({
-    showImageForm: false,
-    faceIndex: null,
-  });
-
-  
 
   return (
     <Fragment>
@@ -116,7 +180,14 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
           rotation={new Euler(...doorRotation[imageFormData.faceIndex!])}
           position={new Vector3(...doorPositions[imageFormData.faceIndex!])}
           transform>
-          <ImageForm text={`${imageFormData.faceIndex}`} onClick={imageFormExitHandler} />
+          <ImageForm
+            description={description}
+            onTextInputChange={onTextInputChangeHandler}
+            text={`${imageFormData.faceIndex}`}
+            onFormSubmit={onSubmitFormHandler}
+            onExitForm={imageFormExitHandler}
+            onImageInputChange={onImageInputChange}
+          />
         </Html>
       )}
     </Fragment>
