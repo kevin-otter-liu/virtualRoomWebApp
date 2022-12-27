@@ -4,12 +4,14 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  ForeignKey,
 } from 'sequelize';
 
 import Image from './Image';
 
 import dbConn from '../config';
 import { v4 as uuidv4 } from 'uuid';
+import VirtualRoom from './VirtualRoom';
 
 // defining Models: attributes at creation and attributes output from DB
 class VirtualWall extends Model<
@@ -19,7 +21,9 @@ class VirtualWall extends Model<
   declare id: string;
   declare face: number;
   declare is_door: boolean;
-  declare next_room: string;
+  declare next_room: string | null;
+  declare virtual_room_id: ForeignKey<VirtualRoom['id']>;
+  declare image_id: CreationOptional<ForeignKey<VirtualRoom['id']>>;
 }
 
 VirtualWall.init(
@@ -40,10 +44,14 @@ VirtualWall.init(
       type: DataTypes.BOOLEAN,
     },
   },
-  { sequelize: dbConn }
+  { sequelize: dbConn, modelName: 'virtual_wall' }
 );
 
-// define relationships
-Image.belongsTo(VirtualWall);
+// foreign keys on VirtualWall
+// image's fk is in virtual wall
+VirtualWall.belongsTo(Image, {
+  as: 'VirtualWall',
+  foreignKey: 'image_id',
+});
 
 export default VirtualWall;

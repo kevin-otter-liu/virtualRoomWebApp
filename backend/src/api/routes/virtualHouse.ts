@@ -6,6 +6,8 @@ import {
   RequestHandler,
 } from 'express';
 import VirtualRoom from '../../db/models/VirtualRoom';
+import VirtualHouse from '../../db/models/VirtualHouse';
+
 import ImageModel from '../../db/models/Image';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,33 +16,71 @@ import s3Service from '../services/s3Client';
 import { CustomRequest } from '../middleware/check-auth';
 import { HttpError } from '../../libs/http-error';
 import { checkAuth } from '../middleware/check-auth';
+import VirtualWall from '../../db/models/VirtualWall';
 
 // for generating url
 
-const virtualRoomRouter = Router();
-virtualRoomRouter.use(checkAuth);
+const virtualHouseRouter = Router();
+virtualHouseRouter.use(checkAuth);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 upload.single('avatar');
-virtualRoomRouter.post(
+// create a empty virtual house
+virtualHouseRouter.post(
   '/create',
   async (req: Request, res: Response, next: NextFunction) => {
     const user = (req as CustomRequest).user;
-    const { description, wall_no } = req.body;
-    const vr = await VirtualRoom.create({
-      id: uuidv4(),
-      completedWalls: 0,
+    const { description, wall_no, x, y, z, length, height, depth } = req.body;
+
+    const vhId = uuidv4();
+    const virtualHouse = await VirtualHouse.create({
+      id: vhId,
       description: description,
-      userId: user.id,
-      wallNo: wall_no,
     });
-    res.status(200).json(vr.dataValues);
+
+    const vrId = uuidv4();
+    const vr = await virtualHouse.createVirtualRoom({
+      id: vrId,
+      completed_walls: 0,
+      description: description,
+      wall_no: wall_no,
+      x,
+      y,
+      z,
+      length,
+      depth,
+      height,
+    });
+
+    const virtualWalls: Array<any> = [];
+    for (let i = 0; i < wall_no; i++) {
+      let vwId = uuidv4();
+      let vw = await vr.createVirtualWall({
+        id: vwId,
+        face: i,
+        is_door: false,
+      });
+
+      virtualWalls.push(vw.dataValues);
+    }
+
+    res.status(200).json({
+      virtual_house: {
+        ...virtualHouse.dataValues,
+        virtual_rooms: [
+          {
+            ...vr.dataValues,
+            virtual_walls: virtualWalls,
+          },
+        ],
+      },
+    });
     next();
   }
 );
 
-virtualRoomRouter.post(
+virtualHouseRouter.post(
   '/image',
   upload.single('image'),
   async (req: Request, res: Response, next: NextFunction) => {
@@ -71,6 +111,7 @@ virtualRoomRouter.post(
     await ImageModel.create({
       id: image_id,
       image_able: 'virtual-room-image',
+      virtual_wall_id: virtual_wall_id,
     });
 
     // generate image url
@@ -85,7 +126,7 @@ virtualRoomRouter.post(
 );
 
 // getting an image url from s3
-virtualRoomRouter.get(
+virtualHouseRouter.get(
   '/image',
   async (req: Request, res: Response, next: NextFunction) => {
     // find image id in database
@@ -102,4 +143,4 @@ virtualRoomRouter.get(
   }
 );
 
-export default virtualRoomRouter;
+export default virtualHouseRouter;

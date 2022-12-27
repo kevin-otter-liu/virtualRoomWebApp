@@ -15,9 +15,7 @@ import Image from './Image';
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: string;
   declare username: string;
-  declare email?: string;
   declare password: string;
-  declare token_id?: string;
 }
 
 User.init(
@@ -25,13 +23,7 @@ User.init(
     username: {
       type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.STRING,
-    },
     password: {
-      type: DataTypes.STRING,
-    },
-    token_id: {
       type: DataTypes.STRING,
     },
     id: {
@@ -40,7 +32,7 @@ User.init(
       allowNull: false,
     },
   },
-  { sequelize: dbConn }
+  { sequelize: dbConn, modelName: 'user' }
 );
 
 // define relationship, foreign key UserId will be added to Image Model

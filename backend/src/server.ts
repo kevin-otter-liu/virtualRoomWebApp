@@ -8,7 +8,7 @@ import express, {
 } from 'express';
 import 'dotenv/config';
 import userRouter from './api/routes/user';
-import virtualRoomRouter from './api/routes/virtualRoom';
+import virtualHouseRouter from './api/routes/virtualHouse';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
 import { checkAuth } from './api/middleware/check-auth';
@@ -30,7 +30,7 @@ class Server {
 
     Server.server.use(
       cors({
-        origin: 'http://localhost:5174',
+        origin: 'http://localhost:5173',
         optionsSuccessStatus: 200,
       })
     );
@@ -81,7 +81,7 @@ const expressServer = AppServer.getExpressServer();
 // registering all routes
 AppServer.registerRoute('/user', userRouter);
 // expressServer.use(checkAuth);
-AppServer.registerRoute('/virtual-room', virtualRoomRouter);
+AppServer.registerRoute('/virtual-house', virtualHouseRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
