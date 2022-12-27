@@ -15,7 +15,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const onLogin= (accessToken:string) => {
     window.localStorage.setItem("access_token",accessToken);
     setIsLoggedIn(true);
-    console.log('ahere')
+    console.log(isLoggedIn)
   };
 
   const onLogout = () => {

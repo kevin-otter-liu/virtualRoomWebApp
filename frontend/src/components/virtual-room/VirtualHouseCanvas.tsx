@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
 import VirtualHouseCanvasPropI from '../../types/displays/VirtualHouseCanvasPropI';
 import './VirtualHouseCanvas.css';
 import VirtualHouseObject from './VirtualHouseObject';
@@ -6,23 +6,31 @@ import {
   PerspectiveCamera,
   PresentationControls,
 } from '@react-three/drei';
-import { useFrame} from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
-import { Group} from 'three';
+import { VirtualHouse } from '../../types/contexts/responses/VirtualHouse';
 
+const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
+  const [virtualHouse, setVirtualHouse] = useState<VirtualHouse | null>(
+    props.virtualHouse
+  );
+  useEffect(()=>{
+    console.log(virtualHouse)
+  })
 
-const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = () => {
+  // useEffect(() => {
+  //   const createVirtualHouse = async () => {
+  //     if (props.virtualHouse) {
+  //       setVirtualHouse(virtualHouse);
+  //     } else {
+  //       console.log('here');
+  //     }
+  //   };
 
-  // fetch a user's virtualHouse
+  //   createVirtualHouse();
+  // }, []);
 
-  const image_urls = ['assets/img/0.jpg','assets/img/1.jpg','assets/img/2.jpg','assets/img/3.jpg','assets/img/4.jpg','assets/img/5.jpg'];
- // fetch a user's virtual room urls
-  const boxArgs: Array<number> = [5, 5, 5];
-
-  const ref:React.Ref<Group> =useRef(null!)
-
-
-  const { moveForward, moveBackward, moveLeft, moveRight,moveUp,moveDown } =
+  const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();
 
   useFrame((state) => {
@@ -38,34 +46,36 @@ const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = () => {
     if (moveLeft) {
       state.camera.translateX(-0.1);
     }
-    if(moveUp){
-      state.camera.translateY(0.1)
+    if (moveUp) {
+      state.camera.translateY(0.1);
     }
 
-    if (moveDown){
-      state.camera.translateY(-0.1)
+    if (moveDown) {
+      state.camera.translateY(-0.1);
     }
-
   });
 
   return (
-    <PerspectiveCamera >
-      <PresentationControls
-        enabled={true} // the controls can be disabled by setting this to false
-        global={false} // Spin globally or by dragging the model
-        cursor={true} // Whether to toggle cursor style on drag
-        snap={false} // Snap-back to center (can also be a spring config)
-        speed={1} // Speed factors
-        zoom={1} // Zoom factor when half the polar-max is reached
-        rotation={[0, 0, 0]} // Default rotation
-        polar={[-Math.PI / 2, Math.PI / 2]} // Vertical limits
-        azimuth={[-Infinity, Infinity]} // Horizontal limits
-      >
-        <group ref={ref}>
-          <VirtualHouseObject position={[0,0,0]} urls={image_urls} boxArgs={boxArgs}></VirtualHouseObject>
-        </group>
-      </PresentationControls>
-    </PerspectiveCamera>
+        <PerspectiveCamera>
+          <PresentationControls
+            enabled={true} // the controls can be disabled by setting this to false
+            global={false} // Spin globally or by dragging the model
+            cursor={true} // Whether to toggle cursor style on drag
+            snap={false} // Snap-back to center (can also be a spring config)
+            speed={1} // Speed factors
+            zoom={1} // Zoom factor when half the polar-max is reached
+            rotation={[0, 0, 0]} // Default rotation
+            polar={[-Math.PI / 2, Math.PI / 2]} // Vertical limits
+            azimuth={[-Infinity, Infinity]} // Horizontal limits
+          >
+            {virtualHouse && (
+              <VirtualHouseObject
+                createMode={props.createMode}
+                virtualHouse={virtualHouse}></VirtualHouseObject>
+            )}
+          </PresentationControls>
+        </PerspectiveCamera>
+      
   );
 };
 

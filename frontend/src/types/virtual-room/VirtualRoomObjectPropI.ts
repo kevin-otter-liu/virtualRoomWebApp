@@ -1,5 +1,8 @@
+import { VirtualRoom } from '../contexts/responses/VirtualRoom';
+import { VirtualWall } from '../contexts/responses/VirtualWall';
+
 export interface VirtualRoomObjectPropI {
-  urls: Array<string>;
-  position: Array<number>;
-  boxArgs: Array<number>;
+  virtualRoom: VirtualRoom;
+  virtualWalls: Array<VirtualWall>;
+  createMode: boolean;
 }

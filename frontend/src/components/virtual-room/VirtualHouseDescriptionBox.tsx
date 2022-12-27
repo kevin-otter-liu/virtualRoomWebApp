@@ -1,13 +1,11 @@
-import VirtualRoomDescriptionBoxPropI from '../../types/virtual-room/VirtualRoomDescriptionBoxPropI';
-import './VirtualRoomDescriptionBox.css';
+import './VirtualHouseDescriptionBox.css';
 import Button from '../ui/Button';
-import React, { useState } from 'react';
-import VirtualHouseCanvas from './VirtualHouseCanvas';
-import { Canvas } from '@react-three/fiber';
+import React, { Fragment, useState } from 'react';
 import VirtualRoomButton from '../ui/VirtualRoomButton';
+import VirtualHouseDescriptionBoxPropI from '../../types/virtual-room/VirtualHouseDescriptionBoxPropI';
 
 
-const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
+const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   props
 ) => {
   const [showVirtualRoom, setShowVirtualRoom] = useState<boolean>(false);
@@ -24,12 +22,10 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
   return (
     <React.Fragment>
       {showVirtualRoom && (
-        <div className='container'>
+        <Fragment>
           <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>Exit Virtual Room </VirtualRoomButton>
-          <Canvas>
-            <VirtualHouseCanvas ></VirtualHouseCanvas>
-          </Canvas>
-        </div>
+            {/* <VirtualHouseCanvas createMode={props.createMode}></VirtualHouseCanvas> */}
+        </Fragment>
       )}
 
       <div className='virtual-room-description-box'>
@@ -43,4 +39,4 @@ const VirtualRoomDescriptionBox: React.FC<VirtualRoomDescriptionBoxPropI> = (
   );
 };
 
-export default VirtualRoomDescriptionBox;
+export default VirtualHouseDescriptionBox;

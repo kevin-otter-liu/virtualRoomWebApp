@@ -1,17 +1,17 @@
 import axios, { AxiosError } from 'axios';
 import { useContext, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth-context';
 import { ErrorContext } from '../../context/error-context';
 import { SignUpPropI } from '../../types/login/SignUpPropI';
-import './SignUp.css'
-
+import './SignUp.css';
 
 const SignUp: React.FC<SignUpPropI> = (props) => {
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);
   const emailInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
-
+  const navigate = useNavigate();
   const SignUpHandler: React.FormEventHandler = async (event) => {
     event.preventDefault();
     if (!emailInput.current) {
@@ -34,13 +34,12 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
 
     let res: any;
     try {
-        res = await axios.post('http://localhost:3000/user/sign-up', {
+      res = await axios.post('http://localhost:3000/user/sign-up', {
         username: emailInput.current.value,
         password: passwordInput.current.value,
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-
         errCtx.setErrorParamsContext({
           isError: true,
           errorMessage: error.response?.data.message,
@@ -48,12 +47,12 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
         });
       }
 
-      return
+      return;
     }
 
     let { access_token, expires_at } = res.data;
-    console.log('it is run');
     authCtx.login(access_token);
+    return navigate(props.nextPageUrl);
   };
 
   const toggleHandler = () => {

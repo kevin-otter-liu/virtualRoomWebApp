@@ -1,8 +1,10 @@
 import { Html, useTexture } from '@react-three/drei';
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Fragment, useState } from 'react';
-import { BackSide, Euler, Vector3 } from 'three';
+import { BackSide, CompressedPixelFormat, Euler, Vector3 } from 'three';
+import { VirtualRoom } from '../../types/contexts/responses/VirtualRoom';
+import { VirtualWall } from '../../types/contexts/responses/VirtualWall';
 import { VirtualRoomObjectPropI } from '../../types/virtual-room/VirtualRoomObjectPropI';
 import ImageForm from '../forms/ImageForm';
 import WallTextObject from './WallTextObject';
@@ -42,33 +44,52 @@ type ImageFormData = {
 
 const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   // put default pic as empty pics
+  const [description,setDescription] = useState<string>("")
+  const [thisVirtualRoom, setThisVirtualRoom] = useState<VirtualRoom>(props.virtualRoom)
+  const [virtualWalls,setVirtualWalls] = useState<Array<VirtualWall>>(props.virtualWalls)
+  const [wallMesh, setWallMesh] = useState<Array<JSX.Element | undefined>>([]);
   const [file, setFile] = useState<File>();
-  const [description, setDescription] = useState('');
-  const [textureUrls, setTextureUrls] = useState<Array<string>>([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ]);
+
+
 
   const [imageFormData, setImageFormData] = useState<ImageFormData>({
     showImageForm: false,
     faceIndex: null,
   });
+  // const getImages() = useCallback(() => {
+  //   // get all image urls from the database;
+
+  //   let imageUrlRes = axios.get();
+  //   // set all images
+  //   setImageUrls(imageUrlsResponse)
+  // },[imageUrls])
 
   useEffect(() => {
-    textureUrls.map((url) => {
-      url === '' ? 'assets/default-walls/default.png' : url;
-    });
-  }, [textureUrls]);
 
-  const textures = useTexture<string[]>(props.urls);
+      const createdTextures = virtualWalls.map((virtualWall,index)=>{
+        if(virtualWall.image_id == null){
+          return <meshBasicMaterial
+          key={`mesh-basic-material-${index}`}
+          attach={`material-${index}`}
+          color='green'
+          side={BackSide}
+          transparent
+          opacity={0.8}
+        />
+        }else{
+          console.log('load image from image url')
+        }
+      },[wallMesh])
+
+      setWallMesh(createdTextures)
+      
+  }, [wallMesh]);
+
+  // const textures = useTexture<string[]>(props.urls);
 
   const doorPositions = calculateHTMLDoorLocation(
-    props.position,
-    props.boxArgs
+    [thisVirtualRoom.x,thisVirtualRoom.y,thisVirtualRoom.z],
+    [thisVirtualRoom.length, thisVirtualRoom.height,thisVirtualRoom.depth]
   );
 
   // change event for changing the image input into the form
@@ -120,20 +141,17 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
       const formData = new FormData();
       formData.append('image', file);
       formData.append('data', JSON.stringify({description,caption:"random caption", face:imageFormData.faceIndex, virtual_room_id:"f5c301f5-d289-46ea-a7f3-e556f1eee453"}));
-      console.log(formData);
       const res = await axios.post(
         'http://localhost:3000/virtual-room/image',
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZjVjMzAxZjUtZDI4OS00NmVhLWE3ZjMtZTU1NmYxZWVlNDUzIiwiaWF0IjoxNjcxOTEyMjYyLCJleHAiOjE2NzE5MTU4NjJ9.KD793E7VJ1Bcxdlde8uyW4zz0zJ-D1QMS-yHqxt40Hs",
+            "Content-Type": 'multipart/form-data',
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
 
-      console.log(res)
     }
   };
 
@@ -142,15 +160,16 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
     event
   ) => {
     setDescription(event.target.value);
-    console.log(description);
   };
 
+  // Rendering WallText JSX
   const wallTexts = doorPositions.map((doorPosition, index) => {
     return (
       <WallTextObject
         doorPosition={doorPosition}
         doorRotation={doorRotation[index]}
         index={index}
+        key={`wall-text-${index}`}
         onClick={onImageButtonClick}
       />
     );
@@ -158,22 +177,11 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
 
   return (
     <Fragment>
-      <mesh position={new Vector3(...props.position)}>
-        <boxGeometry args={props.boxArgs} />
-        {textures.map((texture, index) => {
-          const meshMaterial = (
-            <meshBasicMaterial
-              key={index}
-              attach={`material-${index}`}
-              map={texture}
-              side={BackSide}
-            />
-          );
-          return meshMaterial;
-        })}
+      <mesh position={new Vector3(thisVirtualRoom.x,thisVirtualRoom.y,thisVirtualRoom.z)}>
+        <boxGeometry args={[thisVirtualRoom.length,thisVirtualRoom.height,thisVirtualRoom.depth]} />
+        {wallMesh}
       </mesh>
       {wallTexts}
-      {/* Image form */}
       {imageFormData.showImageForm && (
         <Html
           scale={0.2}
