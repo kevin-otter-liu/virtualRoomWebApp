@@ -13,11 +13,28 @@ export const checkAuth: RequestHandler = async (req, res, next) => {
     return next(new HttpError(423, 'missing authorization'));
   }
 
-  const access_token = req.headers.authorization.split(' ')[1];
-  console.log(req.headers);
+  const authorisationHeaders = req.headers.authorization.split(' ');
+  if (authorisationHeaders.length < 2) {
+    return next(new HttpError(423, 'missing authorisation'));
+  }
+
+  if (authorisationHeaders[0] !== 'Bearer') {
+    return next(new HttpError(423, 'wrong authorisation type'));
+  }
+
+  if (authorisationHeaders[1] === 'null') {
+    return next(new HttpError(423, 'no access_token attached'));
+  }
+
+  let access_token = authorisationHeaders[1];
+
+  if (!access_token) {
+    return next(new HttpError(423, 'missing authorization'));
+  }
 
   const payload = jwt.verify(access_token, serverSecret);
-
+  console.log('here');
+  console.log(payload);
   type payload = {
     user_id: string;
     exp: number;
@@ -37,8 +54,7 @@ export const checkAuth: RequestHandler = async (req, res, next) => {
   let jwt_expire_at = new Date(exp * 1000);
 
   if (jwt_expire_at.getTime() < currentTime.getTime()) {
-    let error = new HttpError(404, 'token_expired');
-    return next(error);
+    return next(new HttpError(404, 'token_expired'));
   }
 
   // get user and append to req body to pass thru middleware

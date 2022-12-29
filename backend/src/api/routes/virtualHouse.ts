@@ -31,16 +31,20 @@ virtualHouseRouter.post(
   '/create',
   async (req: Request, res: Response, next: NextFunction) => {
     const user = (req as CustomRequest).user;
-    const { description, wall_no, x, y, z, length, height, depth } = req.body;
+    const { description, wall_no, x, y, z, length, height, depth, name } =
+      req.body;
 
     const vhId = uuidv4();
     const virtualHouse = await VirtualHouse.create({
+      name: name,
       id: vhId,
       description: description,
+      user_id: user.id,
     });
 
     const vrId = uuidv4();
-    const vr = await virtualHouse.createVirtualRoom({
+    const vr = await VirtualRoom.create({
+      virtual_house_id: virtualHouse.id,
       id: vrId,
       completed_walls: 0,
       description: description,
@@ -56,7 +60,8 @@ virtualHouseRouter.post(
     const virtualWalls: Array<any> = [];
     for (let i = 0; i < wall_no; i++) {
       let vwId = uuidv4();
-      let vw = await vr.createVirtualWall({
+      let vw = await VirtualWall.create({
+        virtual_room_id: vr.id,
         id: vwId,
         face: i,
         is_door: false,
@@ -84,7 +89,6 @@ virtualHouseRouter.post(
   '/image',
   upload.single('image'),
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req);
     if (!req.file) {
       return next(new HttpError(404, 'file not attached'));
     }
@@ -93,9 +97,10 @@ virtualHouseRouter.post(
       return next(new HttpError(404, 'no file date attached'));
     }
 
-    const formData = JSON.parse(req.body.data);
-    const { virtual_wall_id } = formData;
     const user = (req as CustomRequest).user;
+
+    const formData = JSON.parse(req.body.data);
+    const { face, virtual_wall_id } = formData;
 
     // image manipulation of image submitted (resizing) to 1920 x 1080
     const buffer = await sharp(req.file!.buffer)
@@ -105,22 +110,27 @@ virtualHouseRouter.post(
     // create a new unique id to store image in s3
     const image_id = uuidv4();
 
-    s3Service.storeImageInBucket(image_id, buffer, req.file.mimetype);
-
-    // save image details to db
-    await ImageModel.create({
-      id: image_id,
-      image_able: 'virtual-room-image',
-      virtual_wall_id: virtual_wall_id,
-    });
-
-    // generate image url
+    await s3Service.storeImageInBucket(image_id, buffer, req.file.mimetype);
     const image_url = await s3Service.generateImageUrlFromBucket(
       image_id,
       3600
     );
+    let vw = await VirtualWall.findByPk(virtual_wall_id);
+    console.log(vw);
+    if (vw) {
+      await ImageModel.create({
+        id: image_id,
+        image_able: 'virtual-room-image',
+        user_id: user.id,
+        url: image_url,
+      });
+      let res = await vw.update({ image_id: image_id });
+      console.log(res);
+    }
 
-    res.send({ image_id, image_url });
+    // generate image url
+
+    res.send({ image_id, image_url, face });
     next();
   }
 );
@@ -142,5 +152,39 @@ virtualHouseRouter.get(
     });
   }
 );
+
+virtualHouseRouter.get('/', async (req, res, next) => {
+  let user = (req as CustomRequest).user;
+  let virtualHouses = await VirtualHouse.findAll({
+    where: {
+      user_id: user.id,
+    },
+    order: [
+      [
+        { model: VirtualRoom, as: 'virtual_rooms' },
+        { model: VirtualWall, as: 'virtual_walls' },
+        'face',
+        'ASC',
+      ],
+    ],
+    include: [
+      {
+        model: VirtualRoom,
+        as: 'virtual_rooms',
+        include: [
+          {
+            model: VirtualWall,
+            as: 'virtual_walls',
+            include: [
+              { model: ImageModel, as: 'image', attributes: ['url', 'id'] },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  res.status(200).send(virtualHouses);
+});
 
 export default virtualHouseRouter;

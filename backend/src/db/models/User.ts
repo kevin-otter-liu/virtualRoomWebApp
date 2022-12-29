@@ -8,6 +8,7 @@ import {
 
 import dbConn from '../config';
 import Image from './Image';
+import VirtualHouse from './VirtualHouse';
 
 // import Token from './Token';
 
@@ -36,6 +37,15 @@ User.init(
 );
 
 // define relationship, foreign key UserId will be added to Image Model
-User.hasMany(Image);
+User.hasMany(Image, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'images',
+});
+User.hasMany(VirtualHouse, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'virtual_houses',
+});
 
 export default User;

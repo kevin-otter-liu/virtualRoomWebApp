@@ -4,7 +4,7 @@ import Image from './Image';
 import VirtualRoom from './VirtualRoom';
 
 // sync model
-dbConn.sync({ force: true }).then(() => {
+dbConn.sync({ alter: true }).then(() => {
   console.log('model synced');
 });
 

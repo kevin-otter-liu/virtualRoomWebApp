@@ -92,7 +92,7 @@ VirtualRoom.init(
 VirtualRoom.hasMany(VirtualWall, {
   sourceKey: 'id',
   foreignKey: 'virtual_room_id',
-  as: 'virtualWalls',
+  as: 'virtual_walls',
 });
 
 export default VirtualRoom;

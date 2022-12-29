@@ -4,6 +4,7 @@ import { HttpError } from '../../libs/http-error';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { checkAuth } from '../middleware/check-auth';
 const userRouter = Router();
 
 userRouter.post('/sign-up', async (req, res, next) => {
@@ -91,6 +92,11 @@ userRouter.post('/sign-in', async (req, res, next) => {
     access_token: access_token,
     expires_at: expireDate,
   });
+  next();
+});
+
+userRouter.get('/check-auth', checkAuth, (req, res, next) => {
+  res.status(200).send();
   next();
 });
 

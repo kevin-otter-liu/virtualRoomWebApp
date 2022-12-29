@@ -5,9 +5,11 @@ import {
   InferCreationAttributes,
   CreationOptional,
   ForeignKey,
+  BelongsToCreateAssociationMixin,
 } from 'sequelize';
 
 import dbConn from '../config';
+import User from './User';
 import VirtualWall from './VirtualWall';
 
 // defining Models: attributes at creation and attributes output from DB
@@ -18,8 +20,8 @@ class Image extends Model<
   declare id: string;
   declare image_able: string; //"virtual-room-image" || "avatar-image"
   declare url: CreationOptional<string>;
+  declare user_id: ForeignKey<User['id']>;
   // declare userId: string;
-  declare virtual_wall_id: ForeignKey<VirtualWall['id']>;
 }
 
 Image.init(
@@ -28,7 +30,7 @@ Image.init(
       type: DataTypes.STRING,
     },
     url: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(512),
     },
     id: {
       type: DataTypes.UUID,
