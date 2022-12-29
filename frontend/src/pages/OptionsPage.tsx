@@ -17,7 +17,7 @@ const OptionsPage: React.FC = () => {
           logout
         </Button>
         </Link>
-        <Link to='/my-virtual-houses'>
+        <Link to='/virtual-house-create'>
           <Button type='button'>Create a Virtual House</Button>
         </Link>
         <Link to='/my-virtual-houses'>

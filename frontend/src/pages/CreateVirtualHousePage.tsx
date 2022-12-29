@@ -1,15 +1,24 @@
 import { Canvas } from '@react-three/fiber';
 import axios from 'axios';
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import CreateVirtualHouseForm from '../components/forms/CreateVirtualHouseForm';
 import Button from '../components/ui/Button';
 import VirtualRoomButton from '../components/ui/VirtualRoomButton';
 import VirtualHouseCanvas from '../components/virtual-room/VirtualHouseCanvas';
 import { AuthContext } from '../context/auth-context';
+import { VirtualHouseContext, VirtualHouseProvider } from '../context/virtual-house-context';
 import { VirtualHouse } from '../types/contexts/responses/VirtualHouse';
 const CreateVirtualHousePage: React.FC = () => {
+  useEffect(()=>{
+    console.log('virtualhouseform page rerendered')
+    const checkAuthRefresh = async ()=>{
+      console.log('checking authorization')
+      await authCtx.checkAuth()
+    }
+    checkAuthRefresh()
+  })
   const authCtx = useContext(AuthContext);
-  console.log(authCtx);
+  const VHctx = useContext(VirtualHouseContext)
 
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
 
@@ -18,16 +27,6 @@ const CreateVirtualHousePage: React.FC = () => {
   };
 
   // handlers for createVirtualHouseForm
-  type createFormState = {
-    description: string;
-    virtualHouseName: string;
-    x: number;
-    y: number;
-    z: number;
-    length: number;
-    height: number;
-    depth: number;
-  };
 
   // form states
   const [description, setDescription] = useState<string>('');
@@ -35,16 +34,17 @@ const CreateVirtualHousePage: React.FC = () => {
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
   const [z, setZ] = useState<number>(0);
-  const [length, setLength] = useState<number>(1);
-  const [height, setHeight] = useState<number>(1);
-  const [depth, setDepth] = useState<number>(1);
-  const [virtualHouse, setVirtualHouse] = useState<VirtualHouse | null>(null);
+  const [length, setLength] = useState<number>(5);
+  const [height, setHeight] = useState<number>(5);
+  const [depth, setDepth] = useState<number>(5);
+  // const [virtualHouse, setVirtualHouse] = useState<VirtualHouse | null>(null);
 
   const onFormSubmit: React.FormEventHandler = async (event) => {
     event.preventDefault();
     const virtualHouseResponse = await axios.post(
       'http://localhost:3000/virtual-house/create',
       {
+        name:virtualHouseName,
         description: description,
         wall_no: 6,
         x: x,
@@ -62,7 +62,7 @@ const CreateVirtualHousePage: React.FC = () => {
     );
 
     let virtualHouse: VirtualHouse = virtualHouseResponse.data.virtual_house;
-    setVirtualHouse(virtualHouse);
+    VHctx.setVirtualHouse(virtualHouse);
     setShowCreateForm(false);
   };
 
@@ -116,7 +116,7 @@ const CreateVirtualHousePage: React.FC = () => {
 
   // exit Virtual Room Handler
   const onExitVirtualRoomHandler = (event: React.MouseEvent) => {
-    setVirtualHouse(null);
+    VHctx.setVirtualHouse(null);
   };
 
   //
@@ -141,12 +141,12 @@ const CreateVirtualHousePage: React.FC = () => {
               onExitForm={onExitForm}
             />
           )}
-          {virtualHouse && (
+          {VHctx.virtualHouse && (
               
             <div className='container'>
               <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>Exit Virtual Room </VirtualRoomButton>
               <Canvas>
-                <VirtualHouseCanvas virtualHouse={virtualHouse} createMode />
+                  <VirtualHouseCanvas createMode />
               </Canvas>
             </div>
           )}

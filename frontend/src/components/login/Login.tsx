@@ -36,31 +36,11 @@ export const Login: React.FC<LoginPropI> = (props) => {
         return
     }  
 
-    let res: any;
-
-    try {
-      res = await axios.post('http://localhost:3000/user/sign-in',{
-        username: emailInput.current.value,
-        password: passwordInput.current.value
-      })
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-
-        console.log(error.response?.data.message);
-        errCtx.setErrorParamsContext({
-          isError: true,
-          errorMessage: error.response?.data.message,
-          errorTitle: 'Error',
-        });
-      }
-
-      return
-    }
-
-    let {access_token, expires_at} = res.data;
-
-    authCtx.login(access_token);
-    return navigate(props.nextPageUrl)
+    await authCtx.login(emailInput.current.value,passwordInput.current.value);
+    // if (authCtx.isLoggedIn){
+    //   console.log('run here')
+    //   return navigate(props.nextPageUrl)
+    // }
   };
 
   const toggleHandler: React.MouseEventHandler<HTMLButtonElement> = (event) => {

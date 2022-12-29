@@ -3,6 +3,5 @@ import { VirtualWall } from '../contexts/responses/VirtualWall';
 
 export interface VirtualRoomObjectPropI {
   virtualRoom: VirtualRoom;
-  virtualWalls: Array<VirtualWall>;
   createMode: boolean;
 }

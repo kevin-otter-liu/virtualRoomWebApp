@@ -65,21 +65,21 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
           id='length'
           onChange={props.onLengthChange}
           type='number'
-          placeholder='1'></input>
+          placeholder='5'></input>
       </div>
       <div>
         <label htmlFor='depth'>input depth position</label>
         <input
           onChange={props.onDepthChange}
           type='number'
-          placeholder='1'></input>
+          placeholder='5'></input>
       </div>
       <div>
         <label htmlFor='height'>input height position</label>
         <input
           onChange={props.onHeightChange}
           type='number'
-          placeholder='1'></input>
+          placeholder='5'></input>
       </div>
 
       <Button type='submit'>Create Virtual House</Button>

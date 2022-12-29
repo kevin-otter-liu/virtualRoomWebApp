@@ -1,7 +1,9 @@
 interface AuthContextI {
     isLoggedIn:boolean;
-    login: (access_token:string) => void;
+    login: (username:string,password:string)=>Promise<void>;
     logout: () => void;
+    onSignUp:(username:string,password:string)=>Promise<void>
+    checkAuth: ()=>Promise<void>
 }
 
 export default AuthContextI;

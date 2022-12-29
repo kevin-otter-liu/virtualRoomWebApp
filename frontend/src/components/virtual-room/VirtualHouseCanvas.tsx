@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import VirtualHouseCanvasPropI from '../../types/displays/VirtualHouseCanvasPropI';
 import './VirtualHouseCanvas.css';
 import VirtualHouseObject from './VirtualHouseObject';
@@ -9,26 +9,18 @@ import {
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import { VirtualHouse } from '../../types/contexts/responses/VirtualHouse';
+import { VirtualHouseContext } from '../../context/virtual-house-context';
 
 const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
-  const [virtualHouse, setVirtualHouse] = useState<VirtualHouse | null>(
-    props.virtualHouse
-  );
+  // const [virtualHouse, setVirtualHouse] = useState<VirtualHouse | null>(
+  //   props.virtualHouse
+  // );
+  const VHctx = useContext(VirtualHouseContext)
   useEffect(()=>{
-    console.log(virtualHouse)
+    console.log('virtualHouseCanvas rerendered')
+    console.log('current virtualhouse in virtualHouseCanvas:')
+    console.log(VHctx.virtualHouse)
   })
-
-  // useEffect(() => {
-  //   const createVirtualHouse = async () => {
-  //     if (props.virtualHouse) {
-  //       setVirtualHouse(virtualHouse);
-  //     } else {
-  //       console.log('here');
-  //     }
-  //   };
-
-  //   createVirtualHouse();
-  // }, []);
 
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();
@@ -68,10 +60,10 @@ const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
             polar={[-Math.PI / 2, Math.PI / 2]} // Vertical limits
             azimuth={[-Infinity, Infinity]} // Horizontal limits
           >
-            {virtualHouse && (
+            {VHctx.virtualHouse && (
               <VirtualHouseObject
                 createMode={props.createMode}
-                virtualHouse={virtualHouse}></VirtualHouseObject>
+                virtualHouse={VHctx.virtualHouse}></VirtualHouseObject>
             )}
           </PresentationControls>
         </PerspectiveCamera>

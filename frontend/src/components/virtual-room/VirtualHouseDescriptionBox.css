@@ -8,16 +8,22 @@
 }
 
 .virtual-room-description-box > img{
-    aspect-ratio: 1;
-    max-width:20%;
-    border-right:5px solid #C3B1E1;
+    width:250px;
+    height:250px;
+}
+
+.virtual-room-description-box>div:first-child{
+    align-items: center;
+    justify-content: center;
+    display:flex;
+    flex:1 ;
 }
 
 .virtual-room-description-box>div{
     padding:5px;
     border:5px solid white;
     align-items: left;
-    flex:1;
+    flex:5;
     background-color: #C3B1E1;
     text-align: left;
 }

@@ -8,9 +8,9 @@ const LoginControl: React.FC<LoginControlPropI> = (props) => {
   return (
     <Fragment>
       {focusOnLoginPage ? (
-        <Login setFocusOnLoginPage={setFocusOnLoginPage} nextPageUrl={props.nextPageUrl}/>
+        <Login setFocusOnLoginPage={setFocusOnLoginPage}/>
       ) : (
-        <SignUp setFocusOnLoginPage={setFocusOnLoginPage} nextPageUrl={props.nextPageUrl}/>
+        <SignUp setFocusOnLoginPage={setFocusOnLoginPage} />
       )}
     </Fragment>
   );

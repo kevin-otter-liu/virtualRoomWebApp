@@ -32,27 +32,7 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
       return;
     }
 
-    let res: any;
-    try {
-      res = await axios.post('http://localhost:3000/user/sign-up', {
-        username: emailInput.current.value,
-        password: passwordInput.current.value,
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        errCtx.setErrorParamsContext({
-          isError: true,
-          errorMessage: error.response?.data.message,
-          errorTitle: 'Error',
-        });
-      }
-
-      return;
-    }
-
-    let { access_token, expires_at } = res.data;
-    authCtx.login(access_token);
-    return navigate(props.nextPageUrl);
+    await authCtx.onSignUp(emailInput.current.value,passwordInput.current.value);
   };
 
   const toggleHandler = () => {

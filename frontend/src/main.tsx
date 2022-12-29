@@ -10,12 +10,13 @@ import { ErrorContextProvider } from './context/error-context';
 import { AuthContextProvider } from './context/auth-context';
 import OptionsPage from './pages/OptionsPage';
 import CreateVirtualHousePage from './pages/CreateVirtualHousePage';
+import { VirtualHouseProvider } from './context/virtual-house-context';
+import MyVirtualHousesPage from './pages/MyVirtualHousesPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Root />, errorElement: <ErrorPage /> },
-  { path: '/options', element: <OptionsPage /> },
-  { path: '/my-virtual-houses', element: <CreateVirtualHousePage /> },
-
+  { path: '/virtual-house-create', element: <CreateVirtualHousePage /> },
+  { path: '/my-virtual-houses', element: <MyVirtualHousesPage/> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ErrorContextProvider>
       <AuthContextProvider>
         <LoadingContextProvider>
-          <RouterProvider router={router}></RouterProvider>
+          <VirtualHouseProvider>
+            <RouterProvider router={router}></RouterProvider>
+          </VirtualHouseProvider>
         </LoadingContextProvider>
       </AuthContextProvider>
     </ErrorContextProvider>
