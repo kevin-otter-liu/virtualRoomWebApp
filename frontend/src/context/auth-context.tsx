@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useContext, useState } from 'react';
-import AuthContextI from '../types/contexts/AuthContextI';
-import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
+import AuthContextI from '../types/contexts/providers/AuthContextI';
+import AuthContextProviderI from '../types/contexts/providers/AuthContextProviderI';
 import { ErrorContext } from './error-context';
 
 export const AuthContext = React.createContext<AuthContextI>({
@@ -31,7 +31,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
     catch (error) {
       if (axios.isAxiosError(error)) {
 
-        console.log(error.response?.data.message);
         errCtx.setErrorParamsContext({
           isError: true,
           errorMessage: error.response?.data.message,
@@ -76,7 +75,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const checkAuth =async ()=>{
     let access_token = localStorage.getItem("access_token")
     console.log('check authmethod called')
-    console.log(access_token)
     if(!access_token){
       console.log('no access token found')
       setIsLoggedIn(false)

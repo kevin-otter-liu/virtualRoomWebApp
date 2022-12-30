@@ -36,9 +36,7 @@ const MyVirtualHousesPage: React.FC = () => {
     );
     console.log('loaded virtual hosues');
     setVirtualHouses(res.data);
-    console.log(res.data);
 
-    console.log(virtualHouses);
   }, [virtualHouses]);
 
   const renderDescription = () => {
@@ -49,7 +47,6 @@ const MyVirtualHousesPage: React.FC = () => {
     if (virtualHouses.length > 0) {
       const descriptionBoxes = virtualHouses.map((virtualHouse) => {
         console.log('virtual rooms');
-        console.log(virtualHouse.virtual_rooms);
         return (
           <VirtualHouseDescriptionBox
             virtualHouse={virtualHouse}

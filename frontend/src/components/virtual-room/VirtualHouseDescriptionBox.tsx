@@ -6,6 +6,7 @@ import VirtualHouseDescriptionBoxPropI from '../../types/virtual-room/VirtualHou
 import VirtualHouseCanvas from './VirtualHouseCanvas';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
 import { Canvas } from '@react-three/fiber';
+import axios from 'axios';
 
 const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   props
@@ -23,6 +24,21 @@ const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
     VHctx.setVirtualHouse(null);
   };
 
+  const onDeleteVirtualRoomHandler = async ()=>{
+    try {
+      let res = await axios.delete(`http://localhost:3000/virtual-house/${props.virtualHouse.id}`,{
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+      if(res.status===200){
+        VHctx.setVirtualHouse(null);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <React.Fragment>
       <div className='virtual-room-description-box'>
@@ -32,6 +48,9 @@ const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
           Enter Room
         </Button>
         <div>{props.virtualHouse.description || 'no description yet'}</div>
+        <Button type='button' onClick={onDeleteVirtualRoomHandler}>
+          Delete Room
+        </Button>
       </div>
       
       

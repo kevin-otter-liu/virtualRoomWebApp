@@ -16,8 +16,6 @@ const VirtualHouseObject: React.FC<VirtualHouseObjectPropI> = (props) => {
     <Fragment>
       {/* Load all virtual Room Objects */}
       {props.virtualHouse.virtual_rooms.map((virtualRoom,index)=>{
-        console.log('in the map')
-        console.log(virtualRoom)
         return <VirtualRoomObject key={`virtual-room-object-${index}`} createMode virtualRoom={virtualRoom}></VirtualRoomObject>
       })}
     </Fragment>
