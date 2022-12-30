@@ -41,11 +41,13 @@ User.hasMany(Image, {
   sourceKey: 'id',
   foreignKey: 'user_id',
   as: 'images',
+  onDelete: 'CASCADE',
 });
 User.hasMany(VirtualHouse, {
   sourceKey: 'id',
   foreignKey: 'user_id',
   as: 'virtual_houses',
+  onDelete: 'CASCADE',
 });
 
 export default User;

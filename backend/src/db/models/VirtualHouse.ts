@@ -63,6 +63,7 @@ VirtualHouse.hasMany(VirtualRoom, {
   sourceKey: 'id',
   foreignKey: 'virtual_house_id',
   as: 'virtual_rooms',
+  onDelete: 'CASCADE',
 });
 
 export default VirtualHouse;

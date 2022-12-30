@@ -33,8 +33,6 @@ export const checkAuth: RequestHandler = async (req, res, next) => {
   }
 
   const payload = jwt.verify(access_token, serverSecret);
-  console.log('here');
-  console.log(payload);
   type payload = {
     user_id: string;
     exp: number;
@@ -59,6 +57,5 @@ export const checkAuth: RequestHandler = async (req, res, next) => {
 
   // get user and append to req body to pass thru middleware
   (req as CustomRequest).user = user;
-  console.log(user);
   next();
 };

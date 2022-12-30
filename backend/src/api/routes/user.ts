@@ -8,14 +8,12 @@ import { checkAuth } from '../middleware/check-auth';
 const userRouter = Router();
 
 userRouter.post('/sign-up', async (req, res, next) => {
-  console.log(req.body);
   const { username, password } = req.body;
 
   // check user not in database
   const foundUser = await UserModel.findOne({
     where: { username: username },
   });
-  console.log(foundUser);
 
   if (foundUser) {
     return next(new HttpError(423, 'username already exists'));
@@ -35,7 +33,6 @@ userRouter.post('/sign-up', async (req, res, next) => {
 
   let currentDate = new Date();
   let expireDate = new Date(currentDate.getTime() + 60 * 60 * 1000);
-  console.log(`expire date ${expireDate}`);
   const access_token = jwt.sign(
     {
       user_id: user.dataValues.id,
@@ -54,7 +51,6 @@ userRouter.post('/sign-up', async (req, res, next) => {
 });
 
 userRouter.post('/sign-in', async (req, res, next) => {
-  console.log(req.body);
   const { username, password } = req.body;
 
   // check user not in database
@@ -76,7 +72,6 @@ userRouter.post('/sign-in', async (req, res, next) => {
   // creat JWT token for user
   let currentDate = new Date();
   let expireDate = new Date(currentDate.getTime() + 60 * 60 * 1000);
-  console.log(`expire date ${expireDate}`);
   const serverSecret = process.env.SERVER_SECRET!;
   const access_token = jwt.sign(
     {

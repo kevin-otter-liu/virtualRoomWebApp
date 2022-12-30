@@ -113,10 +113,9 @@ virtualHouseRouter.post(
     await s3Service.storeImageInBucket(image_id, buffer, req.file.mimetype);
     const image_url = await s3Service.generateImageUrlFromBucket(
       image_id,
-      3600
+      60 * 60 * 24
     );
     let vw = await VirtualWall.findByPk(virtual_wall_id);
-    console.log(vw);
     if (vw) {
       await ImageModel.create({
         id: image_id,
@@ -125,12 +124,11 @@ virtualHouseRouter.post(
         url: image_url,
       });
       let res = await vw.update({ image_id: image_id });
-      console.log(res);
     }
 
     // generate image url
 
-    res.send({ image_id, image_url, face });
+    res.status(200).send({ image_id, image_url, face });
     next();
   }
 );
@@ -185,6 +183,30 @@ virtualHouseRouter.get('/', async (req, res, next) => {
   });
 
   res.status(200).send(virtualHouses);
+});
+
+virtualHouseRouter.delete('/:virtual_house_id', async (req, res, next) => {
+  let { virtual_house_id } = req.params;
+
+  const regexExp =
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+  let isUUID = regexExp.test(virtual_house_id);
+
+  if (!isUUID) {
+    return next(new HttpError(404, 'param not uuid'));
+  }
+
+  let vh = await VirtualHouse.findByPk(virtual_house_id);
+
+  let vhid = vh?.id;
+
+  if (!vh) {
+    return next(new HttpError(404, 'virtual house not found'));
+  }
+
+  await vh.destroy();
+
+  res.status(200).send();
 });
 
 export default virtualHouseRouter;
