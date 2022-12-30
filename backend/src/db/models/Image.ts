@@ -4,10 +4,13 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  ForeignKey,
+  BelongsToCreateAssociationMixin,
 } from 'sequelize';
 
 import dbConn from '../config';
-import { v4 as uuidv4 } from 'uuid';
+import User from './User';
+import VirtualWall from './VirtualWall';
 
 // defining Models: attributes at creation and attributes output from DB
 class Image extends Model<
@@ -17,36 +20,25 @@ class Image extends Model<
   declare id: string;
   declare image_able: string; //"virtual-room-image" || "avatar-image"
   declare url: CreationOptional<string>;
-  declare caption: string | null;
-  declare description: string | null;
-  declare direction: 0 | 1 | 2 | 3 | 4 | 5 | null;
+  declare user_id: ForeignKey<User['id']>;
+  // declare userId: string;
 }
 
 Image.init(
   {
-    direction: {
-      type: DataTypes.NUMBER,
-    },
     image_able: {
       type: DataTypes.STRING,
     },
     url: {
-      type: DataTypes.STRING,
-    },
-    caption: {
-      type: DataTypes.TEXT,
-    },
-    description: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(512),
     },
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
     },
   },
-  { sequelize: dbConn }
+  { sequelize: dbConn, modelName: 'image' }
 );
 
 export default Image;

@@ -8,17 +8,15 @@ import {
 
 import dbConn from '../config';
 import Image from './Image';
-import VirtualRoom from './VirtualRoom';
-import Token from './Token';
-import { v4 as uuidv4 } from 'uuid';
+import VirtualHouse from './VirtualHouse';
+
+// import Token from './Token';
 
 // defining Models: attributes at creation and attributes output from DB
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
+  declare id: string;
   declare username: string;
-  declare email?: string;
   declare password: string;
-  declare token_id?: string;
 }
 
 User.init(
@@ -26,28 +24,30 @@ User.init(
     username: {
       type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.STRING,
-    },
     password: {
-      type: DataTypes.STRING,
-    },
-    token_id: {
       type: DataTypes.STRING,
     },
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4(),
     },
   },
-  { sequelize: dbConn }
+  { sequelize: dbConn, modelName: 'user' }
 );
 
 // define relationship, foreign key UserId will be added to Image Model
-User.hasMany(Image);
-User.hasMany(VirtualRoom);
-User.hasMany(Token);
+User.hasMany(Image, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'images',
+  onDelete: 'CASCADE',
+});
+User.hasMany(VirtualHouse, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'virtual_houses',
+  onDelete: 'CASCADE',
+});
 
 export default User;

@@ -1,34 +1,104 @@
+import axios from 'axios';
 import React, { useContext, useState } from 'react';
-import AuthContextI from '../types/contexts/AuthContextI';
-import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
+import AuthContextI from '../types/contexts/providers/AuthContextI';
+import AuthContextProviderI from '../types/contexts/providers/AuthContextProviderI';
+import { ErrorContext } from './error-context';
 
-const AuthContext = React.createContext<AuthContextI>({
+export const AuthContext = React.createContext<AuthContextI>({
   isLoggedIn: false,
-  loginHandler: () => {},
-  logoutHandler: () => {},
+  login: async () => {},
+  logout: () => {},
+  onSignUp:async()=>{},
+  checkAuth:async()=>{}
 });
 
-const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
+export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const errCtx = useContext(ErrorContext)
 
-  const loginHandler = () => {
-    setIsLoggedIn(true);
+  const onLogin= async (username:string,password:string) => {
+    try {
+      let res = await axios.post('http://localhost:3000/user/sign-in',{
+        username,
+        password
+      })
+
+      let {access_token, expires_at} = res.data;
+      window.localStorage.setItem("access_token",access_token);
+      setIsLoggedIn(true);
+      console.log(`login function called.`)
+    } 
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+
+        errCtx.setErrorParamsContext({
+          isError: true,
+          errorMessage: error.response?.data.message,
+          errorTitle: 'Error',
+        });
+      }
+      return
+    }
   };
 
-  const logoutHandler = () => {
+  const onSignUp= async (username:string,password:string)=>{
+    try {
+      let res = await axios.post('http://localhost:3000/user/sign-up', {
+        username,
+        password,
+      });
+
+      let { access_token, expires_at } = res.data
+      window.localStorage.setItem("access_token",access_token);
+      setIsLoggedIn(true);
+      console.log(`sign up function called.`)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        errCtx.setErrorParamsContext({
+          isError: true,
+          errorMessage: error.response?.data.message,
+          errorTitle: 'Error',
+        });
+      }
+
+      return;
+    }
+
+  }
+
+  const onLogout = () => {
+    localStorage.removeItem("access_token")
     setIsLoggedIn(false);
+    console.log(`user is logged out`)
   };
+
+  const checkAuth =async ()=>{
+    let access_token = localStorage.getItem("access_token")
+    console.log('check authmethod called')
+    if(!access_token){
+      console.log('no access token found')
+      setIsLoggedIn(false)
+      return
+    }
+    let res = await axios.get('http://localhost:3000/user/check-auth',{
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+
+    res.status=== 200?setIsLoggedIn(true):setIsLoggedIn(false)
+  }
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn: isLoggedIn,
-        loginHandler: loginHandler,
-        logoutHandler: logoutHandler,
+        login:onLogin,
+        logout:onLogout,
+        onSignUp:onSignUp,
+        checkAuth:checkAuth
       }}>
       {props.children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthContextProvider;

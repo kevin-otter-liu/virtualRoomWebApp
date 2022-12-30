@@ -1,3 +1,8 @@
 export default interface ImageFormPropI {
-  onSubmit: React.MouseEventHandler;
+  onFormSubmit: React.FormEventHandler<HTMLFormElement>;
+  onExitForm: () => void;
+  onImageInputChange: React.ChangeEventHandler<HTMLInputElement>;
+  onTextInputChange: React.ChangeEventHandler<HTMLInputElement>;
+  description: string;
+  text: string;
 }

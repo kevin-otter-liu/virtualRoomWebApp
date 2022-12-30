@@ -1,20 +1,27 @@
 .form {
     display:flex;
-    flex-direction: row;
+    position:absolute;
+    top:30%;
+    left:30%;
     background-color: #C3B1E1;
     border: 5px solid white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
     padding:0;
+    z-index:20;
 }
 
 input[type="file"] {
     display: none;
+    z-index:20;
 }
 
 .custom-file-upload {
     border: 5px solid white;
     display: inline-block;
     cursor: pointer;
+}
+.input-text{
+    color:white
 }
 
 .custom-file-upload img{

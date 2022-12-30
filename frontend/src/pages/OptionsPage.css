@@ -1,0 +1,10 @@
+.options-container {
+  display:flex;
+  flex-direction: column;
+}
+
+.options-container button{
+  display:flex;
+  width:30vw;
+  height:2vh;
+}
