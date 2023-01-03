@@ -42,7 +42,7 @@ virtualHouseRouter.post(
       user_id: user.id,
     });
 
-    const vrId = uuidv4();
+    let vrId = uuidv4();
     const vr = await VirtualRoom.create({
       virtual_house_id: virtualHouse.id,
       id: vrId,
@@ -85,6 +85,96 @@ virtualHouseRouter.post(
   }
 );
 
+// create a empty virtual room
+virtualHouseRouter.post(
+  '/add-door',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as CustomRequest).user;
+
+    const {
+      virtual_room_id,
+      virtual_wall_id,
+      wall_no,
+      x,
+      y,
+      z,
+      length,
+      height,
+      depth,
+    } = req.body;
+
+    console.log(req.body);
+
+    let vr = await VirtualRoom.findByPk(virtual_room_id);
+
+    if (!vr) {
+      return next(new HttpError(404, 'no virtual room found'));
+    }
+
+    const vrId = uuidv4();
+    let nextVrRoom = await VirtualRoom.create({
+      id: vrId,
+      depth,
+      height,
+      length,
+      x,
+      y,
+      z,
+      wall_no: 6,
+      virtual_house_id: vr.virtual_house_id,
+      completed_walls: 0,
+    });
+
+    const virtualWalls: Array<any> = [];
+    for (let i = 0; i < wall_no; i++) {
+      console.log(nextVrRoom.id);
+      let vwId = uuidv4();
+      let vw = await VirtualWall.create({
+        virtual_room_id: nextVrRoom.id,
+        id: vwId,
+        face: i,
+        is_door: false,
+      });
+
+      virtualWalls.push(vw.dataValues);
+    }
+
+    await VirtualWall.update(
+      { is_door: true, next_room: nextVrRoom.id },
+      { where: { id: virtual_wall_id } }
+    );
+
+    let updatedVh = await VirtualHouse.findByPk(vr.virtual_house_id, {
+      order: [
+        [
+          { model: VirtualRoom, as: 'virtual_rooms' },
+          { model: VirtualWall, as: 'virtual_walls' },
+          'face',
+          'ASC',
+        ],
+      ],
+      include: [
+        {
+          model: VirtualRoom,
+          as: 'virtual_rooms',
+          include: [
+            {
+              model: VirtualWall,
+              as: 'virtual_walls',
+              include: [
+                { model: ImageModel, as: 'image', attributes: ['url', 'id'] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json(updatedVh!.dataValues);
+    next();
+  }
+);
+
 virtualHouseRouter.post(
   '/image',
   upload.single('image'),
@@ -100,7 +190,7 @@ virtualHouseRouter.post(
     const user = (req as CustomRequest).user;
 
     const formData = JSON.parse(req.body.data);
-    const { face, virtual_wall_id } = formData;
+    const { face, virtual_wall_id, is_door } = formData;
 
     // image manipulation of image submitted (resizing) to 1920 x 1080
     const buffer = await sharp(req.file!.buffer)
@@ -123,12 +213,11 @@ virtualHouseRouter.post(
         user_id: user.id,
         url: image_url,
       });
-      let res = await vw.update({ image_id: image_id });
+      let res = await vw.update({ image_id: image_id, is_door: is_door });
     }
 
     // generate image url
-
-    res.status(200).send({ image_id, image_url, face });
+    res.status(200).send({ image_id, image_url, face, is_door });
     next();
   }
 );

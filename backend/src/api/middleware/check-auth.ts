@@ -32,13 +32,22 @@ export const checkAuth: RequestHandler = async (req, res, next) => {
     return next(new HttpError(423, 'missing authorization'));
   }
 
-  const payload = jwt.verify(access_token, serverSecret);
-  type payload = {
+  type PayloadType = {
     user_id: string;
     exp: number;
   };
 
-  const { user_id, exp } = payload as payload;
+  let payload;
+
+  try {
+    payload = jwt.verify(access_token, serverSecret);
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return next(new HttpError(404, error.message));
+    }
+  }
+
+  const { user_id, exp } = payload as unknown as PayloadType;
 
   // check if token expired
   let user = await UserModel.findByPk(user_id);
