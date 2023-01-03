@@ -8,7 +8,7 @@ import {
 } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
-import { VirtualHouse } from '../../types/contexts/responses/VirtualHouse';
+import { VirtualHouse } from '../../types/responses/VirtualHouse';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
 
 const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {

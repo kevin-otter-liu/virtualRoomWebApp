@@ -7,7 +7,7 @@ import VirtualRoomButton from '../components/ui/VirtualRoomButton';
 import VirtualHouseCanvas from '../components/virtual-room/VirtualHouseCanvas';
 import { AuthContext } from '../context/auth-context';
 import { VirtualHouseContext, VirtualHouseProvider } from '../context/virtual-house-context';
-import { VirtualHouse } from '../types/contexts/responses/VirtualHouse';
+import { VirtualHouse } from '../types/responses/VirtualHouse';
 const CreateVirtualHousePage: React.FC = () => {
   useEffect(()=>{
     console.log('virtualhouseform page rerendered')

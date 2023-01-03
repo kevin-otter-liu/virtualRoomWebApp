@@ -7,10 +7,6 @@ import './CreateVirtualHouseForm.css';
 const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
   props
 ) => {
-  // stops any key events from propagating while in the form
-  //   const keyboardEventHandler = (e:KeyboardEvent)=>{
-  //     e.stopPropagation()
-  //   }
 
   return (
     <form className='create-virtual-house-form' onSubmit={props.onFormSubmit}>

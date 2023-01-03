@@ -1,4 +1,4 @@
-import { VirtualHouse } from "./responses/VirtualHouse";
+import { VirtualHouse } from "../responses/VirtualHouse";
 
 interface VirtualHouseContextI {
     virtualHouse:VirtualHouse|null;

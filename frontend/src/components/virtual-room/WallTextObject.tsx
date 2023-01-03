@@ -11,11 +11,11 @@ const WallTextObject: React.FC<WallTextObjectPropI> = (props) => {
       position={new Vector3(...props.doorPosition)}
       transform>
       <div className='wall-texts'>Wall {props.index}</div>
-      <button value={props.index} type='button'>
-        Door {props.index}
+      <button value={props.index} type='button' onClick={props.onImageButtonClick}>
+        Add image
       </button>
-      <button value={props.index} type='button' onClick={props.onClick}>
-        Add Image
+      <button value={props.index} type='button' onClick={props.onDoorButtonClick}>
+        Add Door
       </button>
     </Html>
   );

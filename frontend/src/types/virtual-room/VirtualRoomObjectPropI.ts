@@ -1,5 +1,4 @@
-import { VirtualRoom } from '../contexts/responses/VirtualRoom';
-import { VirtualWall } from '../contexts/responses/VirtualWall';
+import { VirtualRoom } from '../responses/VirtualRoom';
 
 export interface VirtualRoomObjectPropI {
   virtualRoom: VirtualRoom;

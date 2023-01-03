@@ -9,7 +9,7 @@ import {
 } from 'react';
 import VirtualHouseDescriptionBox from '../components/virtual-room/VirtualHouseDescriptionBox';
 import { AuthContext } from '../context/auth-context';
-import { VirtualHouse } from '../types/contexts/responses/VirtualHouse';
+import { VirtualHouse } from '../types/responses/VirtualHouse';
 import './MyVirtualHousesPage.css'
 
 const MyVirtualHousesPage: React.FC = () => {

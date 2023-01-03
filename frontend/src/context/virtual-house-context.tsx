@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import VirtualHouseContextProviderPropI from '../types/contexts/providers/VirtualHouseContextPropI';
+import VirtualHouseContextProviderPropI from '../types/contexts/VirtualHouseContextPropI';
 import VirtualHouseContextI from '../types/contexts/VirtualHouseContextI';
-import {VirtualHouse} from '../types/contexts/responses/VirtualHouse'
+import {VirtualHouse} from '../types/responses/VirtualHouse'
 
 export const VirtualHouseContext = React.createContext<VirtualHouseContextI>({
   virtualHouse: null,

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useContext, useState } from 'react';
-import AuthContextI from '../types/contexts/providers/AuthContextI';
-import AuthContextProviderI from '../types/contexts/providers/AuthContextProviderI';
+import AuthContextI from '../types/contexts/AuthContextI';
+import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
 import { ErrorContext } from './error-context';
 
 export const AuthContext = React.createContext<AuthContextI>({
