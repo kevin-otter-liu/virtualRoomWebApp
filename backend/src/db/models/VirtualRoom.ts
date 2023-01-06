@@ -93,7 +93,6 @@ VirtualRoom.hasMany(VirtualWall, {
   sourceKey: 'id',
   foreignKey: 'virtual_room_id',
   as: 'virtual_walls',
-  onDelete: 'CASCADE',
 });
 
 export default VirtualRoom;

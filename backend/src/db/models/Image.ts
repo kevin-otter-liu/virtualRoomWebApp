@@ -21,6 +21,7 @@ class Image extends Model<
   declare image_able: string; //"virtual-room-image" || "avatar-image"
   declare url: CreationOptional<string>;
   declare user_id: ForeignKey<User['id']>;
+  declare expire_at: Date;
   // declare userId: string;
 }
 
@@ -31,6 +32,9 @@ Image.init(
     },
     url: {
       type: DataTypes.STRING(512),
+    },
+    expire_at: {
+      type: DataTypes.DATE,
     },
     id: {
       type: DataTypes.UUID,
