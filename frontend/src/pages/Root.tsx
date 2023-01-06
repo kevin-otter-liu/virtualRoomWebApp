@@ -10,6 +10,7 @@ import OptionsPage from './OptionsPage';
 function Root() {
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);
+  
   useEffect(()=>{
     const checkAuthRefresh = async ()=>{
       console.log('checking authorization')

@@ -1,0 +1,8 @@
+.add-door-form {
+  display: flex;
+  flex-direction: column;
+  background-color:#C3B1E1;
+  border: 5px solid white;
+  z-index:20;
+  
+}

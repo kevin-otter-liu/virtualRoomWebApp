@@ -1,38 +1,45 @@
-import React, { useState, KeyboardEvent, Fragment } from 'react';
+import React, { useState, KeyboardEvent, Fragment, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import './ImageForm.css';
 import Button from '../ui/Button';
 import ImageFormPropI from '../../types/forms/ImageFormPropI';
+import { VirtualHouse } from '../../types/responses/VirtualHouse';
 
 type ImageFormData = {
-  face: null | number;
-  virtual_wall_id: string | null;
+  face: number;
+  virtual_wall_id: string;
+  virtual_room_id: string;
   is_door: boolean;
 };
 
 const ImageForm: React.FC<ImageFormPropI> = (props) => {
   const [file, setFile] = useState<File>();
+  const [imgPreview,setImgPreview] = useState<undefined|string>(undefined)
 
   const [imageFormData, setImageFormData] = useState<ImageFormData>({
     face: props.face,
     virtual_wall_id: props.virtual_wall_id,
+    virtual_room_id: props.virtual_room_id,
     is_door: false,
   });
+
+  useEffect(() => {
+    if(!file){
+      setImgPreview(undefined)
+      return
+    }
+
+    const objectUrl = URL.createObjectURL(file)
+    setImgPreview(objectUrl)
+
+    return () => {
+      URL.revokeObjectURL(objectUrl)
+    }
+  },[file])
 
   // stops any key events from propagating while in the form
   const keyboardEventHandler = (e: KeyboardEvent) => {
     e.stopPropagation();
-  };
-
-  const onIsDoorButtonClick = () => {
-    // toggle door
-    setImageFormData((prevState) => {
-      console.log(`is door button is ${!prevState.is_door}`);
-      return {
-        ...prevState,
-        is_door: !prevState.is_door,
-      };
-    });
   };
 
   // change event for changing the image input into the form
@@ -69,11 +76,12 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
         JSON.stringify({
           face: imageFormData.face,
           virtual_wall_id: imageFormData.virtual_wall_id,
+          virtual_room_id: imageFormData.virtual_room_id,
           is_door: imageFormData.is_door,
         })
       );
 
-      const res: AxiosResponse = await axios.post(
+      const res: AxiosResponse<VirtualHouse> = await axios.post(
         'http://localhost:3000/virtual-house/image',
         formData,
         {
@@ -84,14 +92,8 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
         }
       );
 
-      let { image_url, image_id, face, is_door } = res.data;
-      props.handlePostSubmitResponse(
-        props.virtual_room_id,
-        face,
-        is_door,
-        image_url,
-        image_id
-      );
+      props.handlePostSubmitResponse(res.data);
+      props.onExitHandler();
     }
   };
 
@@ -110,10 +112,16 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
             type='file'
             accept='image/*'></input>
         </label>
-        <Button type='button' onClick={onIsDoorButtonClick}>
-          is door
+        {file && (
+          <div className='image-preview'>
+            <img  src={imgPreview}/>
+            <p>{file.name}</p>
+            <p>({Math.round(file.size/1000)} KB)</p>
+          </div>
+        )}
+        <Button type='submit' disabled={!file}>
+          Upload image
         </Button>
-        <Button type='submit'>Upload image</Button>
         <Button type='button' onClick={onExitForm}>
           Exit form
         </Button>

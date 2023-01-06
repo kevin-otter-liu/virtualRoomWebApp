@@ -11,6 +11,8 @@ import axios from 'axios';
 const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   props
 ) => {
+  const [showBox, setShowBox] = useState<boolean>(true);
+
   const [showVirtualHouse, setShowVirtualHouse] = useState<boolean>(false);
   const VHctx = useContext(VirtualHouseContext);
 
@@ -24,49 +26,53 @@ const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
     VHctx.setVirtualHouse(null);
   };
 
-  const onDeleteVirtualRoomHandler = async ()=>{
+  const onDeleteVirtualRoomHandler = async () => {
     try {
-      let res = await axios.delete(`http://localhost:3000/virtual-house/${props.virtualHouse.id}`,{
-        headers:{
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      let res = await axios.delete(
+        `http://localhost:3000/virtual-house/${props.virtualHouse.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
         }
-      })
-      if(res.status===200){
+      );
+      if (res.status === 200) {
         VHctx.setVirtualHouse(null);
+        setShowBox(false);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
-    <React.Fragment>
-      <div className='virtual-room-description-box'>
-        <div>{props.virtualHouse.name || props.virtualHouse.id}</div>
-        <img src={props.imageSrc}></img>
-        <Button type='button' onClick={onEnterVirtualRoomHandler}>
-          Enter Room
-        </Button>
-        <div>{props.virtualHouse.description || 'no description yet'}</div>
-        <Button type='button' onClick={onDeleteVirtualRoomHandler}>
-          Delete Room
-        </Button>
-      </div>
-      
-      
-      {showVirtualHouse && (
+    <Fragment>
+      {showBox && (
         <Fragment>
-          <div className='container'>
-            <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>
-              Exit Virtual Room
-            </VirtualRoomButton>
-            <Canvas>
-              <VirtualHouseCanvas createMode={false}></VirtualHouseCanvas>
-            </Canvas>
+          <div className='virtual-room-description-box'>
+            <div>{props.virtualHouse.name || props.virtualHouse.id}</div>
+            <img src={props.imageSrc}></img>
+            <Button type='button' onClick={onEnterVirtualRoomHandler}>
+              Enter Room
+            </Button>
+            <div>{props.virtualHouse.description || 'no description yet'}</div>
+            <Button type='button' onClick={onDeleteVirtualRoomHandler}>
+              Delete Room
+            </Button>
           </div>
         </Fragment>
       )}
-    </React.Fragment>
+      {showVirtualHouse && (
+        <div className='container'>
+          <VirtualRoomButton type='button' onClick={onExitVirtualRoomHandler}>
+            Exit Virtual Room
+          </VirtualRoomButton>
+          <Canvas>
+            <VirtualHouseCanvas createMode={false}></VirtualHouseCanvas>
+          </Canvas>
+        </div>
+      )}
+    </Fragment>
   );
 };
 

@@ -13,6 +13,7 @@ export const AuthContext = React.createContext<AuthContextI>({
 });
 
 export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const errCtx = useContext(ErrorContext)
 
@@ -30,7 +31,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
     } 
     catch (error) {
       if (axios.isAxiosError(error)) {
-
         errCtx.setErrorParamsContext({
           isError: true,
           errorMessage: error.response?.data.message,

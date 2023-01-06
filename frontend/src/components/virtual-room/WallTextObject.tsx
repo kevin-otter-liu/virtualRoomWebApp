@@ -6,7 +6,7 @@ import './WallTextObject.css';
 const WallTextObject: React.FC<WallTextObjectPropI> = (props) => {
   return (
     <Html
-      scale={1}
+      scale={props.scale}
       rotation={new Euler(...props.doorRotation)}
       position={new Vector3(...props.doorPosition)}
       transform>

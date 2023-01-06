@@ -4,4 +4,5 @@ export interface WallTextObjectPropI {
   index: number;
   onImageButtonClick: (e: React.MouseEvent) => void;
   onDoorButtonClick: (e: React.MouseEvent) => void;
+  scale: number;
 }

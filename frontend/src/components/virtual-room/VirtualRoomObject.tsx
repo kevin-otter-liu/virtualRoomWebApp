@@ -1,5 +1,12 @@
-import { Html } from '@react-three/drei';
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import { Html, useTexture } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
+import React, {
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Fragment, useState } from 'react';
 import * as THREE from 'three';
 import { BackSide, Euler, Texture, Vector3 } from 'three';
@@ -45,84 +52,44 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   const [showImageForm, setShowImageForm] = useState<boolean>(false);
   const [showDoorForm, setShowDoorForm] = useState<boolean>(false);
   const [focusedWallFace, setFocusedWallFace] = useState<number | null>(null);
+  const [textures, setTextures] = useState<Array<THREE.Texture | null>>([]);
 
-  const handleImageFormSubmitResponse = (
-    virtual_room_id: string,
-    face: number,
-    is_door: boolean,
-    image_url: string,
-    image_id: string
-  ) => {
-    VHCtx.setVirtualHouse((prevVirtualHouse: VirtualHouse|null) => {
-      if (prevVirtualHouse) {
-        let newVirtualRooms = prevVirtualHouse.virtual_rooms.map(
-          (virtual_room) => {
-            if ((virtual_room.id = virtual_room_id)) {
-              let newVirtualWalls = virtual_room.virtual_walls.map(
-                (virtual_wall) => {
-                  if (virtual_wall.face == face) {
-                    let newVirtualWall: VirtualWall = {
-                      ...virtual_wall,
-                      is_door: is_door,
-                      image: {
-                        url: image_url,
-                        id: image_id,
-                      },
-                    };
-                    return newVirtualWall;
-                  } else {
-                    return virtual_wall;
-                  }
-                }
-              );
-
-              let newVirtualRoom = {
-                ...virtual_room,
-                virtual_walls: newVirtualWalls,
-              };
-              return newVirtualRoom;
-            } else {
-              return virtual_room;
-            }
-          }
-        );
-
-        let newVirtualHouse: VirtualHouse = {
-          ...prevVirtualHouse,
-          virtual_rooms: newVirtualRooms,
-        };
-
-        console.log('form submitted');
-        return newVirtualHouse;
-      } else {
-        return prevVirtualHouse;
-      }
-    });
+  const handleImageFormSubmitResponse = (newVirtualHouse: VirtualHouse) => {
+    console.log(newVirtualHouse);
+    VHCtx.setVirtualHouse(newVirtualHouse);
   };
 
-  const handleDoorFormSubmitResponse = (virtual_house:VirtualHouse)=>{
+  const handleDoorFormSubmitResponse = (virtual_house: VirtualHouse) => {
     VHCtx.setVirtualHouse(virtual_house);
-  }
+  };
 
-  console.log(`here is ${props.virtualRoom.id}`)
+  console.log(`here is ${props.virtualRoom.id}`);
 
-  const texturizeWallsAndCreateMeshes = () => {
-    console.log('recreating mesh');
-    let loader = new THREE.TextureLoader();
-    const newWallTextures = props.virtualRoom.virtual_walls.map(
-      (virtualWall, index) => {
-        // setting textures
-        if (virtualWall.image && virtualWall.image.url) {
-          return loader.load(virtualWall.image.url, () => {
-            console.log('texture rendered');
-          });
-        } else {
-          return null;
-        }
+  const texturizeWallsAndCreateMeshes = useCallback(() => {
+    let newWallTextures = props.virtualRoom.virtual_walls.map((virtualWall) => {
+      // setting textures
+      if (virtualWall.image) {
+        console.log(virtualWall.image);
+        let loader = new THREE.TextureLoader();
+        // return useTexture(virtualWall.image.url!)
+        let loadedTexture = loader.load(virtualWall.image.url!);
+        let to = setTimeout(() => {}, 3000);
+        clearTimeout(to);
+        return loadedTexture;
+      } else {
+        return null;
       }
-    );
+    });
 
-    let newWallMeshes = newWallTextures.map((texture, index) => {
+    setTextures(newWallTextures);
+  }, [props.virtualRoom, textures]);
+
+  useEffect(() => {
+    texturizeWallsAndCreateMeshes();
+  }, [props.virtualRoom]);
+
+  const renderWallMeshes = useCallback(() => {
+    let newWallMeshes = textures.map((texture, index) => {
       if (!texture) {
         return (
           <meshBasicMaterial
@@ -136,17 +103,20 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
         );
       } else {
         return (
-          <meshBasicMaterial
-            key={`mesh-basic-material-${index}`}
-            attach={`material-${index}`}
-            map={texture}
-            side={BackSide}
-          />
+          <Suspense fallback={null}>
+            <meshBasicMaterial
+              key={`mesh-basic-material-${index}`}
+              attach={`material-${index}`}
+              map={texture}
+              side={BackSide}
+            />
+          </Suspense>
         );
       }
     });
     return newWallMeshes;
-  };
+  }, [textures]);
+
   useEffect(() => {
     console.log('virtualRoomObject rerendered');
     console.log('virtual room props');
@@ -198,6 +168,7 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   const wallTexts = doorPositions.map((doorPosition, index) => {
     return (
       <WallTextObject
+        scale={props.virtualRoom.length * 0.2}
         doorPosition={doorPosition}
         doorRotation={doorRotation[index]}
         index={index}
@@ -225,7 +196,7 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
             props.virtualRoom.depth,
           ]}
         />
-        {texturizeWallsAndCreateMeshes()}
+        {renderWallMeshes()}
       </mesh>
       {wallTexts}
       {showImageForm && (
@@ -262,7 +233,6 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
           />
         </Html>
       )}
-
     </Fragment>
   );
 };

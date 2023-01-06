@@ -4,7 +4,7 @@ import ButtonPropI from '../../types/ui/ButtonPropI';
 import './Button.css'
 const Button:React.FC<ButtonPropI> = (props) =>{
     return(
-        <button className='button' type={props.type} onClick={props.onClick}>{props.children}</button>
+        <button className='button' disabled = {props.disabled} type={props.type} onClick={props.onClick}>{props.children}</button>
     )
 }
 

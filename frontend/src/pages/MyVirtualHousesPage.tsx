@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import VirtualHouseDescriptionBox from '../components/virtual-room/VirtualHouseDescriptionBox';
@@ -15,6 +14,7 @@ import './MyVirtualHousesPage.css'
 const MyVirtualHousesPage: React.FC = () => {
   const [virtualHouses, setVirtualHouses] = useState<Array<VirtualHouse>>([]);
   const authCtx = useContext(AuthContext);
+  
   useEffect(() => {
     console.log('my-virtual-houses page rerendered');
     const checkAuthRefresh = async () => {
@@ -34,7 +34,7 @@ const MyVirtualHousesPage: React.FC = () => {
         },
       }
     );
-    console.log('loaded virtual hosues');
+    console.log('loaded virtual houses');
     setVirtualHouses(res.data);
 
   }, [virtualHouses]);
@@ -46,7 +46,6 @@ const MyVirtualHousesPage: React.FC = () => {
 
     if (virtualHouses.length > 0) {
       const descriptionBoxes = virtualHouses.map((virtualHouse) => {
-        console.log('virtual rooms');
         return (
           <VirtualHouseDescriptionBox
             virtualHouse={virtualHouse}

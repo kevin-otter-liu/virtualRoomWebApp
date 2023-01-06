@@ -4,8 +4,21 @@
     background-color: #C3B1E1;
     border: 5px solid white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    padding:0;
     z-index:20;
+}
+
+.image-preview {
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+.image-preview img{
+    height:50px;
+    width: 100px;
+    
+}
+.image-preview p{
+    color:white;
 }
 
 input[type="file"] {
@@ -14,7 +27,6 @@ input[type="file"] {
 }
 
 .custom-file-upload {
-    border: 5px solid white;
     display: inline-block;
     cursor: pointer;
 }
@@ -23,9 +35,11 @@ input[type="file"] {
 }
 
 .custom-file-upload img{
+    display:flex;
+    justify-self: center;
     content: url('./assets/static-upload.png');
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
 }
 
 .custom-file-upload img:hover{
