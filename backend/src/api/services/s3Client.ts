@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   S3ClientConfig,
+  DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -60,6 +61,21 @@ class S3 {
       expiresIn: expiry_time,
     });
     return url;
+  }
+
+  public async deleteImageFromBucket(image_id: string) {
+    let deleteObjectParams = {
+      Bucket: this.bucketName,
+      Key: image_id,
+    };
+    try {
+      const data = await this.s3.send(
+        new DeleteObjectCommand(deleteObjectParams)
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

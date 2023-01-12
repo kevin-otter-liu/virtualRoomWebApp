@@ -1,6 +1,11 @@
 export interface WallTextObjectPropI {
+  createMode: boolean;
   doorRotation: Array<number>;
   doorPosition: Array<number>;
   index: number;
-  onClick: (e: React.MouseEvent) => void;
+  onImageButtonClick: (e: React.MouseEvent) => void;
+  onDoorButtonClick: (e: React.MouseEvent) => void;
+  onNextRoomClick: (e: React.MouseEvent) => void;
+  scale: number;
+  showDoorButton: boolean;
 }

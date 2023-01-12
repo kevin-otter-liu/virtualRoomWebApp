@@ -6,5 +6,5 @@ export interface VirtualWall extends DefaultResponse {
   is_door: boolean;
   next_room: string | null;
   virtual_room_id: string;
-  image: Image | null;
+  image?: Image;
 }

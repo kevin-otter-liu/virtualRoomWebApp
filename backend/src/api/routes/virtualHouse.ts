@@ -20,6 +20,8 @@ import VirtualWall from '../../db/models/VirtualWall';
 
 // for generating url
 
+const EXP_TIME = 60 * 60;
+
 const virtualHouseRouter = Router();
 virtualHouseRouter.use(checkAuth);
 
@@ -42,7 +44,7 @@ virtualHouseRouter.post(
       user_id: user.id,
     });
 
-    const vrId = uuidv4();
+    let vrId = uuidv4();
     const vr = await VirtualRoom.create({
       virtual_house_id: virtualHouse.id,
       id: vrId,
@@ -85,6 +87,103 @@ virtualHouseRouter.post(
   }
 );
 
+// creates the next virtual room from current virtual wall
+virtualHouseRouter.post(
+  '/add-door',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as CustomRequest).user;
+
+    const { virtual_room_id, virtual_wall_id, wall_no, length, height, depth } =
+      req.body;
+
+    let currentVr = await VirtualRoom.findByPk(virtual_room_id);
+    let currentWall = await VirtualWall.findByPk(virtual_wall_id);
+
+    if (!currentVr || !currentWall) {
+      return next(new HttpError(404, 'no virtual room or wall found'));
+    }
+
+    // calculate new room position
+    let new_position = calculateNewRoomPosition(
+      currentVr.length,
+      currentVr.depth,
+      currentVr.height,
+      currentWall.face,
+      currentVr.x,
+      currentVr.y,
+      currentVr.z,
+      length,
+      depth,
+      height
+    );
+
+    const vrId = uuidv4();
+    let nextVrRoom = await VirtualRoom.create({
+      id: vrId,
+      depth,
+      height,
+      length,
+      x: new_position[0],
+      y: new_position[1],
+      z: new_position[2],
+      wall_no: 6,
+      virtual_house_id: currentVr.virtual_house_id,
+      completed_walls: 0,
+    });
+
+    let nextRoomWallWithDoor = getNextRoomWallFace(currentWall.face);
+    console.log(`nextroom wall with door ${nextRoomWallWithDoor}`);
+
+    for (let i = 0; i < wall_no; i++) {
+      console.log(nextVrRoom.id);
+      let vwId = uuidv4();
+      let vw = await VirtualWall.create({
+        virtual_room_id: nextVrRoom.id,
+        id: vwId,
+        face: i,
+        is_door: nextRoomWallWithDoor == i ? true : false,
+        next_room:
+          nextRoomWallWithDoor == i ? currentWall.virtual_room_id : undefined,
+      });
+    }
+
+    await VirtualWall.update(
+      { is_door: true, next_room: nextVrRoom.id },
+      { where: { id: virtual_wall_id } }
+    );
+
+    let updatedVh = await VirtualHouse.findByPk(currentVr.virtual_house_id, {
+      order: [
+        [
+          { model: VirtualRoom, as: 'virtual_rooms' },
+          { model: VirtualWall, as: 'virtual_walls' },
+          'face',
+          'ASC',
+        ],
+      ],
+      include: [
+        {
+          model: VirtualRoom,
+          as: 'virtual_rooms',
+          include: [
+            {
+              model: VirtualWall,
+              as: 'virtual_walls',
+              include: [
+                { model: ImageModel, as: 'image', attributes: ['url', 'id'] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json(updatedVh!.dataValues);
+    next();
+  }
+);
+
+// upload an image
 virtualHouseRouter.post(
   '/image',
   upload.single('image'),
@@ -100,7 +199,20 @@ virtualHouseRouter.post(
     const user = (req as CustomRequest).user;
 
     const formData = JSON.parse(req.body.data);
-    const { face, virtual_wall_id } = formData;
+    const { virtual_wall_id, virtual_room_id } = formData;
+
+    // find tue existing virtual wall image is attached to
+    let vw = await VirtualWall.findByPk(virtual_wall_id);
+
+    if (!vw) {
+      return next(new HttpError(404, 'virtual wall does not exist'));
+    }
+
+    // if an old image already exists on current virtual wall, delete it
+    if (vw.dataValues.image_id) {
+      let data = await s3Service.deleteImageFromBucket(vw.dataValues.image_id);
+      await ImageModel.destroy({ where: { id: vw.dataValues.image_id } });
+    }
 
     // image manipulation of image submitted (resizing) to 1920 x 1080
     const buffer = await sharp(req.file!.buffer)
@@ -110,25 +222,60 @@ virtualHouseRouter.post(
     // create a new unique id to store image in s3
     const image_id = uuidv4();
 
+    // store the new image into the bucket and set its access expiry for 5 mins
     await s3Service.storeImageInBucket(image_id, buffer, req.file.mimetype);
     const image_url = await s3Service.generateImageUrlFromBucket(
       image_id,
-      60 * 60 * 24
+      EXP_TIME
     );
-    let vw = await VirtualWall.findByPk(virtual_wall_id);
-    if (vw) {
-      await ImageModel.create({
-        id: image_id,
-        image_able: 'virtual-room-image',
-        user_id: user.id,
-        url: image_url,
-      });
-      let res = await vw.update({ image_id: image_id });
+
+    // store new image metadata into db
+    let currentTime = new Date();
+    await ImageModel.create({
+      id: image_id,
+      image_able: 'virtual-room-image',
+      user_id: user.id,
+      url: image_url,
+      expire_at: new Date(currentTime.getTime() + EXP_TIME * 1000),
+    });
+
+    // update the new virtual wall image
+    let updatedVw = await vw.update({ image_id: image_id });
+
+    let vr = await VirtualRoom.findByPk(virtual_room_id);
+
+    if (!vr) {
+      return next(new HttpError(404, 'no virtual room found'));
     }
 
-    // generate image url
+    let vh = await VirtualHouse.findByPk(vr.virtual_house_id, {
+      order: [
+        [
+          { model: VirtualRoom, as: 'virtual_rooms' },
+          { model: VirtualWall, as: 'virtual_walls' },
+          'face',
+          'ASC',
+        ],
+      ],
+      include: [
+        {
+          model: VirtualRoom,
+          as: 'virtual_rooms',
+          include: [
+            {
+              model: VirtualWall,
+              as: 'virtual_walls',
+              include: [
+                { model: ImageModel, as: 'image', attributes: ['url', 'id'] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
 
-    res.status(200).send({ image_id, image_url, face });
+    // generate image url
+    res.status(200).send(vh?.dataValues);
     next();
   }
 );
@@ -141,7 +288,7 @@ virtualHouseRouter.get(
     const image = await ImageModel.findOne();
 
     // get image from s3 using id
-    const url = await s3Service.generateImageUrlFromBucket(image!.id, 3600);
+    const url = await s3Service.generateImageUrlFromBucket(image!.id, EXP_TIME);
 
     // send the information of the image with the url
     res.send({
@@ -209,4 +356,60 @@ virtualHouseRouter.delete('/:virtual_house_id', async (req, res, next) => {
   res.status(200).send();
 });
 
+// helper functions
+const calculateNewRoomPosition = (
+  currLength: number,
+  currDepth: number,
+  currHeight: number,
+  currFace: number,
+  x: number,
+  y: number,
+  z: number,
+  newLength: number,
+  newDepth: number,
+  newHeight: number
+): Array<number> => {
+  let new_x: number, new_y: number, new_z: number;
+
+  if (currFace === 0) {
+    new_x = x + currLength / 2 + newLength / 2;
+    new_y = y;
+    new_z = z;
+  } else if (currFace === 1) {
+    new_x = x - currLength / 2 - newLength / 2;
+    new_y = y;
+    new_z = z;
+  } else if (currFace === 2) {
+    new_x = x;
+    new_y = y + currHeight / 2 + newHeight / 2;
+    new_z = z;
+  } else if (currFace === 3) {
+    new_x = x;
+    new_y = y - currHeight / 2 - newHeight / 2;
+    new_z = z;
+  } else if (currFace === 4) {
+    new_x = x;
+    new_y = y;
+    new_z = z + currDepth / 2 + newDepth / 2;
+  } else {
+    new_x = x;
+    new_y = y;
+    new_z = z - currDepth / 2 - newDepth / 2;
+  }
+
+  let new_position: Array<number> = new Array<number>(new_x, new_y, new_z);
+  return new_position;
+};
+
+// gets face index of wall of next_room
+const getNextRoomWallFace = (curr_face: number) => {
+  let wallFaceMap = new Map<number, number>();
+  wallFaceMap.set(0, 1);
+  wallFaceMap.set(1, 0);
+  wallFaceMap.set(4, 5);
+  wallFaceMap.set(5, 4);
+  wallFaceMap.set(2, 3);
+  wallFaceMap.set(3, 2);
+  return wallFaceMap.get(curr_face)!;
+};
 export default virtualHouseRouter;

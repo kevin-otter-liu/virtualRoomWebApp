@@ -6,5 +6,5 @@ export default interface ImageFormPropI {
   virtual_wall_id: string;
   virtual_room_id: string;
   onExitHandler: () => void;
-  handlePostSubmitResponse: (newVirtualHouse: VirtualHouse) => void;
+  handlePostSubmitResponse: (response: VirtualHouse) => void;
 }

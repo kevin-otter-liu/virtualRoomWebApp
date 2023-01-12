@@ -53,7 +53,6 @@ VirtualWall.init(
 VirtualWall.belongsTo(Image, {
   as: 'image',
   foreignKey: 'image_id',
-  onDelete: 'CASCADE',
 });
 
 export default VirtualWall;

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import LoadingContextI from '../types/contexts/LoadingContextI';
-import LoadingContextProviderPropI from '../types/contexts/providers/LoadingContextProviderPropI';
+import LoadingContextProviderPropI from '../types/contexts/LoadingContextProviderPropI';
 
 const initialContext: LoadingContextI = {
   isLoading: false,

@@ -1,10 +1,10 @@
 import { Fragment, useContext } from 'react';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
-import './OptionsPage.css'
+import './OptionsPage.css';
 import { AuthContext } from '../context/auth-context';
 const OptionsPage: React.FC = () => {
-  const authCtx = useContext(AuthContext)
+  const authCtx = useContext(AuthContext);
   const onLogout = () => {
     authCtx.logout();
   };
@@ -13,9 +13,9 @@ const OptionsPage: React.FC = () => {
     <Fragment>
       <div className='options-container'>
         <Link to='/'>
-        <Button type='button' onClick={onLogout}>
-          logout
-        </Button>
+          <Button type='button' onClick={onLogout}>
+            logout
+          </Button>
         </Link>
         <Link to='/virtual-house-create'>
           <Button type='button'>Create a Virtual House</Button>

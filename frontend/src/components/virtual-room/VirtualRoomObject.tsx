@@ -1,16 +1,21 @@
-import { Html } from '@react-three/drei';
-import axios, { AxiosResponse } from 'axios';
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import { Html} from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
+import React, {
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Fragment, useState } from 'react';
 import * as THREE from 'three';
-import { BackSide, Euler, Texture, Vector3 } from 'three';
+import { BackSide, Euler, Vector3 } from 'three';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
-import { VirtualHouse } from '../../types/contexts/responses/VirtualHouse';
-import { VirtualWall } from '../../types/contexts/responses/VirtualWall';
+import { VirtualHouse } from '../../types/responses/VirtualHouse';
 import { VirtualRoomObjectPropI } from '../../types/virtual-room/VirtualRoomObjectPropI';
+import AddDoorForm from '../forms/AddDoorForm';
 import ImageForm from '../forms/ImageForm';
 import WallTextObject from './WallTextObject';
-import { Image } from '../../types/contexts/responses/Image';
 
 // function to calculate the position to put the door texts and buttons on the virtualroom walls
 const calculateHTMLDoorLocation = (
@@ -40,45 +45,41 @@ const doorRotation = [
   [0, 0, 0],
 ];
 
-type ImageFormData = {
-  showImageForm: boolean;
-  faceIndex: null | number;
-  virtual_wall_id: string | null;
-};
-
 const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   // put default pic as empty pics
-  const [description, setDescription] = useState<string>('');
+  const {camera} = useThree()
   const VHCtx = useContext(VirtualHouseContext);
-  // const [thisVirtualRoom, setThisVirtualRoom] = useState<VirtualRoom>(
-  //   props.virtualRoom
-  // );
-  const [file, setFile] = useState<File>();
-  const [update, forceRender] = useState<string>('');
+  const [showImageForm, setShowImageForm] = useState<boolean>(false);
+  const [showDoorForm, setShowDoorForm] = useState<boolean>(false);
+  const [focusedWallFace, setFocusedWallFace] = useState<number | null>(null);
+  const [textures, setTextures] = useState<Array<THREE.Texture | null>>([]);
 
-  const [imageFormData, setImageFormData] = useState<ImageFormData>({
-    showImageForm: false,
-    faceIndex: null,
-    virtual_wall_id: null,
-  });
+  const handleImageFormSubmitResponse = (newVirtualHouse: VirtualHouse) => {
+    console.log(newVirtualHouse);
+    VHCtx.setVirtualHouse(newVirtualHouse);
+  };
 
-  const texturizeWallsAndCreateMeshes = () => {
-    console.log('recreating mesh');
+  const handleDoorFormSubmitResponse = (virtual_house: VirtualHouse) => {
+    VHCtx.setVirtualHouse(virtual_house);
+    
+  };
+
+  const texturizeWallsAndCreateMeshes = useCallback(() => {
     let loader = new THREE.TextureLoader();
-    const newWallTextures = props.virtualRoom.virtual_walls.map(
-      (virtualWall, index) => {
-        // setting textures
-        if (virtualWall.image && virtualWall.image.url) {
-          return loader.load(virtualWall.image.url, () => {
-            console.log('texture rendered');
-          });
-        } else {
-          return null;
-        }
-      }
-    );
+    let newWallTextures = props.virtualRoom.virtual_walls.map((virtualWall) => {
+      // setting textures
+      return virtualWall.image?loader.load(virtualWall.image.url!): null;
+    });
 
-    let newWallMeshes = newWallTextures.map((texture, index) => {
+    setTextures(newWallTextures);
+  }, [props.virtualRoom, textures]);
+
+  useEffect(() => {
+    texturizeWallsAndCreateMeshes();
+  }, [props.virtualRoom]);
+
+  const renderWallMeshes = useCallback(() => {
+    let newWallMeshes = textures.map((texture, index) => {
       if (!texture) {
         return (
           <meshBasicMaterial
@@ -92,26 +93,25 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
         );
       } else {
         return (
-          <meshBasicMaterial
-            key={`mesh-basic-material-${index}`}
-            attach={`material-${index}`}
-            map={texture}
-            side={BackSide}
-          />
+          <Suspense fallback={null}>
+            <meshBasicMaterial
+              key={`mesh-basic-material-${index}`}
+              attach={`material-${index}`}
+              map={texture}
+              side={BackSide}
+            />
+          </Suspense>
         );
       }
     });
     return newWallMeshes;
-  };
+  }, [textures]);
+
   useEffect(() => {
     console.log('virtualRoomObject rerendered');
     console.log('virtual room props');
     console.log(props.virtualRoom);
   });
-
-  // useEffect(() => {
-
-  // },[wallMesh,virtualWalls]);
 
   const doorPositions = calculateHTMLDoorLocation(
     [props.virtualRoom.x, props.virtualRoom.y, props.virtualRoom.z],
@@ -122,137 +122,73 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
     ]
   );
 
-  // change event for changing the image input into the form
-  const onImageInputChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    if (!event.target.files) {
-      return;
-    }
-    setFile(event.target.files[0]);
-  };
-
   // Handler for image button click
   const onImageButtonClick = (e: React.MouseEvent) => {
     const indexStr = e.currentTarget.getAttribute('value');
     if (indexStr) {
       const faceIndex = parseInt(indexStr);
-      setImageFormData({
-        faceIndex: faceIndex,
-        showImageForm: true,
-        virtual_wall_id: props.virtualRoom.virtual_walls[faceIndex].id,
-      });
+      setShowImageForm(true);
+      setFocusedWallFace(faceIndex);
     } else {
       console.log(`no index found`);
     }
   };
 
-  // handler for the onclick event on the exit button to exit the image form
-  const imageFormExitHandler = () => {
-    setImageFormData((state) => {
-      return {
-        ...state,
-        showImageForm: false,
-      };
-    });
-  };
-
-  // hanlder for submitting the image form
-  const onSubmitFormHandler: React.FormEventHandler<HTMLFormElement> = async (
-    event
-  ) => {
-    event.preventDefault();
-    setImageFormData((state) => {
-      return {
-        ...state,
-        showImageForm: false,
-      };
-    });
-    if (file) {
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append(
-        'data',
-        JSON.stringify({
-          face: imageFormData.faceIndex,
-          virtual_wall_id: imageFormData.virtual_wall_id,
-        })
-      );
-      const res: AxiosResponse = await axios.post(
-        'http://localhost:3000/virtual-house/image',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
-      let { image_url, image_id, face } = res.data;
-
-      VHCtx.setVirtualHouse((prevVirtualHouse) => {
-        if (prevVirtualHouse) {
-          let newVirtualRooms = prevVirtualHouse.virtual_rooms.map(
-            (virtual_room) => {
-              if ((virtual_room.id = props.virtualRoom.id)) {
-                let newVirtualWalls = virtual_room.virtual_walls.map(
-                  (virtual_wall) => {
-                    if (virtual_wall.face == face) {
-                      let newVirtualWall: VirtualWall = {
-                        ...virtual_wall,
-                        image: {
-                          url: image_url,
-                          id: image_id,
-                        },
-                      };
-                      return newVirtualWall;
-                    } else {
-                      return virtual_wall;
-                    }
-                  }
-                );
-
-                let newVirtualRoom = {
-                  ...virtual_room,
-                  virtual_walls: newVirtualWalls,
-                };
-                return newVirtualRoom;
-              } else {
-                return virtual_room;
-              }
-            }
-          );
-          let newVirtualHouse: VirtualHouse = {
-            ...prevVirtualHouse,
-            virtual_rooms: newVirtualRooms,
-          };
-
-          console.log('form submitted');
-          console.log(newVirtualHouse);
-          return newVirtualHouse;
-        } else {
-          return prevVirtualHouse;
-        }
-      });
+  // Handler for door button click
+  const onDoorButtonClick = (e: React.MouseEvent) => {
+    const indexStr = e.currentTarget.getAttribute('value');
+    if (indexStr) {
+      const faceIndex = parseInt(indexStr);
+      setShowDoorForm(true);
+      setFocusedWallFace(faceIndex);
+    } else {
+      console.log(`no index found`);
     }
   };
 
-  // image description text change handler
-  const onTextInputChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    setDescription(event.target.value);
+  // todo: swithc acmera to set to next room, 
+  // might need to implement a method to search for next room on client in context
+  const onNextRoomClick = (e: React.MouseEvent)=>{
+    const indexStr = e.currentTarget.getAttribute('value');
+    if (indexStr) {
+      const faceIndex = parseInt(indexStr);
+      setFocusedWallFace(faceIndex);
+      let currWall = props.virtualRoom.virtual_walls[faceIndex]
+      let nextRoom = VHCtx.getNextRoomFromWallId(currWall.id)
+      if(!nextRoom){
+        console.log('what')
+        return null;
+      }
+      console.log('next room function here')
+      console.log(nextRoom)
+      camera.position.set(nextRoom.x, nextRoom.y, nextRoom.z)
+    } else {
+      console.log(`no index found`);
+    }
+  }
+
+  const onImageFormExitHandler = () => {
+    setShowImageForm(false);
+  };
+
+  const onDoorFormExitHandler = () => {
+    setShowDoorForm(false);
   };
 
   // Rendering WallText JSX
   const wallTexts = doorPositions.map((doorPosition, index) => {
     return (
       <WallTextObject
+        createMode={props.createMode}
+        scale={props.virtualRoom.length * 0.1}
         doorPosition={doorPosition}
         doorRotation={doorRotation[index]}
         index={index}
         key={`wall-text-${index}`}
-        onClick={onImageButtonClick}
+        onImageButtonClick={onImageButtonClick}
+        onDoorButtonClick={onDoorButtonClick}
+        onNextRoomClick={onNextRoomClick}
+        showDoorButton={!props.virtualRoom.virtual_walls[index].is_door}
       />
     );
   });
@@ -274,22 +210,40 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
             props.virtualRoom.depth,
           ]}
         />
-        {texturizeWallsAndCreateMeshes()}
+        {renderWallMeshes()}
       </mesh>
       {wallTexts}
-      {imageFormData.showImageForm && (
+      {showImageForm && (
         <Html
           scale={0.2}
-          rotation={new Euler(...doorRotation[imageFormData.faceIndex!])}
-          position={new Vector3(...doorPositions[imageFormData.faceIndex!])}
+          rotation={new Euler(...doorRotation[focusedWallFace!])}
+          position={new Vector3(...doorPositions[focusedWallFace!])}
           transform>
           <ImageForm
-            description={description}
-            onTextInputChange={onTextInputChangeHandler}
-            text={`${imageFormData.faceIndex}`}
-            onFormSubmit={onSubmitFormHandler}
-            onExitForm={imageFormExitHandler}
-            onImageInputChange={onImageInputChange}
+            onExitHandler={onImageFormExitHandler}
+            handlePostSubmitResponse={handleImageFormSubmitResponse}
+            virtual_room_id={props.virtualRoom.id}
+            virtual_wall_id={
+              props.virtualRoom.virtual_walls[focusedWallFace!].id
+            }
+            face={focusedWallFace!}
+          />
+        </Html>
+      )}
+      {showDoorForm && (
+        <Html
+          scale={0.2}
+          rotation={new Euler(...doorRotation[focusedWallFace!])}
+          position={new Vector3(...doorPositions[focusedWallFace!])}
+          transform>
+          <AddDoorForm
+            onExitHandler={onDoorFormExitHandler}
+            handlePostSubmitResponse={handleDoorFormSubmitResponse}
+            virtual_room_id={props.virtualRoom.id}
+            virtual_wall_id={
+              props.virtualRoom.virtual_walls[focusedWallFace!].id
+            }
+            face={focusedWallFace!}
           />
         </Html>
       )}
