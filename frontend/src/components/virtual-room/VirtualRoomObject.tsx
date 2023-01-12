@@ -1,5 +1,5 @@
-import { Html, useTexture } from '@react-three/drei';
-import { useLoader } from '@react-three/fiber';
+import { Html} from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
 import React, {
   Suspense,
   useCallback,
@@ -9,10 +9,9 @@ import React, {
 } from 'react';
 import { Fragment, useState } from 'react';
 import * as THREE from 'three';
-import { BackSide, Euler, Texture, Vector3 } from 'three';
+import { BackSide, Euler, Vector3 } from 'three';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
-import { VirtualWall } from '../../types/responses/VirtualWall';
 import { VirtualRoomObjectPropI } from '../../types/virtual-room/VirtualRoomObjectPropI';
 import AddDoorForm from '../forms/AddDoorForm';
 import ImageForm from '../forms/ImageForm';
@@ -48,6 +47,7 @@ const doorRotation = [
 
 const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   // put default pic as empty pics
+  const {camera} = useThree()
   const VHCtx = useContext(VirtualHouseContext);
   const [showImageForm, setShowImageForm] = useState<boolean>(false);
   const [showDoorForm, setShowDoorForm] = useState<boolean>(false);
@@ -61,24 +61,14 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
 
   const handleDoorFormSubmitResponse = (virtual_house: VirtualHouse) => {
     VHCtx.setVirtualHouse(virtual_house);
+    
   };
 
-  console.log(`here is ${props.virtualRoom.id}`);
-
   const texturizeWallsAndCreateMeshes = useCallback(() => {
+    let loader = new THREE.TextureLoader();
     let newWallTextures = props.virtualRoom.virtual_walls.map((virtualWall) => {
       // setting textures
-      if (virtualWall.image) {
-        console.log(virtualWall.image);
-        let loader = new THREE.TextureLoader();
-        // return useTexture(virtualWall.image.url!)
-        let loadedTexture = loader.load(virtualWall.image.url!);
-        let to = setTimeout(() => {}, 3000);
-        clearTimeout(to);
-        return loadedTexture;
-      } else {
-        return null;
-      }
+      return virtualWall.image?loader.load(virtualWall.image.url!): null;
     });
 
     setTextures(newWallTextures);
@@ -156,6 +146,27 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
     }
   };
 
+  // todo: swithc acmera to set to next room, 
+  // might need to implement a method to search for next room on client in context
+  const onNextRoomClick = (e: React.MouseEvent)=>{
+    const indexStr = e.currentTarget.getAttribute('value');
+    if (indexStr) {
+      const faceIndex = parseInt(indexStr);
+      setFocusedWallFace(faceIndex);
+      let currWall = props.virtualRoom.virtual_walls[faceIndex]
+      let nextRoom = VHCtx.getNextRoomFromWallId(currWall.id)
+      if(!nextRoom){
+        console.log('what')
+        return null;
+      }
+      console.log('next room function here')
+      console.log(nextRoom)
+      camera.position.set(nextRoom.x, nextRoom.y, nextRoom.z)
+    } else {
+      console.log(`no index found`);
+    }
+  }
+
   const onImageFormExitHandler = () => {
     setShowImageForm(false);
   };
@@ -168,13 +179,16 @@ const VirtualRoomObject: React.FC<VirtualRoomObjectPropI> = (props) => {
   const wallTexts = doorPositions.map((doorPosition, index) => {
     return (
       <WallTextObject
-        scale={props.virtualRoom.length * 0.2}
+        createMode={props.createMode}
+        scale={props.virtualRoom.length * 0.1}
         doorPosition={doorPosition}
         doorRotation={doorRotation[index]}
         index={index}
         key={`wall-text-${index}`}
         onImageButtonClick={onImageButtonClick}
         onDoorButtonClick={onDoorButtonClick}
+        onNextRoomClick={onNextRoomClick}
+        showDoorButton={!props.virtualRoom.virtual_walls[index].is_door}
       />
     );
   });

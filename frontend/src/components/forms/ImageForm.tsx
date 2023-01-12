@@ -14,7 +14,7 @@ type ImageFormData = {
 
 const ImageForm: React.FC<ImageFormPropI> = (props) => {
   const [file, setFile] = useState<File>();
-  const [imgPreview,setImgPreview] = useState<undefined|string>(undefined)
+  const [imgPreview, setImgPreview] = useState<undefined | string>(undefined);
 
   const [imageFormData, setImageFormData] = useState<ImageFormData>({
     face: props.face,
@@ -24,18 +24,18 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
   });
 
   useEffect(() => {
-    if(!file){
-      setImgPreview(undefined)
-      return
+    if (!file) {
+      setImgPreview(undefined);
+      return;
     }
 
-    const objectUrl = URL.createObjectURL(file)
-    setImgPreview(objectUrl)
+    const objectUrl = URL.createObjectURL(file);
+    setImgPreview(objectUrl);
 
     return () => {
-      URL.revokeObjectURL(objectUrl)
-    }
-  },[file])
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [file]);
 
   // stops any key events from propagating while in the form
   const keyboardEventHandler = (e: KeyboardEvent) => {
@@ -55,6 +55,18 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
   // handler for the onclick event on the exit button to exit the image form
   const onExitForm = () => {
     props.onExitHandler();
+  };
+
+  // helper function
+  const resetForm = () => {
+    setImageFormData({
+      face: props.face,
+      virtual_wall_id: props.virtual_wall_id,
+      virtual_room_id: props.virtual_room_id,
+      is_door: false,
+    });
+    setFile(undefined);
+    setImgPreview(undefined);
   };
 
   // hanlder for submitting the image form
@@ -82,7 +94,9 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
       );
 
       const res: AxiosResponse<VirtualHouse> = await axios.post(
-        'http://localhost:3000/virtual-house/image',
+        `http://${import.meta.env.VITE_API_HOST}:${
+          import.meta.env.VITE_API_PORT
+        }/virtual-house/image`,
         formData,
         {
           headers: {
@@ -92,6 +106,7 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
         }
       );
 
+      resetForm();
       props.handlePostSubmitResponse(res.data);
       props.onExitHandler();
     }
@@ -114,9 +129,9 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
         </label>
         {file && (
           <div className='image-preview'>
-            <img  src={imgPreview}/>
+            <img src={imgPreview} />
             <p>{file.name}</p>
-            <p>({Math.round(file.size/1000)} KB)</p>
+            <p>({Math.round(file.size / 1000)} KB)</p>
           </div>
         )}
         <Button type='submit' disabled={!file}>

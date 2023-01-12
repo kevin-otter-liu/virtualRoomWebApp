@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { Fragment, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CreateVirtualHouseForm from '../components/forms/CreateVirtualHouseForm';
 import VirtualRoomButton from '../components/ui/VirtualRoomButton';
 import VirtualHouseCanvas from '../components/virtual-room/VirtualHouseCanvas';
@@ -7,6 +8,7 @@ import { AuthContext } from '../context/auth-context';
 import { VirtualHouseContext } from '../context/virtual-house-context';
 import { VirtualHouse } from '../types/responses/VirtualHouse';
 const CreateVirtualHousePage: React.FC = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     console.log('virtualhouseform page rerendered');
     const checkAuthRefresh = async () => {
@@ -16,7 +18,12 @@ const CreateVirtualHousePage: React.FC = () => {
     checkAuthRefresh();
   });
   const authCtx = useContext(AuthContext);
+
+  !authCtx.isLoggedIn && navigate('/');
+
   const VHctx = useContext(VirtualHouseContext);
+  console.log('createvirtualhousepage');
+  console.log(authCtx.isLoggedIn);
 
   const handlePostSubmit = (virtualHouseRes: VirtualHouse) => {
     VHctx.setVirtualHouse(virtualHouseRes);
@@ -41,7 +48,7 @@ const CreateVirtualHousePage: React.FC = () => {
                 Exit Virtual Room{' '}
               </VirtualRoomButton>
               <Canvas>
-                <VirtualHouseCanvas createMode />
+                <VirtualHouseCanvas createMode={true} />
               </Canvas>
             </div>
           )}

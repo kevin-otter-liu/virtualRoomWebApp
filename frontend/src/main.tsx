@@ -8,15 +8,16 @@ import ErrorPage from './pages/ErrorPage';
 import { LoadingContextProvider } from './context/loading-context';
 import { ErrorContextProvider } from './context/error-context';
 import { AuthContextProvider } from './context/auth-context';
-import OptionsPage from './pages/OptionsPage';
 import CreateVirtualHousePage from './pages/CreateVirtualHousePage';
 import { VirtualHouseProvider } from './context/virtual-house-context';
 import MyVirtualHousesPage from './pages/MyVirtualHousesPage';
+import OptionsPage from './pages/OptionsPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Root />, errorElement: <ErrorPage /> },
   { path: '/virtual-house-create', element: <CreateVirtualHousePage /> },
-  { path: '/my-virtual-houses', element: <MyVirtualHousesPage/> },
+  { path: '/my-virtual-houses', element: <MyVirtualHousesPage /> },
+  { path: '/options', element: <OptionsPage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

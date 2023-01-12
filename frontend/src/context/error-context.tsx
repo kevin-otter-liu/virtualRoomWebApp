@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 import ErrorContextI, { ErrorState } from '../types/contexts/ErrorContextI';
-import ErrorContextProviderPropI from '../types/contexts/providers/ErrorContextPropI';
+import ErrorContextProviderPropI from '../types/contexts/ErrorContextPropI';
 
 const initialContext: ErrorContextI = {
   isError: false,

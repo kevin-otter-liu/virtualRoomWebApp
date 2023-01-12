@@ -1,33 +1,29 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import VirtualHouseDescriptionBox from '../components/virtual-room/VirtualHouseDescriptionBox';
 import { AuthContext } from '../context/auth-context';
 import { VirtualHouse } from '../types/responses/VirtualHouse';
-import './MyVirtualHousesPage.css'
+import './MyVirtualHousesPage.css';
 
 const MyVirtualHousesPage: React.FC = () => {
   const [virtualHouses, setVirtualHouses] = useState<Array<VirtualHouse>>([]);
   const authCtx = useContext(AuthContext);
-  
+
   useEffect(() => {
     console.log('my-virtual-houses page rerendered');
-    const checkAuthRefresh = async () => {
-      console.log('checking authorization');
-      await authCtx.checkAuth();
-    };
-    checkAuthRefresh();
+    // const checkAuthRefresh = async () => {
+    //   console.log('checking authorization');
+    //   await authCtx.checkAuth();
+    // };
+    // checkAuthRefresh();
     getAllVirtualHouses();
   }, []);
 
   const getAllVirtualHouses = useCallback(async () => {
     let res: AxiosResponse<Array<VirtualHouse>> = await axios.get(
-      'http://localhost:3000/virtual-house/',
+      `http://${import.meta.env.VITE_API_HOST}:${
+        import.meta.env.VITE_API_PORT
+      }/virtual-house/`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -36,7 +32,6 @@ const MyVirtualHousesPage: React.FC = () => {
     );
     console.log('loaded virtual houses');
     setVirtualHouses(res.data);
-
   }, [virtualHouses]);
 
   const renderDescription = () => {
@@ -52,7 +47,6 @@ const MyVirtualHousesPage: React.FC = () => {
             key={virtualHouse.id}
             imageSrc={'#'}
             description={''}
-            createMode={false}
           />
         );
       });

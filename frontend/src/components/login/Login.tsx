@@ -3,10 +3,8 @@ import { useContext, useRef } from 'react';
 import { AuthContext } from '../../context/auth-context';
 import { ErrorContext } from '../../context/error-context';
 import { LoginPropI } from '../../types/login/LoginPropI';
-import { useNavigate } from 'react-router-dom';
 import './Login.css';
 export const Login: React.FC<LoginPropI> = (props) => {
-  const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);

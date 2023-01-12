@@ -5,6 +5,7 @@ import SignUp from './SignUp';
 
 const LoginControl: React.FC<LoginControlPropI> = (props) => {
   const [focusOnLoginPage, setFocusOnLoginPage] = useState<boolean>(false);
+  
   return (
     <Fragment>
       {focusOnLoginPage ? (

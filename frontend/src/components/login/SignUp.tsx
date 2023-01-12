@@ -1,6 +1,4 @@
-import axios, { AxiosError } from 'axios';
 import { useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth-context';
 import { ErrorContext } from '../../context/error-context';
 import { SignUpPropI } from '../../types/login/SignUpPropI';
@@ -11,7 +9,6 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
   const errCtx = useContext(ErrorContext);
   const emailInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const SignUpHandler: React.FormEventHandler = async (event) => {
     event.preventDefault();
     if (!emailInput.current) {

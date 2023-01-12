@@ -6,12 +6,17 @@ import express, {
   Router,
   ErrorRequestHandler,
 } from 'express';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+console.log(path.join(__dirname, '../env/server.env'));
+dotenv.config({
+  path: path.join(__dirname, '../env/server.env'),
+});
+// import 'dotenv/config';
 import userRouter from './api/routes/user';
 import virtualHouseRouter from './api/routes/virtualHouse';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
-import { checkAuth } from './api/middleware/check-auth';
 import * as Models from './db/models';
 import cors from 'cors';
 import { HttpError } from './libs/http-error';
@@ -27,18 +32,17 @@ class Server {
     Server.server = express();
 
     // register middleware for parsing request body to json
-
-    Server.server.use(
-      cors({
-        origin: 'http://localhost:5173',
-        optionsSuccessStatus: 200,
-      })
-    );
+    // {
+    //   origin: [`http://localhost:3000`, `http://localhost:5173/`],
+    //   optionsSuccessStatus: 200,
+    // }
+    Server.server.use(cors());
     Server.server.use(express.json());
     Server.server.use(express.urlencoded({ extended: true }));
 
     // connect to database
     Server.db = dbConn;
+    console.log(process.env.DB_USER);
 
     dbConn.sync().then(() => {
       console.log('database synced');

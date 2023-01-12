@@ -1,7 +1,7 @@
-import PropI from "../PropI";
+import PropI from '../PropI';
 
-export default interface FixedModalPropI extends PropI{
-    title: string;
-    message:string;
-    onClick: () => void;
+export default interface FixedModalPropI extends PropI {
+  title: string;
+  message: string;
+  onClick: () => void;
 }

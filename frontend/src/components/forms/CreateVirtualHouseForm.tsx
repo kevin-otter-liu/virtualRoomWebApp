@@ -147,7 +147,9 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
   const onFormSubmit: React.FormEventHandler = async (event) => {
     event.preventDefault();
     const virtualHouseResponse = await axios.post(
-      'http://localhost:3000/virtual-house/create',
+      `http://${import.meta.env.VITE_API_HOST}:${
+        import.meta.env.VITE_API_PORT
+      }/virtual-house/create`,
       {
         name: virtualHouseName,
         description: description,
@@ -165,9 +167,25 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
         },
       }
     );
-
+    resetForm();
     props.handlePostSubmit(virtualHouseResponse.data.virtual_house);
     setShowForm(false);
+  };
+
+  // helper function for resetting form state
+  const resetForm = () => {
+    setDescription('');
+    setVirtualHouseName('');
+    setLength('');
+    setHeight('');
+    setDepth('');
+    setFormValidity({
+      description: false,
+      virtualHouseName: false,
+      length: false,
+      depth: false,
+      height: false,
+    });
   };
 
   const onExitForm = () => {

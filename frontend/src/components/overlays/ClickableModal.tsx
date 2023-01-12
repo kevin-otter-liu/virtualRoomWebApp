@@ -14,7 +14,7 @@ const Modal: React.FC<ModalPropI> = (props) => {
           <p>{props.message}</p>
         </div>
         <footer className='actions'>
-          <Button onClick={props.onConfirm}>Okay</Button>
+          <Button type='button' onClick={props.onConfirm}>Okay</Button>
         </footer>
       </div>
   );
