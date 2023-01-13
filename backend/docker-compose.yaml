@@ -24,7 +24,7 @@ services:
   #   build: .
   #   image: virtual-room-backend:v1
   #   ports:
-  #     - '5000:5000'
+  #     - '5001:5001'
   #   env_file:
   #     - ./env/server.env
   #   depends_on:

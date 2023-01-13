@@ -16,7 +16,7 @@ COPY --from=builder /frontend/dist /usr/share/nginx/html
 
 COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 3000
+EXPOSE 3001
 
 # EXPOSE 443
 
