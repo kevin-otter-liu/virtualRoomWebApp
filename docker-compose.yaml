@@ -23,7 +23,7 @@ services:
     build: ./backend
     image: virtual-room-backend:v1
     ports:
-      - '5000:5000'
+      - '5001:5001'
     env_file:
       - ./backend/env/server.env
     depends_on:
@@ -34,7 +34,7 @@ services:
     build: ./frontend
     image: virtual-room-frontend:v1
     ports: 
-      - '3000:3000'
+      - '3001:3001'
     env_file: 
       - ./frontend/.env
     restart: unless-stopped
