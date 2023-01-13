@@ -19,7 +19,7 @@ services:
     ports:
       - 8080:8080
   backend:
-    container_name: backend-container
+    container_name: virtual-room-backend-container
     build: ./backend
     image: virtual-room-backend:v1
     ports:
@@ -30,7 +30,7 @@ services:
       - postgres
     restart: unless-stopped
   frontend:
-    container_name: frontend-container
+    container_name: virtual-room-frontend-container
     build: ./frontend
     image: virtual-room-frontend:v1
     ports: 
