@@ -83,12 +83,9 @@ const expressServer = AppServer.getExpressServer();
 
 // check Auth
 // registering all routes
-AppServer.registerRoute('/api/virtual-house-project/user', userRouter);
+AppServer.registerRoute('/api/user', userRouter);
 // expressServer.use(checkAuth);
-AppServer.registerRoute(
-  '/api/virtual-house-project/virtual-house',
-  virtualHouseRouter
-);
+AppServer.registerRoute('/api/virtual-house', virtualHouseRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {

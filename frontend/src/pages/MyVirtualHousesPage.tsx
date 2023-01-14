@@ -23,7 +23,7 @@ const MyVirtualHousesPage: React.FC = () => {
     let res: AxiosResponse<Array<VirtualHouse>> = await axios.get(
       `http://${import.meta.env.VITE_API_HOST}:${
         import.meta.env.VITE_API_PORT
-      }/api/virtual-house-project/virtual-house/`,
+      }/api/virtual-house/`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,

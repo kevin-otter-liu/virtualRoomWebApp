@@ -149,7 +149,7 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
     const virtualHouseResponse = await axios.post(
       `http://${import.meta.env.VITE_API_HOST}:${
         import.meta.env.VITE_API_PORT
-      }/api/virtual-house-project/virtual-house/create`,
+      }/api/virtual-house/create`,
       {
         name: virtualHouseName,
         description: description,
