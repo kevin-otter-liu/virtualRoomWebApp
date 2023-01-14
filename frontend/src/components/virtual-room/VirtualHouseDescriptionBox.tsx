@@ -6,7 +6,10 @@ import VirtualHouseDescriptionBoxPropI from '../../types/virtual-room/VirtualHou
 import VirtualHouseCanvas from './VirtualHouseCanvas';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
 import { Canvas } from '@react-three/fiber';
-import axios from 'axios';
+import ax from 'axios';
+const axios = ax.create({
+  baseURL:'https:',
+})
 
 const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   props
@@ -29,7 +32,7 @@ const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   const onDeleteVirtualRoomHandler = async () => {
     try {
       let res = await axios.delete(
-        `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/${props.virtualHouse.id}`,
+        `/api/virtual-house/${props.virtualHouse.id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
