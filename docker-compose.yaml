@@ -18,7 +18,7 @@ services:
     restart: always
     ports:
       - 8080:8080
-  backend:
+  vh-backend:
     container_name: virtual-room-backend-container
     build: ./backend
     image: virtual-room-backend:v1
@@ -29,7 +29,7 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
-  frontend:
+  vh-frontend:
     container_name: virtual-room-frontend-container
     build: ./frontend
     image: virtual-room-frontend:v1
