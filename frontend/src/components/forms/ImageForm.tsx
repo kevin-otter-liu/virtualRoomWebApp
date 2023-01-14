@@ -94,9 +94,7 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
       );
 
       const res: AxiosResponse<VirtualHouse> = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}:${
-          import.meta.env.VITE_API_PORT
-        }/api/virtual-house/image`,
+        `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/image`,
         formData,
         {
           headers: {

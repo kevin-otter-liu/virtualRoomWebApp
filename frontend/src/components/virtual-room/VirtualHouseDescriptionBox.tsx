@@ -29,9 +29,7 @@ const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (
   const onDeleteVirtualRoomHandler = async () => {
     try {
       let res = await axios.delete(
-        `http://${import.meta.env.VITE_API_HOST}:${
-          import.meta.env.VITE_API_PORT
-        }/api/virtual-house/${props.virtualHouse.id}`,
+        `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/${props.virtualHouse.id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
