@@ -14,7 +14,7 @@ FROM nginx:stable
 
 COPY --from=builder /frontend/dist /usr/share/nginx/html
 
-COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
+COPY conf/virtual-house.bigottercodes.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3001
 
