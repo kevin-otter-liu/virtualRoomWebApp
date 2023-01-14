@@ -24,7 +24,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       let res = await axios.post(
         `http://${import.meta.env.VITE_API_HOST}:${
           import.meta.env.VITE_API_PORT
-        }/api/virtual-house-project/user/sign-in`,
+        }/api/user/sign-in`,
         {
           username,
           password,
@@ -64,7 +64,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       let res = await axios.post(
         `http://${import.meta.env.VITE_API_HOST}:${
           import.meta.env.VITE_API_PORT
-        }/api/virtual-house-project/user/sign-up`,
+        }/api/user/sign-up`,
         {
           username,
           password,
@@ -110,7 +110,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       let res = await axios.get(
         `http://${import.meta.env.VITE_API_HOST}:${
           import.meta.env.VITE_API_PORT
-        }/api/virtual-house-project/user/check-auth`,
+        }/api/user/check-auth`,
         {
           headers: {
             Authorization: `Bearer ${access_token}`,
