@@ -22,9 +22,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
     console.log(import.meta.env.VITE_API_HOST);
     try {
       let res = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}:${
-          import.meta.env.VITE_API_PORT
-        }/api/user/sign-in`,
+        `http://${import.meta.env.VITE_API_HOST}/api/user/sign-in`,
         {
           username,
           password,
@@ -62,9 +60,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const onSignUp = async (username: string, password: string) => {
     try {
       let res = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}:${
-          import.meta.env.VITE_API_PORT
-        }/api/user/sign-up`,
+        `http://${import.meta.env.VITE_API_HOST}/api/user/sign-up`,
         {
           username,
           password,
@@ -108,9 +104,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
 
     try {
       let res = await axios.get(
-        `http://${import.meta.env.VITE_API_HOST}:${
-          import.meta.env.VITE_API_PORT
-        }/api/user/check-auth`,
+        `http://${import.meta.env.VITE_API_HOST}/api/user/check-auth`,
         {
           headers: {
             Authorization: `Bearer ${access_token}`,

@@ -147,9 +147,7 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
   const onFormSubmit: React.FormEventHandler = async (event) => {
     event.preventDefault();
     const virtualHouseResponse = await axios.post(
-      `http://${import.meta.env.VITE_API_HOST}:${
-        import.meta.env.VITE_API_PORT
-      }/api/virtual-house/create`,
+      `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/create`,
       {
         name: virtualHouseName,
         description: description,
