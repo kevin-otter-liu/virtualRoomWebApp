@@ -1,9 +1,13 @@
 import React, { useState, KeyboardEvent, Fragment } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import ax, { AxiosResponse } from 'axios';
 import './AddDoorForm.css';
 import Button from '../ui/Button';
 import AddDoorFormPropI from '../../types/forms/AddDoorFormPropI';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
+
+const axios = ax.create({
+  baseURL:'https:',
+})
 
 type DoorFormData = {
   length: string;
@@ -126,7 +130,7 @@ const AddDoorForm: React.FC<AddDoorFormPropI> = (props) => {
     event.preventDefault();
 
     const res: AxiosResponse<VirtualHouse> = await axios.post(
-      `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/add-door`,
+      `/api/virtual-house/add-door`,
       {
         virtual_room_id: props.virtual_room_id,
         virtual_wall_id: props.virtual_wall_id,

@@ -1,9 +1,13 @@
-import axios, { AxiosResponse } from 'axios';
+import ax, { AxiosResponse } from 'axios';
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import VirtualHouseDescriptionBox from '../components/virtual-room/VirtualHouseDescriptionBox';
 import { AuthContext } from '../context/auth-context';
 import { VirtualHouse } from '../types/responses/VirtualHouse';
 import './MyVirtualHousesPage.css';
+
+const axios = ax.create({
+  baseURL:'https:',
+})
 
 const MyVirtualHousesPage: React.FC = () => {
   const [virtualHouses, setVirtualHouses] = useState<Array<VirtualHouse>>([]);
@@ -21,7 +25,7 @@ const MyVirtualHousesPage: React.FC = () => {
 
   const getAllVirtualHouses = useCallback(async () => {
     let res: AxiosResponse<Array<VirtualHouse>> = await axios.get(
-      `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/`,
+      `/api/virtual-house/`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,

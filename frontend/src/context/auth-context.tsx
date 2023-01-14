@@ -1,9 +1,13 @@
-import axios from 'axios';
+import ax from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { redirect, useNavigate } from 'react-router-dom';
 import AuthContextI from '../types/contexts/AuthContextI';
 import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
 import { ErrorContext } from './error-context';
+
+const axios = ax.create({
+  baseURL:'https:',
+})
 
 export const AuthContext = React.createContext<AuthContextI>({
   isLoggedIn: false,
@@ -18,11 +22,9 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const errCtx = useContext(ErrorContext);
 
   const onLogin = async (username: string, password: string) => {
-    console.log('hihi');
-    console.log(import.meta.env.VITE_API_HOST);
     try {
       let res = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}/api/user/sign-in`,
+        `/api/user/sign-in`,
         {
           username,
           password,
@@ -46,7 +48,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
         `login() is called in auth context provider. current auth status: ${isLoggedIn}`
       );
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (ax.isAxiosError(error)) {
         errCtx.setErrorParamsContext({
           isError: true,
           errorMessage: error.response?.data.message,
@@ -60,7 +62,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const onSignUp = async (username: string, password: string) => {
     try {
       let res = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}/api/user/sign-up`,
+        `/api/user/sign-up`,
         {
           username,
           password,
@@ -74,7 +76,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
         `sign up() is called in auth context provider. current auth status: ${isLoggedIn}`
       );
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (ax.isAxiosError(error)) {
         errCtx.setErrorParamsContext({
           isError: true,
           errorMessage: error.response?.data.message,
@@ -104,7 +106,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
 
     try {
       let res = await axios.get(
-        `http://${import.meta.env.VITE_API_HOST}/api/user/check-auth`,
+        `/api/user/check-auth`,
         {
           headers: {
             Authorization: `Bearer ${access_token}`,

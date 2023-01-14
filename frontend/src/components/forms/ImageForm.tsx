@@ -1,9 +1,13 @@
 import React, { useState, KeyboardEvent, Fragment, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import ax, { AxiosResponse } from 'axios';
 import './ImageForm.css';
 import Button from '../ui/Button';
 import ImageFormPropI from '../../types/forms/ImageFormPropI';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
+
+const axios = ax.create({
+  baseURL:'https:',
+})
 
 type ImageFormData = {
   face: number;
@@ -94,7 +98,7 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
       );
 
       const res: AxiosResponse<VirtualHouse> = await axios.post(
-        `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/image`,
+        `/api/virtual-house/image`,
         formData,
         {
           headers: {

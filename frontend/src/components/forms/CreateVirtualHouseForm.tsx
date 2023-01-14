@@ -1,8 +1,13 @@
 import React, { useState, Fragment } from 'react';
-import axios from 'axios';
+import ax from 'axios';
 import Button from '../ui/Button';
 import CreateVirtualHouseFormPropI from '../../types/forms/CreateVirtualHouseForm';
 import './CreateVirtualHouseForm.css';
+
+const axios = ax.create({
+  baseURL:'https:',
+})
+
 type FormValidity = {
   description: boolean;
   virtualHouseName: boolean;
@@ -147,7 +152,7 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
   const onFormSubmit: React.FormEventHandler = async (event) => {
     event.preventDefault();
     const virtualHouseResponse = await axios.post(
-      `http://${import.meta.env.VITE_API_HOST}/api/virtual-house/create`,
+      `/api/virtual-house/create`,
       {
         name: virtualHouseName,
         description: description,
