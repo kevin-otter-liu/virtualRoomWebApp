@@ -15,10 +15,6 @@
   -webkit-text-size-adjust: 100%;
 }
 
-@font-face {
-  font-family: 'Roboto';
-  src: local('Roboto'), url(./fonts/Roboto/Roboto-Black.ttf) format('truetype');
-}
 
 a {
   font-weight: 500;

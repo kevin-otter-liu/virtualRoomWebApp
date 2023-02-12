@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
 } from 'react';
 import { Fragment, useState } from 'react';
 import * as THREE from 'three';

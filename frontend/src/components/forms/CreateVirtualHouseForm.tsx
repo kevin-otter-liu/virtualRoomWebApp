@@ -1,12 +1,24 @@
 import React, { useState, Fragment } from 'react';
 import ax from 'axios';
-import Button from '../ui/Button';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CreateVirtualHouseFormPropI from '../../types/forms/CreateVirtualHouseForm';
-import './CreateVirtualHouseForm.css';
+// import './CreateVirtualHouseForm.css';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import FormHelperText from '@mui/material/FormHelperText';
+import Input from '@mui/material/Input';
+import FormGroup from '@mui/material/FormGroup';
+import FormLabel from '@mui/material/FormLabel';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 const axios = ax.create({
-  baseURL:'https:',
-})
+  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+});
 
 type FormValidity = {
   description: boolean;
@@ -32,12 +44,6 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
     height: false,
   });
 
-  const [showForm, setShowForm] = useState<boolean>(false);
-  type InputStyle = {
-    valid: { backgroundColor: '#b0f7d0' };
-    invalid: { backgroundColor: '#e34f4f' };
-  };
-
   const formValid =
     formValidity.description &&
     formValidity.virtualHouseName &&
@@ -50,8 +56,6 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
     event
   ) => {
     if (event.target.value == '') {
-      console.log('here');
-
       setFormValidity((prev) => {
         return {
           ...prev,
@@ -172,7 +176,6 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
     );
     resetForm();
     props.handlePostSubmit(virtualHouseResponse.data.virtual_house);
-    setShowForm(false);
   };
 
   // helper function for resetting form state
@@ -191,95 +194,110 @@ const CreateVirtualHouseForm: React.FC<CreateVirtualHouseFormPropI> = (
     });
   };
 
-  const onExitForm = () => {
-    setShowForm(false);
-  };
-
-  const onClick = () => {
-    setShowForm(true);
-  };
-
   return (
     <Fragment>
-      <Button type='button' onClick={onClick}>
-        Create a new VirtualHouse
-      </Button>
-      {showForm && (
-        <form className='create-virtual-house-form' onSubmit={onFormSubmit}>
-          <div>Enter details to create a virtual house</div>
-
-          <div>
-            <label htmlFor='name'>input house name </label>
-            <input
-              type='text'
-              id='name'
-              onChange={onNameChange}
-              style={
-                !formValidity.virtualHouseName
-                  ? { backgroundColor: '#e34f4f' }
-                  : { backgroundColor: '#b0f7d0' }
-              }
-              placeholder='Virtual House name'></input>
-          </div>
-
-          <div>
-            <label htmlFor='description'>input house description: </label>
-            <input
-              id='description'
-              onChange={onDescriptionChange}
-              type='text'
-              style={
-                !formValidity.description
-                  ? { backgroundColor: '#e34f4f' }
-                  : { backgroundColor: '#b0f7d0' }
-              }
-              placeholder='description'></input>
-          </div>
-          <div>
-            <label htmlFor='length'>input length of room: </label>
-            <input
-              id='length'
-              style={
-                !formValidity.length
-                  ? { backgroundColor: '#e34f4f' }
-                  : { backgroundColor: '#b0f7d0' }
-              }
-              onChange={onLengthChange}
-              type='number'></input>
-          </div>
-          <div>
-            <label htmlFor='depth'>input depth of room: </label>
-            <input
-              onChange={onDepthChange}
-              type='number'
-              style={
-                !formValidity.depth
-                  ? { backgroundColor: '#e34f4f' }
-                  : { backgroundColor: '#b0f7d0' }
-              }
-              placeholder={`${depth}`}></input>
-          </div>
-          <div>
-            <label htmlFor='height'>input height of room: </label>
-            <input
-              style={
-                !formValidity.height
-                  ? { backgroundColor: '#e34f4f' }
-                  : { backgroundColor: '#b0f7d0' }
-              }
-              onChange={onHeightChange}
-              type='number'
-              placeholder={`${height}`}></input>
-          </div>
-
-          <Button type='submit' disabled={!formValid}>
-            Create Virtual House
-          </Button>
-          <Button type='button' onClick={onExitForm}>
-            Exit form
-          </Button>
-        </form>
-      )}
+      <div>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls='panel1a-content'
+            id='panel1a-header'>
+            <Typography>Create a new VirtualHouse</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <form onSubmit={onFormSubmit}>
+              <FormGroup>
+                <FormLabel>Enter details to create a virtual house</FormLabel>
+                <FormControl>
+                  <InputLabel htmlFor='name'>input house name: </InputLabel>
+                  <Input
+                    value={virtualHouseName}
+                    sx={{
+                      input: {
+                        backgroundColor: !formValidity.virtualHouseName
+                          ? '#e34f4f'
+                          : '#b0f7d0',
+                      },
+                    }}
+                    type='text'
+                    id='name'
+                    onChange={onNameChange}
+                    aria-describedby='name-helper-text'
+                  />
+                </FormControl>
+                <FormControl>
+                  <InputLabel htmlFor='description'></InputLabel>
+                  <TextField
+                    value={description}
+                    sx={{
+                      input: {
+                        backgroundColor: !formValidity.description
+                          ? '#e34f4f'
+                          : '#b0f7d0',
+                      },
+                    }}
+                    label='input house description:'
+                    id='description'
+                    onChange={onDescriptionChange}
+                    aria-describedby='description-helper-text'
+                  />
+                  <FormHelperText id='description-helper-text'>
+                    A brief description of the house.
+                  </FormHelperText>
+                </FormControl>
+                <FormControl>
+                  <InputLabel htmlFor='length'>input house length: </InputLabel>
+                  <Input
+                    value={length}
+                    style={
+                      !formValidity.length
+                        ? { backgroundColor: '#e34f4f' }
+                        : { backgroundColor: '#b0f7d0' }
+                    }
+                    type='number'
+                    id='length'
+                    onChange={onLengthChange}
+                    aria-describedby='length-helper-text'
+                  />
+                </FormControl>
+                <FormControl>
+                  <InputLabel htmlFor='depth'>input house depth: </InputLabel>
+                  <Input
+                    value={depth}
+                    type='number'
+                    style={
+                      !formValidity.depth
+                        ? { backgroundColor: '#e34f4f' }
+                        : { backgroundColor: '#b0f7d0' }
+                    }
+                    id='depth'
+                    onChange={onDepthChange}
+                    aria-describedby='depth-helper-text'
+                  />
+                </FormControl>
+                <FormControl>
+                  <InputLabel htmlFor='height'>input house height: </InputLabel>
+                  <Input
+                    value={height}
+                    style={
+                      !formValidity.height
+                        ? { backgroundColor: '#e34f4f' }
+                        : { backgroundColor: '#b0f7d0' }
+                    }
+                    type='number'
+                    id='height'
+                    onChange={onHeightChange}
+                    aria-describedby='height-helper-text'
+                  />
+                </FormControl>
+                <Button type='submit' disabled={!formValid}>
+                  Submit
+                </Button>
+              </FormGroup>
+            </form>
+          </AccordionDetails>
+        </Accordion>
+      </div>
     </Fragment>
   );
 };

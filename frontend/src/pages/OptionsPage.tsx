@@ -1,5 +1,7 @@
 import { Fragment, useContext } from 'react';
-import Button from '../components/ui/Button';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
 import { Link } from 'react-router-dom';
 import './OptionsPage.css';
 import { AuthContext } from '../context/auth-context';
@@ -10,21 +12,25 @@ const OptionsPage: React.FC = () => {
   };
 
   return (
-    <Fragment>
-      <div className='options-container'>
-        <Link to='/'>
-          <Button type='button' onClick={onLogout}>
-            logout
-          </Button>
+    <ButtonGroup
+      orientation='vertical'
+      aria-label='vertical outlined button group'>
+      <Button key='1'>
+        <Link style={{color:'inherit'}} to='/virtual-house-create'>Create a Virtual House</Link>
+      </Button>
+
+      <Button key='2'>
+        <Link style={{color:'inherit'}} to='/my-virtual-houses'>View my Virtual Houses</Link>
+      </Button>
+      <Button key='3'>
+        <Link to='/search-virtual-houses' style={{color:'inherit'}}>
+          Search Virtual Houses by location
         </Link>
-        <Link to='/virtual-house-create'>
-          <Button type='button'>Create a Virtual House</Button>
-        </Link>
-        <Link to='/my-virtual-houses'>
-          <Button type='button'>View other Virtual Houses</Button>
-        </Link>
-      </div>
-    </Fragment>
+      </Button>
+      <Button key='4' onClick={onLogout}>
+        LOGOUT
+      </Button>
+    </ButtonGroup>
   );
 };
 

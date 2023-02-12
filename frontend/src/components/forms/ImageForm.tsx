@@ -1,13 +1,14 @@
-import React, { useState, KeyboardEvent, Fragment, useEffect } from 'react';
+import React, { useState, KeyboardEvent, Fragment, useEffect, useRef } from 'react';
 import ax, { AxiosResponse } from 'axios';
 import './ImageForm.css';
 import Button from '../ui/Button';
 import ImageFormPropI from '../../types/forms/ImageFormPropI';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
+import Cropper from 'react-cropper';
 
 const axios = ax.create({
-  baseURL:'https:',
-})
+  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+});
 
 type ImageFormData = {
   face: number;
@@ -17,8 +18,12 @@ type ImageFormData = {
 };
 
 const ImageForm: React.FC<ImageFormPropI> = (props) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [image, setImage] = useState<string>('');
   const [file, setFile] = useState<File>();
   const [imgPreview, setImgPreview] = useState<undefined | string>(undefined);
+  const [cropData, setCropData] = useState('#');
+  const [cropper, setCropper] = useState<Cropper>();
 
   const [imageFormData, setImageFormData] = useState<ImageFormData>({
     face: props.face,
@@ -54,6 +59,20 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
       return;
     }
     setFile(event.target.files[0]);
+
+    // read image and store the url
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result as any);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  // get image data to crop
+  const getCropData = () => {
+    if (typeof cropper !== 'undefined') {
+      setCropData(cropper.getCroppedCanvas().toDataURL());
+    }
   };
 
   // handler for the onclick event on the exit button to exit the image form
@@ -116,6 +135,23 @@ const ImageForm: React.FC<ImageFormPropI> = (props) => {
 
   return (
     <Fragment>
+      <Cropper
+        style={{ height: 400, width: '100%' }}
+        initialAspectRatio={1}
+        preview='.img-preview'
+        src={image}
+        ref={imageRef}
+        viewMode={1}
+        guides={true}
+        minCropBoxHeight={10}
+        minCropBoxWidth={10}
+        background={false}
+        responsive={true}
+        checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+        onInitialized={(instance) => {
+          setCropper(instance);
+        }}
+      />
       <form
         onKeyUp={keyboardEventHandler}
         onKeyDown={keyboardEventHandler}

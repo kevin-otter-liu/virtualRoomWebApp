@@ -6,7 +6,7 @@ import { VirtualHouse } from '../types/responses/VirtualHouse';
 import './MyVirtualHousesPage.css';
 
 const axios = ax.create({
-  baseURL:'https:',
+  baseURL:'http://'+import.meta.env.VITE_API_HOST,
 })
 
 const MyVirtualHousesPage: React.FC = () => {

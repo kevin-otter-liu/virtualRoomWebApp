@@ -53,22 +53,22 @@ class VirtualRoom extends Model<
 VirtualRoom.init(
   {
     x: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     y: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     z: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     length: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     height: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     depth: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
     },
     wall_no: {
       type: DataTypes.INTEGER,

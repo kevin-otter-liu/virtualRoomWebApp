@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Fragment, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateVirtualHouseForm from '../components/forms/CreateVirtualHouseForm';
@@ -7,6 +7,9 @@ import VirtualHouseCanvas from '../components/virtual-room/VirtualHouseCanvas';
 import { AuthContext } from '../context/auth-context';
 import { VirtualHouseContext } from '../context/virtual-house-context';
 import { VirtualHouse } from '../types/responses/VirtualHouse';
+
+
+
 const CreateVirtualHousePage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -29,11 +32,6 @@ const CreateVirtualHousePage: React.FC = () => {
     VHctx.setVirtualHouse(virtualHouseRes);
   };
 
-  // exit Virtual Room Handler
-  const onExitVirtualRoomHandler = (event: React.MouseEvent) => {
-    VHctx.setVirtualHouse(null);
-  };
-
   //
   return (
     <Fragment>
@@ -42,11 +40,6 @@ const CreateVirtualHousePage: React.FC = () => {
           <CreateVirtualHouseForm handlePostSubmit={handlePostSubmit} />
           {VHctx.virtualHouse && (
             <div className='container'>
-              <VirtualRoomButton
-                type='button'
-                onClick={onExitVirtualRoomHandler}>
-                Exit Virtual Room{' '}
-              </VirtualRoomButton>
               <Canvas>
                 <VirtualHouseCanvas createMode={true} />
               </Canvas>

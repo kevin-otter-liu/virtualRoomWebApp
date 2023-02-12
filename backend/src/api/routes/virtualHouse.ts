@@ -39,6 +39,7 @@ virtualHouseRouter.post(
     const vhId = uuidv4();
     const virtualHouse = await VirtualHouse.create({
       name: name,
+      posted: false,
       id: vhId,
       description: description,
       user_id: user.id,
@@ -352,6 +353,22 @@ virtualHouseRouter.delete('/:virtual_house_id', async (req, res, next) => {
   }
 
   await vh.destroy();
+
+  res.status(200).send();
+});
+
+virtualHouseRouter.put('/upload/:virtual_house_id', async (req, res, next) => {
+  let { virtual_house_id } = req.params;
+
+  console.log(virtual_house_id);
+
+  let vh = await VirtualHouse.findByPk(virtual_house_id);
+
+  if (!vh) {
+    return new HttpError(404, 'invalid_id');
+  }
+
+  await vh.update({ posted: true });
 
   res.status(200).send();
 });

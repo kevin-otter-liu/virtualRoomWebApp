@@ -6,7 +6,7 @@ import AddDoorFormPropI from '../../types/forms/AddDoorFormPropI';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
 
 const axios = ax.create({
-  baseURL:'https:',
+  baseURL:'http://'+import.meta.env.VITE_API_HOST,
 })
 
 type DoorFormData = {

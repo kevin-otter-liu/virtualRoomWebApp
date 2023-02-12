@@ -5,6 +5,8 @@ import { AuthContext } from '../context/auth-context';
 import LoginControl from '../components/login/LoginControl';
 import OptionsPage from './OptionsPage';
 import ErrorModalOverlay from '../components/overlays/ErrorModalOverlay';
+import StitchForm from '../components/forms/StitchForm';
+
 function Root() {
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);
@@ -19,6 +21,7 @@ function Root() {
 
   return (
     <Fragment>
+      <StitchForm/>
       {/* for displaying error modals */}
       <ErrorModalOverlay
         title={errCtx.errorTitle}

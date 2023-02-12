@@ -1,11 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import VirtualHouseCanvasPropI from '../../types/displays/VirtualHouseCanvasPropI';
 import './VirtualHouseCanvas.css';
 import VirtualHouseObject from './VirtualHouseObject';
-import { PerspectiveCamera, PresentationControls } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import {
+  Html,
+  PerspectiveCamera,
+  PresentationControls,
+} from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import { VirtualHouseContext } from '../../context/virtual-house-context';
+import VirtualRoomButton from '../ui/VirtualRoomButton';
+import * as THREE from 'three'
+import ax from 'axios';
+
+const axios = ax.create({
+  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+  },
+});
 
 const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
   const VHctx = useContext(VirtualHouseContext);
@@ -14,6 +28,7 @@ const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
     console.log('current virtualhouse in virtualHouseCanvas:');
     console.log(VHctx.virtualHouse);
   });
+  const { viewport } = useThree();
 
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();
@@ -40,8 +55,23 @@ const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
     }
   });
 
+    // exit Virtual Room Handler
+    const onExitVirtualRoomHandler = (event: React.MouseEvent) => {
+      VHctx.setVirtualHouse(null);
+    };
+  
+    // upload virtual room
+    const onUploadVirtualHouse = async (event: React.MouseEvent) => {
+      if (!VHctx.virtualHouse) {
+        return;
+      }
+      console.log(localStorage.getItem('access_token'));
+  
+      let virtualHouseId = VHctx.virtualHouse.id;
+      let res = await axios.put(`/api/virtual-house/upload/${virtualHouseId}`);
+    };
   return (
-    <PerspectiveCamera >
+    <PerspectiveCamera>
       <PresentationControls
         enabled={true} // the controls can be disabled by setting this to false
         global={false} // Spin globally or by dragging the model
@@ -54,9 +84,22 @@ const VirtualHouseCanvas: React.FC<VirtualHouseCanvasPropI> = (props) => {
         azimuth={[-Infinity, Infinity]} // Horizontal limits
       >
         {VHctx.virtualHouse && (
-          <VirtualHouseObject
-            createMode={props.createMode}
-            virtualHouse={VHctx.virtualHouse}></VirtualHouseObject>
+          <Fragment>
+            <Html position={new THREE.Vector3(-viewport.width, viewport.height,-5)}>
+              <VirtualRoomButton
+                type='button'
+                onClick={onExitVirtualRoomHandler}>
+                Exit Virtual Room
+              </VirtualRoomButton>
+              <VirtualRoomButton type='button' onClick={onUploadVirtualHouse}>
+                Upload
+              </VirtualRoomButton>
+            </Html>
+
+            <VirtualHouseObject
+              createMode={props.createMode}
+              virtualHouse={VHctx.virtualHouse}></VirtualHouseObject>
+          </Fragment>
         )}
       </PresentationControls>
     </PerspectiveCamera>

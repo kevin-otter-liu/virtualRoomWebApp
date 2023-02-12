@@ -8,7 +8,7 @@ import express, {
 } from 'express';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-console.log(path.join(__dirname, '../env/server.env'));
+
 dotenv.config({
   path: path.join(__dirname, '../env/server.env'),
 });
@@ -30,19 +30,12 @@ class Server {
   constructor(port: number, dbConn: Sequelize) {
     this.port = port;
     Server.server = express();
-
-    // register middleware for parsing request body to json
-    // {
-    //   origin: [`http://localhost:3000`, `http://localhost:5173/`],
-    //   optionsSuccessStatus: 200,
-    // }
     Server.server.use(cors());
     Server.server.use(express.json());
     Server.server.use(express.urlencoded({ extended: true }));
 
     // connect to database
     Server.db = dbConn;
-    console.log(process.env.DB_USER);
 
     dbConn.sync().then(() => {
       console.log('database synced');

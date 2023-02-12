@@ -1,13 +1,12 @@
 import ax from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
 import AuthContextI from '../types/contexts/AuthContextI';
 import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
 import { ErrorContext } from './error-context';
 
 const axios = ax.create({
-  baseURL:'https:',
-})
+  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+});
 
 export const AuthContext = React.createContext<AuthContextI>({
   isLoggedIn: false,
@@ -23,13 +22,10 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
 
   const onLogin = async (username: string, password: string) => {
     try {
-      let res = await axios.post(
-        `/api/user/sign-in`,
-        {
-          username,
-          password,
-        }
-      );
+      let res = await axios.post(`/api/user/sign-in`, {
+        username,
+        password,
+      });
 
       let { access_token, expires_at } = res.data;
       window.localStorage.setItem('access_token', access_token);
@@ -61,13 +57,10 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
 
   const onSignUp = async (username: string, password: string) => {
     try {
-      let res = await axios.post(
-        `/api/user/sign-up`,
-        {
-          username,
-          password,
-        }
-      );
+      let res = await axios.post(`/api/user/sign-up`, {
+        username,
+        password,
+      });
 
       let { access_token, expires_at } = res.data;
       window.localStorage.setItem('access_token', access_token);
@@ -105,14 +98,11 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
     }
 
     try {
-      let res = await axios.get(
-        `/api/user/check-auth`,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        }
-      );
+      let res = await axios.get(`/api/user/check-auth`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
 
       if (res.status === 200) {
         setIsLoggedIn(true);

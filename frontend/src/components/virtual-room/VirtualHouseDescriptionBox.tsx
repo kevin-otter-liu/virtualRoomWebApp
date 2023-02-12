@@ -8,7 +8,7 @@ import { VirtualHouseContext } from '../../context/virtual-house-context';
 import { Canvas } from '@react-three/fiber';
 import ax from 'axios';
 const axios = ax.create({
-  baseURL:'https:',
+  baseURL:'http://'+import.meta.env.VITE_API_HOST,
 })
 
 const VirtualHouseDescriptionBox: React.FC<VirtualHouseDescriptionBoxPropI> = (

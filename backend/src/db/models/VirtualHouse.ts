@@ -24,6 +24,10 @@ class VirtualHouse extends Model<
   declare description: string | null;
   declare user_id: ForeignKey<User['id']>;
   declare name: string | null;
+  declare posted: boolean;
+  declare thumbnail: string | null;
+  declare location: string | null;
+
   declare getVirtualRooms: HasManyGetAssociationsMixin<VirtualRoom>;
   declare addVirtualRoom: HasManyAddAssociationsMixin<VirtualRoom, number>;
   declare addVirtualRooms: HasManyAddAssociationsMixin<VirtualRoom, number>;
@@ -45,6 +49,17 @@ VirtualHouse.init(
   {
     description: {
       type: DataTypes.TEXT,
+    },
+    thumbnail: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    posted: {
+      type: DataTypes.BOOLEAN,
     },
     id: {
       type: DataTypes.UUID,

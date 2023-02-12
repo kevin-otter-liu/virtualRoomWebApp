@@ -9,11 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.6",
     "@react-three/drei": "^9.47.1",
     "@react-three/fiber": "^8.9.1",
     "axios": "^1.2.1",
     "dat.gui": "^0.7.9",
     "react": "^18.2.0",
+    "react-cropper": "^2.1.8",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
     "three": "^0.147.0"
