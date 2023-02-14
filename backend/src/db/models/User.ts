@@ -8,6 +8,7 @@ import {
 
 import dbConn from '../config';
 import Image from './Image';
+import Listing from './Listing';
 import VirtualHouse from './VirtualHouse';
 
 // import Token from './Token';
@@ -47,6 +48,12 @@ User.hasMany(VirtualHouse, {
   sourceKey: 'id',
   foreignKey: 'user_id',
   as: 'virtual_houses',
+  onDelete: 'CASCADE',
+});
+User.hasMany(Listing, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'listings',
   onDelete: 'CASCADE',
 });
 

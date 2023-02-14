@@ -20,6 +20,8 @@ import dbConn from './db/config';
 import * as Models from './db/models';
 import cors from 'cors';
 import { HttpError } from './libs/http-error';
+import listingRouter from './api/routes/listing';
+import { checkAuth } from './api/middleware/check-auth';
 const port: number = parseInt(process.env.SERVER_PORT!) || 3000;
 
 class Server {
@@ -77,8 +79,9 @@ const expressServer = AppServer.getExpressServer();
 // check Auth
 // registering all routes
 AppServer.registerRoute('/api/user', userRouter);
-// expressServer.use(checkAuth);
+expressServer.use(checkAuth);
 AppServer.registerRoute('/api/virtual-house', virtualHouseRouter);
+AppServer.registerRoute('/api/listing', listingRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
