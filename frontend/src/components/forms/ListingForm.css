@@ -1,0 +1,28 @@
+.listing-form {
+  display: flex;
+  flex-direction: row;
+  background-color: #c3b1e1;
+  border: 5px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.listing-form-control {
+  background:inherit;
+}
+
+.custom-file-upload {
+    display: flex;
+    flex-direction: row;
+}
+
+.custom-file-upload img{
+    /* display:flex; */
+    /* justify-self: center; */
+    content: url('./assets/static-upload.png');
+    width: 60px;
+    height: 60px;
+}
+
+.custom-file-upload div{
+  justify-self: center;
+}

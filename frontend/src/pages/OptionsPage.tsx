@@ -16,18 +16,27 @@ const OptionsPage: React.FC = () => {
       orientation='vertical'
       aria-label='vertical outlined button group'>
       <Button key='1'>
-        <Link style={{color:'inherit'}} to='/virtual-house-create'>Create a Virtual House</Link>
+        <Link style={{ color: 'inherit' }} to='/virtual-house-create'>
+          Create a Virtual House
+        </Link>
       </Button>
 
       <Button key='2'>
-        <Link style={{color:'inherit'}} to='/my-virtual-houses'>View my Virtual Houses</Link>
+        <Link style={{ color: 'inherit' }} to='/my-virtual-houses'>
+          View my Virtual Houses
+        </Link>
       </Button>
       <Button key='3'>
-        <Link to='/search-virtual-houses' style={{color:'inherit'}}>
+        <Link to='/search-virtual-houses' style={{ color: 'inherit' }}>
           Search Virtual Houses by location
         </Link>
       </Button>
-      <Button key='4' onClick={onLogout}>
+      <Button key='4'>
+        <Link to='/test' style={{ color: 'inherit' }}>
+          test
+        </Link>
+      </Button>
+      <Button key='5' onClick={onLogout}>
         LOGOUT
       </Button>
     </ButtonGroup>

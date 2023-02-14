@@ -1,0 +1,8 @@
+.canvas-container {
+    border: 3px solid white;
+    border-radius: 5px;
+    z-index: 15;
+    width: 50vw;
+    height: 70vh;
+    background-color: green;
+}

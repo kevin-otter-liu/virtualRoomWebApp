@@ -17,6 +17,7 @@
     "@react-three/fiber": "^8.9.1",
     "axios": "^1.2.1",
     "dat.gui": "^0.7.9",
+    "leva": "^0.9.34",
     "react": "^18.2.0",
     "react-cropper": "^2.1.8",
     "react-dom": "^18.2.0",
