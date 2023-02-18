@@ -22,6 +22,7 @@ import cors from 'cors';
 import { HttpError } from './libs/http-error';
 import listingRouter from './api/routes/listing';
 import { checkAuth } from './api/middleware/check-auth';
+import searchRouter from './api/routes/search';
 const port: number = parseInt(process.env.SERVER_PORT!) || 3000;
 
 class Server {
@@ -82,16 +83,21 @@ AppServer.registerRoute('/api/user', userRouter);
 expressServer.use(checkAuth);
 AppServer.registerRoute('/api/virtual-house', virtualHouseRouter);
 AppServer.registerRoute('/api/listing', listingRouter);
+AppServer.registerRoute('/api/search', searchRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
+  // if (res.headersSent) {
+  //   return next(err);
+  // }
 
   if (err instanceof HttpError) {
     res.status(err.status_code).json({ message: err.message });
+    return next();
   }
+
+  res.status(500).send();
+  return next();
 };
 expressServer.use(errorHandler);
 

@@ -1,0 +1,17 @@
+.navigation-bar-search-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px;
+}
+
+.navigation-bar-search-wrapper > label {
+  color: white;
+}
+
+.navigation-bar-search-wrapper .search-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

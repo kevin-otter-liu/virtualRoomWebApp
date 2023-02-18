@@ -6,9 +6,9 @@ import {
 import { useFrame } from '@react-three/fiber';
 import { BackSide, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
-import TestProp from '../../types/test/TestProp';
+import BuildingProp from '../../types/canvas-objects/BuildingProp';
 
-const TestComponent: React.FC<TestProp> = (props) => {
+const Building: React.FC<BuildingProp> = (props) => {
   
   const renderBuilding = () =>{
     const fbx = useFBX(props.url)
@@ -59,4 +59,4 @@ const TestComponent: React.FC<TestProp> = (props) => {
   );
 };
 
-export default TestComponent;
+export default Building;

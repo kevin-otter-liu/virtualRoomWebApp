@@ -12,15 +12,16 @@ import CreateVirtualHousePage from './pages/CreateVirtualHousePage';
 import { VirtualHouseProvider } from './context/virtual-house-context';
 import MyVirtualHousesPage from './pages/MyVirtualHousesPage';
 import OptionsPage from './pages/OptionsPage';
-import TestPage from './pages/TestPage';
+import UploadListingPage from './pages/UploadListingPage';
+import SearchListingPage from './pages/SearchListingPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Root />, errorElement: <ErrorPage /> },
   { path: '/virtual-house-create', element: <CreateVirtualHousePage /> },
   { path: '/my-virtual-houses', element: <MyVirtualHousesPage /> },
   { path: '/options', element: <OptionsPage /> },
-  { path: '/test', element: <TestPage /> },
-
+  { path: '/upload-listing', element: <UploadListingPage /> },
+  { path: '/search-listing', element: <SearchListingPage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

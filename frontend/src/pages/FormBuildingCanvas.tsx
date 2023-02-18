@@ -16,7 +16,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import TestComponent from '../components/test/TestComponent';
+import Building from '../components/canvas-objects/Building';
 import './FormBuildingCanvas.css';
 import { useControls } from 'leva';
 import FormBuildingCanvasProp from '../types/forms/FormBuildingCanvasProp';
@@ -44,15 +44,10 @@ const FormBuildingCanvas: React.FC<FormBuildingCanvasProp> = (props) => {
     <div className='canvas-container'>
       <Canvas camera={{ position: [0, 0, 0], far: 100000 }}>
       <group position={[0, -0.01, 0]}>
-        <Suspense fallback={null}>
-          <Grid position={[0, -0.01, 0]} args={gridSize} {...gridConfig} />
-        </Suspense>
         <ambientLight intensity={0.5} />
         <directionalLight position={[0, 0, 5]} />
-        <TestComponent url={props.rawBuildingDataUrl}></TestComponent>
+        <Building url={props.rawBuildingDataUrl}></Building>
       </group>
-      {/* <OrbitControls makeDefault /> */}
-      {/* <Environment preset='city' /> */}
       <GizmoHelper alignment='bottom-right' margin={[80, 80]}>
         <GizmoViewport
           axisColors={['#9d4b4b', '#2f7f4f', '#3b5b9d']}

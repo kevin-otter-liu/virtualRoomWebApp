@@ -5,6 +5,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Link } from 'react-router-dom';
 import './OptionsPage.css';
 import { AuthContext } from '../context/auth-context';
+
 const OptionsPage: React.FC = () => {
   const authCtx = useContext(AuthContext);
   const onLogout = () => {
@@ -12,34 +13,30 @@ const OptionsPage: React.FC = () => {
   };
 
   return (
-    <ButtonGroup
-      orientation='vertical'
-      aria-label='vertical outlined button group'>
-      <Button key='1'>
-        <Link style={{ color: 'inherit' }} to='/virtual-house-create'>
-          Create a Virtual House
-        </Link>
-      </Button>
-
-      <Button key='2'>
-        <Link style={{ color: 'inherit' }} to='/my-virtual-houses'>
-          View my Virtual Houses
-        </Link>
-      </Button>
-      <Button key='3'>
-        <Link to='/search-virtual-houses' style={{ color: 'inherit' }}>
-          Search Virtual Houses by location
-        </Link>
-      </Button>
-      <Button key='4'>
-        <Link to='/test' style={{ color: 'inherit' }}>
-          test
-        </Link>
-      </Button>
-      <Button key='5' onClick={onLogout}>
-        LOGOUT
-      </Button>
-    </ButtonGroup>
+    <Fragment>
+      <ButtonGroup
+        orientation='vertical'
+        aria-label='vertical outlined button group'>
+        <Button key='1'>
+          <Link style={{ color: 'inherit' }} to='/my-virtual-houses'>
+            View my Virtual Houses
+          </Link>
+        </Button>
+        <Button key='2'>
+          <Link to='/upload-listing' style={{ color: 'inherit' }}>
+            Upload a Listing
+          </Link>
+        </Button>
+        <Button key='3'>
+          <Link to='/search-listing' style={{ color: 'inherit' }}>
+            Search for a Listing
+          </Link>
+        </Button>
+        <Button key='4' onClick={onLogout}>
+          LOGOUT
+        </Button>
+      </ButtonGroup>
+    </Fragment>
   );
 };
 
