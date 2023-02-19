@@ -1,8 +1,7 @@
 import { Fragment, useState } from 'react';
 import SearchBar from '../components/displays/SearchBar';
-import ax, { AxiosResponse } from 'axios';
+import ax from 'axios';
 import { ListingData } from '../types/data/ListingData';
-import Listing from '../components/displays/Listing';
 import ListingsContainer from '../components/displays/ListingsContainer';
 import NavigationBar from '../components/displays/NavigationBar';
 

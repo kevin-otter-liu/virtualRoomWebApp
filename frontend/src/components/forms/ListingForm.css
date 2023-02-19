@@ -1,28 +1,35 @@
 .listing-form {
   display: flex;
-  flex-direction: row;
-  background-color: #c3b1e1;
-  border: 5px solid white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  flex-direction: column;
+  gap: 5px;
 }
 
 .listing-form-control {
-  background:inherit;
+  background: #c3b1e1;
+  border: 5px dashed white;
 }
 
 .custom-file-upload {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 5px;
 }
 
-.custom-file-upload img{
-    /* display:flex; */
-    /* justify-self: center; */
-    content: url('./assets/static-upload.png');
-    width: 60px;
-    height: 60px;
+.custom-file-upload img {
+  content: url('./assets/static-upload.png');
+  aspect-ratio: 1;
+  height: 100%;
 }
 
-.custom-file-upload div{
-  justify-self: center;
+.texture-file-list {
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: center;
+}
+
+.texture-file-item {
+  display:flex;
+  gap:5px;
 }
