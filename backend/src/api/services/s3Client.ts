@@ -32,14 +32,16 @@ class S3 {
     this.bucketName = bucketName;
   }
 
-  public async storeImageInBucket(
+  public async storeFileInBucket(
     image_id: string,
     image_buffer: Buffer,
-    ContentType: string
+    ContentType: string,
+    folder?: string
   ): Promise<void> {
+    console.log(`${folder}/${image_id}`);
     const params = {
       Bucket: this.bucketName,
-      Key: image_id,
+      Key: folder ? `${folder}/${image_id}` : image_id,
       Body: image_buffer,
       ContentType: ContentType,
     };
@@ -48,13 +50,14 @@ class S3 {
     await this.s3.send(command);
   }
 
-  public async generateImageUrlFromBucket(
+  public async generateFileUrlFromBucket(
     image_id: string,
-    expiry_time: number = 3600
+    expiry_time: number = 3600,
+    folder?: string
   ): Promise<string> {
     const getObjectParams = {
       Bucket: this.bucketName,
-      Key: image_id,
+      Key: folder ? `${folder}/${image_id}` : image_id,
     };
     const command = new GetObjectCommand(getObjectParams);
     const url = await getSignedUrl(this.s3, command, {
@@ -63,7 +66,7 @@ class S3 {
     return url;
   }
 
-  public async deleteImageFromBucket(image_id: string) {
+  public async deleteFileFromBucket(image_id: string) {
     let deleteObjectParams = {
       Bucket: this.bucketName,
       Key: image_id,

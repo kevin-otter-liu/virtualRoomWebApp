@@ -87,9 +87,9 @@ AppServer.registerRoute('/api/search', searchRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  // if (res.headersSent) {
-  //   return next(err);
-  // }
+  if (res.headersSent) {
+    return next(err);
+  }
 
   if (err instanceof HttpError) {
     res.status(err.status_code).json({ message: err.message });

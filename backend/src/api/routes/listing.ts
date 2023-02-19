@@ -13,18 +13,28 @@ const EXP_TIME = 60 * 60;
 
 const s3 = listingRouter.post(
   '/create',
-  upload.single('building'),
+  upload.fields([
+    { name: 'building', maxCount: 1 },
+    { name: 'texture', maxCount: 10 },
+  ]),
   async (req, res, next) => {
-    if (!req.file) {
+    if (!req.files || req.files instanceof Array) {
       return next(new HttpError(404, 'file not attached'));
     }
+    // check for that files uploaded has an extension (e.g .fbx , .jpg)
+    req.files['building'].forEach((file) => {
+      if (file.originalname.split('.').length < 2) {
+        return next(new HttpError(404, 'invalid file format'));
+      }
+    });
 
-    // check for correct file extension format
-    let fileNameSplit = req.file.originalname.split('.');
+    req.files['texture'].forEach((file) => {
+      if (file.originalname.split('.').length < 2) {
+        return next(new HttpError(404, 'invalid file format'));
+      }
+    });
 
-    if (fileNameSplit.length < 1) {
-      return next(new HttpError(404, 'invalid file format'));
-    }
+    let fileNameSplit = req.files['building'][0].originalname.split('.');
 
     if (!req.body.data) {
       return next(new HttpError(404, 'no file date attached'));
@@ -59,11 +69,27 @@ const s3 = listingRouter.post(
     let file_extension = '.' + fileNameSplit[fileNameSplit.length - 1];
     const listing_id = uuidv4();
 
-    await s3Service.storeImageInBucket(
+    await s3Service.storeFileInBucket(
       listing_id + file_extension,
-      req.file.buffer,
-      req.file.mimetype
+      req.files['building'][0].buffer,
+      req.files['building'][0].mimetype,
+      'building1'
     );
+    // console.log(req.files['texture'][0]);
+    // console.log(req.files['texture'][1]);
+
+    // await s3Service.storeFileInBucket(
+    //   req.files['texture'][0].originalname,
+    //   req.files['texture'][0].buffer,
+    //   req.files['texture'][0].mimetype,
+    //   'building1'
+    // );
+    // await s3Service.storeFileInBucket(
+    //   req.files['texture'][1].originalname,
+    //   req.files['texture'][1].buffer,
+    //   req.files['texture'][1].mimetype,
+    //   'building1'
+    // );
 
     let currentTime = new Date();
     await Listing.create({
@@ -79,9 +105,10 @@ const s3 = listingRouter.post(
 
     // generate URL
 
-    const url = await s3Service.generateImageUrlFromBucket(
+    const url = await s3Service.generateFileUrlFromBucket(
       listing_id + file_extension,
-      EXP_TIME
+      EXP_TIME,
+      'building1'
     );
 
     res.status(200).json({ url });

@@ -211,7 +211,7 @@ virtualHouseRouter.post(
 
     // if an old image already exists on current virtual wall, delete it
     if (vw.dataValues.image_id) {
-      let data = await s3Service.deleteImageFromBucket(vw.dataValues.image_id);
+      let data = await s3Service.deleteFileFromBucket(vw.dataValues.image_id);
       await ImageModel.destroy({ where: { id: vw.dataValues.image_id } });
     }
 
@@ -224,8 +224,8 @@ virtualHouseRouter.post(
     const image_id = uuidv4();
 
     // store the new image into the bucket and set its access expiry for 5 mins
-    await s3Service.storeImageInBucket(image_id, buffer, req.file.mimetype);
-    const image_url = await s3Service.generateImageUrlFromBucket(
+    await s3Service.storeFileInBucket(image_id, buffer, req.file.mimetype);
+    const image_url = await s3Service.generateFileUrlFromBucket(
       image_id,
       EXP_TIME
     );
@@ -289,7 +289,7 @@ virtualHouseRouter.get(
     const image = await ImageModel.findOne();
 
     // get image from s3 using id
-    const url = await s3Service.generateImageUrlFromBucket(image!.id, EXP_TIME);
+    const url = await s3Service.generateFileUrlFromBucket(image!.id, EXP_TIME);
 
     // send the information of the image with the url
     res.send({

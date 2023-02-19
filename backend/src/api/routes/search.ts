@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import Listing from '../../db/models/Listing';
-const { Op } = require('sequelize');
+import { Op } from 'sequelize';
 
 const searchRouter = Router();
 
