@@ -5,10 +5,11 @@ import { ListingData } from '../types/data/ListingData';
 import ListingsContainer from '../components/displays/ListingsContainer';
 import NavigationBar from '../components/displays/NavigationBar';
 
+import './SearchListingPage.css';
+
 const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
 });
-
 
 const SearchListingPage = () => {
   const [listings, setListings] = useState<ListingData[]>([]);
@@ -27,8 +28,12 @@ const SearchListingPage = () => {
   return (
     <Fragment>
       <NavigationBar />
-      <SearchBar onSearch={onSearch} />
-      <ListingsContainer listings={listings} />
+      <div className='search-page'>
+        <div className='search-results-container'>
+          <SearchBar onSearch={onSearch} />
+          <ListingsContainer listings={listings} />
+        </div>
+      </div>
     </Fragment>
   );
 };

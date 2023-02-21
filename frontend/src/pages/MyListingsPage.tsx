@@ -4,7 +4,7 @@ import ax from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { ListingData } from '../types/data/ListingData';
 import ListingsContainer from '../components/displays/ListingsContainer';
-import { Typography } from '@mui/material';
+import NavigationBar from '../components/displays/NavigationBar';
 
 const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
@@ -34,6 +34,7 @@ const MyListingsPage = () => {
 
   return (
     <div>
+      <NavigationBar/>
       <div className='my-listings-title'>
         <h2>My Listings</h2>
       </div>

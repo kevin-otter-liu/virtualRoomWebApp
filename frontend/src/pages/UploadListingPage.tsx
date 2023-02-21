@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import FormBuildingCanvas from '../components/canvas-objects/FormBuildingCanvas';
+import NavigationBar from '../components/displays/NavigationBar';
 import ListingForm from '../components/forms/ListingForm';
 import './UploadListingPage.css';
 const UploadListingPage: React.FC = () => {
@@ -9,13 +10,16 @@ const UploadListingPage: React.FC = () => {
     setRawBuildingDataUrl(fileUrl);
   };
 
-
-
   return (
-    <div className='test-page'>
-      <ListingForm updateBuildingCanvasPreview={updateBuildingCanvasPreview} />
-      <FormBuildingCanvas rawBuildingDataUrl={rawBuildingDataUrl}/>
-    </div>
+    <Fragment>
+      <NavigationBar />
+      <div className='test-page'>
+        <ListingForm
+          updateBuildingCanvasPreview={updateBuildingCanvasPreview}
+        />
+        <FormBuildingCanvas rawBuildingDataUrl={rawBuildingDataUrl} />
+      </div>
+    </Fragment>
   );
 };
 

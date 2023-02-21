@@ -70,6 +70,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
     setShowBuildingCanvas(true);
   };
 
+  let datePosted = new Date(listingProp.listing.createdAt).toUTCString();
   return (
     <Fragment>
       {showBuildingCanvas && fbxUrl && (
@@ -78,7 +79,14 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
           rawBuildingDataUrl={fbxUrl}
         />
       )}
-      <ListItem>
+      <ListItem
+        style={{
+          backgroundColor: 'lightblue',
+          borderRadius: '10px',
+          boxShadow: '5px 10px',
+          marginBottom:'20px',
+          border: '5px dashed white'
+        }}>
         <ListItemAvatar>
           <Avatar alt={listingProp.listing.name} src='#' />
         </ListItemAvatar>
@@ -107,7 +115,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
                 component='div'
                 variant='overline'
                 color='text.primary'>
-                posted on: {listingProp.listing.createdAt}
+                posted on: {datePosted}
               </Typography>
             </div>
           }

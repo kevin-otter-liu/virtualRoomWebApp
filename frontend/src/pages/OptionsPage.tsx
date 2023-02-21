@@ -1,42 +1,41 @@
-import { Fragment, useContext } from 'react';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-
-import { Link } from 'react-router-dom';
 import './OptionsPage.css';
-import { AuthContext } from '../context/auth-context';
+import CardOptionProp from '../types/displays/CardOptionProp';
+import CardOption from '../components/displays/CardOption';
+
+const cardDatas: CardOptionProp[] = [
+  {
+    title: 'VIEW YOUR PROJECT LISTINGS',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-1.jpg',
+    body: 'View my posted listings',
+    urlRedirectTo: '/my-listings',
+    buttonPrompt:'VIEW YOUR LISTINGS HERE'
+  },
+  {
+    title: 'UPLOAD A LISTING',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-2.jpg',
+    body: 'upload and post a listings',
+    urlRedirectTo: '/upload-listing',
+    buttonPrompt:'UPLOAD A PROJECT HERE'
+  },
+  {
+    title: 'SEARCH FOR A PROJECT',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-3.jpg',
+    body: 'Search for a Listing and view the listing in 3D',
+    urlRedirectTo: '/search-listing',
+    buttonPrompt:'SEARCH AND VIEW A PROJECT HERE'
+  },
+];
 
 const OptionsPage: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-  const onLogout = () => {
-    authCtx.logout();
-  };
-
   return (
-    <Fragment>
-      <ButtonGroup
-        orientation='vertical'
-        aria-label='vertical outlined button group'>
-        <Button key='1'>
-          <Link style={{ color: 'inherit' }} to='/my-listings'>
-            View my Virtual Houses
-          </Link>
-        </Button>
-        <Button key='2'>
-          <Link to='/upload-listing' style={{ color: 'inherit' }}>
-            Upload a Listing
-          </Link>
-        </Button>
-        <Button key='3'>
-          <Link to='/search-listing' style={{ color: 'inherit' }}>
-            Search for a Listing
-          </Link>
-        </Button>
-        <Button key='4' onClick={onLogout}>
-          LOGOUT
-        </Button>
-      </ButtonGroup>
-    </Fragment>
+    <div className='options-container'>
+      {cardDatas.map((cardData, i) => {
+        return <CardOption key={i} {...cardData}></CardOption>;
+      })}
+    </div>
   );
 };
 

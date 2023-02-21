@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useContext, useRef } from 'react';
 import { AuthContext } from '../../context/auth-context';
 import { ErrorContext } from '../../context/error-context';

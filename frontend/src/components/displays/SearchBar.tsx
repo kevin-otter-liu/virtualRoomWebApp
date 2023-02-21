@@ -6,18 +6,18 @@ import './SearchBar.css';
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
   let [searchFactor, setSearchFactor] = useState<string>('');
-  
-  const onTextChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchFactor(e.currentTarget.value)
-  }
 
-  const onSearch = async () =>{
-    props.onSearch(searchFactor)
-  }
+  const onTextChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setSearchFactor(e.currentTarget.value);
+  };
+
+  const onSearch = async () => {
+    props.onSearch(searchFactor);
+  };
   return (
     <div className='navigation-bar-search-wrapper'>
-      <Typography variant='h2' color='primary'>
-        Search for projects
+      <Typography variant='h2' className='search-bar-title'>
+        SEARCH FOR PROJECTS
       </Typography>
       <div className='navigation-bar-search-wrapper search-bar'>
         <TextField
