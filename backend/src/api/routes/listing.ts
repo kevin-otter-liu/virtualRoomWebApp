@@ -5,17 +5,19 @@ import s3Service from '../services/s3Client';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 import Listing from '../../db/models/Listing';
+import { Op } from 'sequelize';
+import Image from '../../db/models/Image';
 const listingRouter = Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const EXP_TIME = 60 * 60;
 
-const s3 = listingRouter.post(
+listingRouter.post(
   '/create',
   upload.fields([
     { name: 'building', maxCount: 1 },
-    { name: 'texture', maxCount: 10 },
+    { name: 'thumbnail', maxCount: 1 },
   ]),
   async (req, res, next) => {
     if (!req.files || req.files instanceof Array) {
@@ -28,8 +30,13 @@ const s3 = listingRouter.post(
       }
     });
 
-    req.files['texture'].forEach((file) => {
-      if (file.originalname.split('.').length < 2) {
+    // check thumbnail are allowed types
+    const allowedImgTypes = ['png', 'jpeg', 'jpg', 'gif'];
+    req.files['thumbnail'].forEach((file) => {
+      if (
+        file.originalname.split('.').length < 2 ||
+        !allowedImgTypes.includes(file.originalname.split('.')[1])
+      ) {
         return next(new HttpError(404, 'invalid file format'));
       }
     });
@@ -68,31 +75,22 @@ const s3 = listingRouter.post(
 
     let file_extension = '.' + fileNameSplit[fileNameSplit.length - 1];
     const listing_id = uuidv4();
+    const thumbnail_id = uuidv4();
 
     await s3Service.storeFileInBucket(
       listing_id + file_extension,
       req.files['building'][0].buffer,
-      req.files['building'][0].mimetype,
-      'building1'
+      req.files['building'][0].mimetype
     );
-    // console.log(req.files['texture'][0]);
-    // console.log(req.files['texture'][1]);
-
-    // await s3Service.storeFileInBucket(
-    //   req.files['texture'][0].originalname,
-    //   req.files['texture'][0].buffer,
-    //   req.files['texture'][0].mimetype,
-    //   'building1'
-    // );
-    // await s3Service.storeFileInBucket(
-    //   req.files['texture'][1].originalname,
-    //   req.files['texture'][1].buffer,
-    //   req.files['texture'][1].mimetype,
-    //   'building1'
-    // );
+    await s3Service.storeFileInBucket(
+      thumbnail_id,
+      req.files['thumbnail'][0].buffer,
+      req.files['thumbnail'][0].mimetype
+    );
 
     let currentTime = new Date();
-    await Listing.create({
+
+    let listing = await Listing.create({
       id: listing_id,
       user_id: user.id,
       description,
@@ -103,16 +101,81 @@ const s3 = listingRouter.post(
       expire_at: new Date(currentTime.getTime() + EXP_TIME * 1000),
     });
 
+    await Image.create({
+      id: thumbnail_id,
+      image_able: 'listing-thumbnail',
+      expire_at: new Date(currentTime.getTime() + EXP_TIME * 1000),
+      user_id: user.id,
+      listing_id: listing_id,
+    });
+
     // generate URL
 
-    const url = await s3Service.generateFileUrlFromBucket(
+    const fbxUrl = await s3Service.generateFileUrlFromBucket(
       listing_id + file_extension,
-      EXP_TIME,
-      'building1'
+      EXP_TIME
+    );
+    const thumbnailUrl = await s3Service.generateFileUrlFromBucket(
+      thumbnail_id,
+      EXP_TIME
     );
 
-    res.status(200).json({ url });
+    res.status(200).json([fbxUrl, thumbnailUrl]);
+    return next();
   }
 );
+
+// get all user's listings
+listingRouter.get('/', async (req, res, next) => {
+  const user = (req as CustomRequest).user;
+  let listings = await Listing.findAll({
+    where: {
+      user_id: user.id,
+    },
+    order: [['createdAt', 'DESC']],
+  });
+  res.json(listings);
+  return next();
+});
+
+listingRouter.get('/thumbnail-image', async (req, res, next) => {
+  let listing_id = req.query.listing_id;
+  if (!listing_id) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  let image = await Image.findOne({
+    where: { listing_id: listing_id as string },
+  });
+  if (!image) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  const thumbnailUrl = await s3Service.generateFileUrlFromBucket(
+    image.id,
+    EXP_TIME
+  );
+  res.json({ url: thumbnailUrl });
+  return next();
+});
+
+listingRouter.get('/fbx', async (req, res, next) => {
+  let listing_id = req.query.listing_id;
+  if (!listing_id) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  let listing = await Listing.findByPk(listing_id as string);
+  if (!listing) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  const fbxFileUrl = await s3Service.generateFileUrlFromBucket(
+    listing.id + listing.file_extension,
+    EXP_TIME
+  );
+  res.json({ url: fbxFileUrl });
+  return next();
+});
 
 export default listingRouter;

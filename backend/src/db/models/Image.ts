@@ -9,8 +9,8 @@ import {
 } from 'sequelize';
 
 import dbConn from '../config';
+import Listing from './Listing';
 import User from './User';
-import VirtualWall from './VirtualWall';
 
 // defining Models: attributes at creation and attributes output from DB
 class Image extends Model<
@@ -18,11 +18,11 @@ class Image extends Model<
   InferCreationAttributes<Image>
 > {
   declare id: string;
-  declare image_able: string; //"virtual-room-image" || "avatar-image"
+  declare image_able: string; //"virtual-room-image" || "avatar-image" || listing_thumbnail
   declare url: CreationOptional<string>;
   declare user_id: ForeignKey<User['id']>;
   declare expire_at: Date;
-  // declare userId: string;
+  declare listing_id: CreationOptional<ForeignKey<Listing['id']>>;
 }
 
 Image.init(

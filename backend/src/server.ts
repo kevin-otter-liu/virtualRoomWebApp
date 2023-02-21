@@ -17,7 +17,6 @@ import userRouter from './api/routes/user';
 import virtualHouseRouter from './api/routes/virtualHouse';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
-import * as Models from './db/models';
 import cors from 'cors';
 import { HttpError } from './libs/http-error';
 import listingRouter from './api/routes/listing';

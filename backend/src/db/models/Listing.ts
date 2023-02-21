@@ -9,6 +9,7 @@ import {
 import dbConn from '../config';
 import Building from './Building';
 import User from './User';
+import Image from './Image';
 
 // defining Models: attributes at creation and attributes output from DB
 class Listing extends Model<
@@ -60,4 +61,17 @@ Listing.hasOne(Building, {
   as: 'building',
   onDelete: 'CASCADE',
 });
+
+Listing.hasOne(Image, {
+  sourceKey: 'id',
+  foreignKey: 'listing_id',
+  as: 'image',
+  onDelete: 'CASCADE',
+});
+
+Image.belongsTo(Listing, {
+  foreignKey: 'listing_id',
+  onDelete: 'CASCADE',
+});
+
 export default Listing;
