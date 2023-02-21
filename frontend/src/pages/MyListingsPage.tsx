@@ -34,7 +34,9 @@ const MyListingsPage = () => {
 
   return (
     <div>
-      <Typography variant='h2'>Your Listings</Typography>
+      <div className='my-listings-title'>
+        <h2>My Listings</h2>
+      </div>
       <ListingsContainer listings={listings} />
     </div>
   );

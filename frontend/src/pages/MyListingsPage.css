@@ -1,0 +1,10 @@
+.my-listings-title {
+  border: 5px solid lightblue;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.my-listings-title > h2 {
+  color: lightblue;
+  font-size: 50px;
+}

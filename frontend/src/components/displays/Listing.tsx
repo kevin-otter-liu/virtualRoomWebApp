@@ -26,7 +26,6 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
     getThumbnail(listingProp.listing.id);
   }, [listingProp.listing.id]);
 
-
   // request to get thumbnail images of listing
   const getThumbnail = useCallback((id: string) => {
     // fetch request
@@ -49,36 +48,35 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
   const getFbxUrl = useCallback((id: string) => {
     // fetch request
     const send_req = async () => {
-      let res = await axios.get(
-        `/api/listing/fbx?listing_id=${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
+      let res = await axios.get(`/api/listing/fbx?listing_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
       setFbxUrl(res.data.url);
     };
     return send_req();
   }, []);
 
   const onBuildingCanvasClose = () => {
-    setShowBuildingCanvas(false)
-  }
-  
+    setShowBuildingCanvas(false);
+  };
 
   // on view listing button click
   const onViewListingButtonClick: React.MouseEventHandler<
     HTMLButtonElement
   > = async (e) => {
-    await getFbxUrl(listingProp.listing.id)
+    await getFbxUrl(listingProp.listing.id);
     setShowBuildingCanvas(true);
   };
 
   return (
     <Fragment>
       {showBuildingCanvas && fbxUrl && (
-        <ListingBuildingCanvas onClose={onBuildingCanvasClose} rawBuildingDataUrl={fbxUrl}/>
+        <ListingBuildingCanvas
+          onClose={onBuildingCanvasClose}
+          rawBuildingDataUrl={fbxUrl}
+        />
       )}
       <ListItem>
         <ListItemAvatar>
@@ -86,6 +84,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
         </ListItemAvatar>
         <img className='listing-img' src={thumbnailUrl} />
         <ListItemText
+          style={{ paddingRight: '10px' }}
           primary={listingProp.listing.name}
           secondary={
             <div>

@@ -5,6 +5,7 @@ import {
   FormGroup,
   Input,
   InputLabel,
+  TextField,
 } from '@mui/material';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import ListingFormProp from '../../types/forms/ListingFormProp';
@@ -50,7 +51,7 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [listingThumbnailFileURL, setListingThumbnailFileURL] = useState<
     string | null
   >(null);
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   // form inputs
 
   useEffect(() => {
@@ -91,11 +92,10 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
 
   // on form submit
   const onSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
-
     const formData = new FormData();
 
     // sanity checks
-    if (!fbxFile || ! listingThumbnailFile) {
+    if (!fbxFile || !listingThumbnailFile) {
       console.log('empty files');
       return;
     }
@@ -104,7 +104,7 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
 
     // attaching file data
     formData.append('building', fbxFile);
-    formData.append('thumbnail',listingThumbnailFile)
+    formData.append('thumbnail', listingThumbnailFile);
 
     // attaching form text data in json
     formData.append(
@@ -122,14 +122,19 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
       },
     });
 
-    if (res.status != 200){
-      console.log('error')
-      return
+    if (res.status != 200) {
+      console.log('error');
+      return;
     }
 
-    navigate('/my-listings')
+    navigate('/my-listings');
     console.log(res);
   };
+
+  // stop keyboard events from propagating on canvas when forms are focused
+  const stopCanvasProp: React.KeyboardEventHandler = (e) => [
+    e.stopPropagation(),
+  ];
 
   const onDescriptionChange: React.ChangeEventHandler<HTMLInputElement> = (
     e
@@ -219,6 +224,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
         <FormControl>
           <InputLabel htmlFor='description'>Description</InputLabel>
           <Input
+            onKeyUp={stopCanvasProp}
+            onKeyDown={stopCanvasProp}
             onChange={onDescriptionChange}
             id='description'
             aria-describedby='description-text'
@@ -227,6 +234,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
         <FormControl>
           <InputLabel htmlFor='location'>Location</InputLabel>
           <Input
+            onKeyUp={stopCanvasProp}
+            onKeyDown={stopCanvasProp}
             onChange={onLocationChange}
             id='location'
             aria-describedby='location-text'
@@ -235,6 +244,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
         <FormControl>
           <InputLabel htmlFor='project-name'>Project Name</InputLabel>
           <Input
+            onKeyUp={stopCanvasProp}
+            onKeyDown={stopCanvasProp}
             onChange={onProjectNameChange}
             id='project-name'
             aria-describedby='project-name-text'
@@ -243,6 +254,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
         <FormControl>
           <InputLabel htmlFor='developer-name'>Developer Name</InputLabel>
           <Input
+            onKeyUp={stopCanvasProp}
+            onKeyDown={stopCanvasProp}
             onChange={onDeveloperNameChange}
             id='developer-name'
             aria-describedby='developer-name-text'

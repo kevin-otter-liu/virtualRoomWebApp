@@ -1,39 +1,48 @@
 import {
+  Html,
   PerspectiveCamera,
   PresentationControls,
+  useProgress,
   useTexture,
   // useFBX,
 } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { BackSide, Material, Mesh, Vector3 } from 'three';
+import { Material, Mesh, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import BuildingProp from '../../types/canvas-objects/BuildingProp';
 import { useLoader } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { Suspense } from 'react';
 
+const Loader = () => {
+  const { progress } = useProgress();
+  console.log('progress', progress);
+  return <Html center>{progress} % loaded</Html>;
+};
 
 const Building: React.FC<BuildingProp> = (props) => {
-  let texture = useTexture('/assets/textures/white.png')
+  let texture = useTexture('/assets/textures/white.png');
 
   const renderBuilding = () => {
     // const fbx = useFBX(props.url)
-    const loader = new FBXLoader()
+    const loader = new FBXLoader();
     const fbx = useLoader(FBXLoader, props.url);
     // console.log(fbx)
-    fbx.traverse((child)=>{
-      if(child instanceof Mesh){
-        let materials:Material[] = child.material
-        materials.forEach((material,i)=>{
+    fbx.traverse((child) => {
+      if (child instanceof Mesh) {
+        let materials: Material[] = child.material;
+        materials.forEach((material, i) => {
           // console.log(material.name)
-          child.material[i].map = texture
-        })
-
-        
+          child.material[i].map = texture;
+        });
       }
+    });
 
-    })
-    
-    return <primitive object={fbx} />;
+    return (
+      <Suspense fallback={<Loader />}>
+        <primitive object={fbx} />
+      </Suspense>
+    );
   };
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();
