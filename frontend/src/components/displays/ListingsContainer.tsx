@@ -15,7 +15,7 @@ const ListingsContainer: React.FC<ListingsContainerProp> = (prop) => {
     }
 
     return listings.map((listingData, i) => {
-      return <Listing key={i.toString()} listing={listingData} />;
+      return <Listing key={i.toString()}listing={listingData} />;
     });
   };
 

@@ -18,7 +18,7 @@ const OptionsPage: React.FC = () => {
         orientation='vertical'
         aria-label='vertical outlined button group'>
         <Button key='1'>
-          <Link style={{ color: 'inherit' }} to='/my-virtual-houses'>
+          <Link style={{ color: 'inherit' }} to='/my-listings'>
             View my Virtual Houses
           </Link>
         </Button>

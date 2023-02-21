@@ -19,7 +19,7 @@ const NavigationBar = () => {
   };
   return (
     <Fragment>
-      <AppBar color='primary'>
+      <AppBar style={{zIndex:0}} color='primary'>
         <Toolbar variant='dense'>
           <IconButton
             edge='start'

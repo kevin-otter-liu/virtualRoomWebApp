@@ -9,7 +9,6 @@ const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
 });
 
-const options = ['option1', 'option2'];
 
 const SearchListingPage = () => {
   const [listings, setListings] = useState<ListingData[]>([]);

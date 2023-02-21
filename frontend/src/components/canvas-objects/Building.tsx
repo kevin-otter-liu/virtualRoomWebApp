@@ -1,19 +1,40 @@
 import {
   PerspectiveCamera,
   PresentationControls,
-  useFBX,
+  useTexture,
+  // useFBX,
 } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { BackSide, Vector3 } from 'three';
+import { BackSide, Material, Mesh, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import BuildingProp from '../../types/canvas-objects/BuildingProp';
+import { useLoader } from '@react-three/fiber';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+
 
 const Building: React.FC<BuildingProp> = (props) => {
-  
-  const renderBuilding = () =>{
-    const fbx = useFBX(props.url)
-    return <primitive object={fbx}/>
-  }
+  let texture = useTexture('/assets/textures/white.png')
+
+  const renderBuilding = () => {
+    // const fbx = useFBX(props.url)
+    const loader = new FBXLoader()
+    const fbx = useLoader(FBXLoader, props.url);
+    // console.log(fbx)
+    fbx.traverse((child)=>{
+      if(child instanceof Mesh){
+        let materials:Material[] = child.material
+        materials.forEach((material,i)=>{
+          // console.log(material.name)
+          child.material[i].map = texture
+        })
+
+        
+      }
+
+    })
+    
+    return <primitive object={fbx} />;
+  };
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();
 
@@ -39,7 +60,7 @@ const Building: React.FC<BuildingProp> = (props) => {
     }
   });
   return (
-    <PerspectiveCamera>
+    <PerspectiveCamera getObjectsByProperty={undefined}>
       <PresentationControls
         enabled={true} // the controls can be disabled by setting this to false
         global={false} // Spin globally or by dragging the model

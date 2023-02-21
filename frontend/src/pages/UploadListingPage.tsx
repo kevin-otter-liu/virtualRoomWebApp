@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import FormBuildingCanvas from '../components/canvas-objects/FormBuildingCanvas';
 import ListingForm from '../components/forms/ListingForm';
-import FormCanvasBuilding from './FormBuildingCanvas';
 import './UploadListingPage.css';
 const UploadListingPage: React.FC = () => {
   const [rawBuildingDataUrl, setRawBuildingDataUrl] = useState<string>('');
@@ -10,10 +10,11 @@ const UploadListingPage: React.FC = () => {
   };
 
 
+
   return (
     <div className='test-page'>
       <ListingForm updateBuildingCanvasPreview={updateBuildingCanvasPreview} />
-      <FormCanvasBuilding rawBuildingDataUrl={rawBuildingDataUrl}/>
+      <FormBuildingCanvas rawBuildingDataUrl={rawBuildingDataUrl}/>
     </div>
   );
 };

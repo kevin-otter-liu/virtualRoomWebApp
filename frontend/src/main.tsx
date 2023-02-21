@@ -14,6 +14,7 @@ import MyVirtualHousesPage from './pages/MyVirtualHousesPage';
 import OptionsPage from './pages/OptionsPage';
 import UploadListingPage from './pages/UploadListingPage';
 import SearchListingPage from './pages/SearchListingPage';
+import MyListingsPage from './pages/MyListingsPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Root />, errorElement: <ErrorPage /> },
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
   { path: '/options', element: <OptionsPage /> },
   { path: '/upload-listing', element: <UploadListingPage /> },
   { path: '/search-listing', element: <SearchListingPage /> },
+  { path: '/my-listings', element: <MyListingsPage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

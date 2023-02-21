@@ -6,25 +6,58 @@ import {
   Input,
   InputLabel,
 } from '@mui/material';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import ListingFormProp from '../../types/forms/ListingFormProp';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import ax from 'axios';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { Material, Mesh } from 'three';
+import { useNavigate } from 'react-router-dom';
+
+const axios = ax.create({
+  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+});
+
+const findMaterials = (url: string) => {
+  const fbxLoader = new FBXLoader();
+  // const fbx = useLoader(FBXLoader, props.url);
+  let materialsDetected: Array<[string, Material]> = [];
+
+  fbxLoader.load(url, (fbx) => {
+    fbx.traverse((child) => {
+      if (child instanceof Mesh) {
+        let materials: Material[] = child.material;
+        materials.forEach((material) => {
+          materialsDetected.push([material.name, material]);
+          // child.material[0].map = texture;
+        });
+      }
+    });
+  });
+  return materialsDetected;
+};
+
 const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [fbxFile, setFbxFile] = useState<File | null>(null);
-  const [textureFiles, setTextureFiles] = useState<FileList | null>(null);
   const [rawBuildingDataUrl, setRawBuildingDataUrl] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [projectName, setProjectName] = useState<string>('');
   const [developerName, setDeveloperName] = useState<string>('');
-
+  const [listingThumbnailFile, setListingThumbnailFile] = useState<File | null>(
+    null
+  );
+  const [listingThumbnailFileURL, setListingThumbnailFileURL] = useState<
+    string | null
+  >(null);
+    const navigate = useNavigate()
   // form inputs
 
   useEffect(() => {
     props.updateBuildingCanvasPreview(rawBuildingDataUrl);
   }, [rawBuildingDataUrl]);
 
-  // on file change
+  // on fbx file form change
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (!e.target.files || e.target.files.length == 0) {
       return;
@@ -34,48 +67,68 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
     // read image and store the url
     const reader = new FileReader();
     reader.onload = () => {
-      setRawBuildingDataUrl(reader.result as any);
+      setRawBuildingDataUrl(reader.result as string);
     };
+
     reader.readAsDataURL(e.target.files[0]);
   };
 
-  const onTextureFileChange: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (!e.target.files) {
+  // on image thumbnail form change
+  const onImageThumbnailFormChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (!e.currentTarget.files || e.currentTarget.files.length < 1) {
       return;
     }
+    setListingThumbnailFile(e.currentTarget.files[0]);
 
-    setTextureFiles(e.target.files);
+    let reader = new FileReader();
+    reader.onload = () => {
+      setListingThumbnailFileURL(reader.result as string);
+    };
+    reader.readAsDataURL(e.currentTarget.files[0]);
   };
 
   // on form submit
-  const onSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    console.log('clicked');
-  };
+  const onSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
 
-  // print list of files onto screen
-  const printTextureFiles = () => {
-    // FileList type is not array, but its iterable
-    // convert fileList to list of files and cast as array
-    const files = textureFiles ? [...textureFiles] : [];
+    const formData = new FormData();
 
-    if (files.length < 1) {
+    // sanity checks
+    if (!fbxFile || ! listingThumbnailFile) {
+      console.log('empty files');
       return;
     }
 
-    return (
-      <div className='texture-file-list'>
-        {files.map((file, index) => {
-          return (
-            <div key={index} className='texture-file-item'>
-              <CheckBoxIcon />
-              {file.name} ({Math.round(file.size / 1000)}KB)
-            </div>
-          );
-        })}
-      </div>
+    // creating form data to send
+
+    // attaching file data
+    formData.append('building', fbxFile);
+    formData.append('thumbnail',listingThumbnailFile)
+
+    // attaching form text data in json
+    formData.append(
+      'data',
+      JSON.stringify({
+        description: description,
+        location: location,
+        project_name: projectName,
+        developer_name: developerName,
+      })
     );
+    let res = await axios.post('/api/listing/create', formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    });
+
+    if (res.status != 200){
+      console.log('error')
+      return
+    }
+
+    navigate('/my-listings')
+    console.log(res);
   };
 
   const onDescriptionChange: React.ChangeEventHandler<HTMLInputElement> = (
@@ -102,11 +155,7 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
 
   // check that data is not empty before submission
   const fieldsAreValid = (): boolean => {
-    if (!fbxFile || !textureFiles) {
-      return false;
-    }
-
-    if (textureFiles.length === 0) {
+    if (!fbxFile || !listingThumbnailFile) {
       return false;
     }
 
@@ -119,14 +168,14 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
       return false;
     }
 
-    return true
+    return true;
   };
 
-  // check validity after every rerebder 
-  let valid = fieldsAreValid()
+  // check validity after every rerebder
+  let valid = fieldsAreValid();
   return (
-    <div>
-      <div className='listing-form'>
+    <div className='listing-form'>
+      <div>
         {/* TODO onsubmit */}
         <div className='listing-form-control'>
           <label className='custom-file-upload' htmlFor='buildingModelInput'>
@@ -146,22 +195,25 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
           </div>
         )}
       </div>
-      <div className='listing-form'>
+      <div>
         {/* TODO onsubmit */}
         <div className='listing-form-control'>
-          <label className='custom-file-upload' htmlFor='textureInput'>
+          <label className='custom-file-upload' htmlFor='thumbnailInput'>
             <img></img>
-            <p>Upload texture .jpg File</p>
+            <p>Upload a thumbnail</p>
             <input
-              onChange={onTextureFileChange}
-              id='textureInput'
+              onChange={onImageThumbnailFormChange}
+              id='thumbnailInput'
               type='file'
-              accept='.jpg'
-              multiple
-            />
+              accept='image/* '></input>
           </label>
+          {listingThumbnailFileURL && (
+            <img
+              className='thumbnail-img-preview'
+              src={listingThumbnailFileURL}
+            />
+          )}
         </div>
-        {printTextureFiles()}
       </div>
       <FormGroup>
         <FormControl>
@@ -203,5 +255,4 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
     </div>
   );
 };
-
 export default ListingForm;

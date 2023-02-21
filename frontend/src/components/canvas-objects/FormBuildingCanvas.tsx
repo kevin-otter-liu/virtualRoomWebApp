@@ -16,10 +16,10 @@ import {
   useEffect,
   useState,
 } from 'react';
-import Building from '../components/canvas-objects/Building';
 import './FormBuildingCanvas.css';
 import { useControls } from 'leva';
-import FormBuildingCanvasProp from '../types/forms/FormBuildingCanvasProp';
+import FormBuildingCanvasProp from '../../types/canvas-objects/FormBuildingCanvasProp';
+import Building from './Building';
 
 const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
