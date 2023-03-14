@@ -21,9 +21,11 @@ class Listing extends Model<
   declare name: string;
   declare location: string;
   declare description: string;
-  declare developer: string;
+  declare contact_email: string;
   declare expire_at: Date;
   declare file_extension: string;
+  declare developer_name: string;
+  declare completion_date: Date;
 }
 
 Listing.init(
@@ -34,17 +36,23 @@ Listing.init(
     location: {
       type: DataTypes.STRING(512),
     },
-    developer: {
+    contact_email: {
       type: DataTypes.STRING(512),
     },
     description: {
-      type: DataTypes.STRING(512),
+      type: DataTypes.TEXT,
     },
     file_extension: {
       type: DataTypes.STRING(16),
     },
     expire_at: {
       type: DataTypes.DATE,
+    },
+    completion_date: {
+      type: DataTypes.DATE,
+    },
+    developer_name: {
+      type: DataTypes.STRING(512),
     },
     id: {
       type: DataTypes.UUID,

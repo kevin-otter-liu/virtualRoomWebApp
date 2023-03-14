@@ -4,14 +4,32 @@ import { Op } from 'sequelize';
 import Image from '../../db/models/Image';
 import { HttpError } from '../../libs/http-error';
 import s3Service from '../services/s3Client';
+import CompanyModel from '../../db/models/Company';
+import UserModel from '../../db/models/User';
 
 const searchRouter = Router();
 const EXP_TIME = 60 * 60;
 
 searchRouter.get('/', async (req, res, next) => {
+  // search factors include company name, project name, location
   let search_factors = req.query.search_factors;
-  console.log(search_factors);
+  // console.log(search_factors);
 
+  // let company = await CompanyModel.findOne({
+  //   where: { company_name: { [Op.like]: `%${search_factors}%` } },
+  // });
+
+  // console.log(`company: ${company?.dataValues}`);
+
+  // // find the company owner
+  // let user: any;
+
+  // if (company) {
+  //   user = await UserModel.findByPk(company.user_id);
+  // }
+  // console.log(`user:${user}`);
+
+  // find listing by project name or location
   let listings = await Listing.findAll({
     where: {
       [Op.or]: [
@@ -21,13 +39,21 @@ searchRouter.get('/', async (req, res, next) => {
         {
           location: { [Op.like]: `%${search_factors}%` },
         },
-        { developer: { [Op.like]: `%${search_factors}%` } },
+        {
+          developer_name: { [Op.like]: `%${search_factors}%` },
+        },
       ],
     },
     include: ['image'],
   });
 
-  res.json(listings);
+  let response = listings.map((listing) => {
+    return {
+      ...listing.dataValues,
+    };
+  });
+
+  res.status(200).json(response);
   return next();
 });
 

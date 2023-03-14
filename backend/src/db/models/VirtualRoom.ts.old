@@ -14,7 +14,7 @@ import Image from './Image';
 import dbConn from '../config';
 import { v4 as uuidv4 } from 'uuid';
 import VirtualWall from './VirtualWall';
-import VirtualHouse from './VirtualHouse';
+import VirtualHouse from './VirtualHouse.ts.old';
 
 // defining Models: attributes at creation and attributes output from DB
 class VirtualRoom extends Model<

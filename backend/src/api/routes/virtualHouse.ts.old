@@ -6,7 +6,7 @@ import {
   RequestHandler,
 } from 'express';
 import VirtualRoom from '../../db/models/VirtualRoom';
-import VirtualHouse from '../../db/models/VirtualHouse';
+import VirtualHouse from '../../db/models/VirtualHouse.ts.old';
 
 import ImageModel from '../../db/models/Image';
 import multer from 'multer';

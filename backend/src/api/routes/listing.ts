@@ -7,6 +7,7 @@ import multer from 'multer';
 import Listing from '../../db/models/Listing';
 import { Op } from 'sequelize';
 import Image from '../../db/models/Image';
+import CompanyModel from '../../db/models/Company';
 const listingRouter = Router();
 
 const storage = multer.memoryStorage();
@@ -56,7 +57,8 @@ listingRouter.post(
       'description',
       'location',
       'project_name',
-      'developer_name',
+      'contact_email',
+      'completion_date',
     ];
     // check formdata is populated
     for (let field of formFields) {
@@ -70,8 +72,10 @@ listingRouter.post(
       description,
       location,
       project_name: name,
-      developer_name: developer,
+      contact_email,
+      completion_date,
     } = formData;
+    console.log(`completion_date: ${completion_date}`);
 
     let file_extension = '.' + fileNameSplit[fileNameSplit.length - 1];
     const listing_id = uuidv4();
@@ -89,6 +93,11 @@ listingRouter.post(
     );
 
     let currentTime = new Date();
+    let company = await CompanyModel.findOne({ where: { user_id: user.id } });
+
+    if (!company) {
+      return new HttpError(404, 'no_company_found');
+    }
 
     let listing = await Listing.create({
       id: listing_id,
@@ -96,8 +105,10 @@ listingRouter.post(
       description,
       location,
       name,
-      developer,
+      contact_email,
       file_extension,
+      developer_name: company.dataValues.company_name,
+      completion_date: new Date(completion_date),
       expire_at: new Date(currentTime.getTime() + EXP_TIME * 1000),
     });
 
@@ -134,7 +145,14 @@ listingRouter.get('/', async (req, res, next) => {
     },
     order: [['createdAt', 'DESC']],
   });
-  res.json(listings);
+
+  let userCompany = await CompanyModel.findOne({ where: { user_id: user.id } });
+  let response = listings.map((listing) => {
+    return {
+      ...listing.dataValues,
+    };
+  });
+  res.status(200).json(response);
   return next();
 });
 

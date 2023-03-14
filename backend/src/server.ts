@@ -14,7 +14,6 @@ dotenv.config({
 });
 // import 'dotenv/config';
 import userRouter from './api/routes/user';
-import virtualHouseRouter from './api/routes/virtualHouse';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
 import cors from 'cors';
@@ -80,7 +79,6 @@ const expressServer = AppServer.getExpressServer();
 // registering all routes
 AppServer.registerRoute('/api/user', userRouter);
 expressServer.use(checkAuth);
-AppServer.registerRoute('/api/virtual-house', virtualHouseRouter);
 AppServer.registerRoute('/api/listing', listingRouter);
 AppServer.registerRoute('/api/search', searchRouter);
 
