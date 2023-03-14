@@ -14,9 +14,13 @@ const ListingsContainer: React.FC<ListingsContainerProp> = (prop) => {
       );
     }
 
-    return listings.map((listingData, i) => {
-      return <Listing key={i.toString()}listing={listingData} />;
-    });
+    return (
+      <div className='listing-container'>
+        {listings.map((listingData, i) => {
+          return <Listing key={i.toString()} listing={listingData} />;
+        })}
+      </div>
+    );
   };
 
   return <List>{displayLists(prop.listings)}</List>;

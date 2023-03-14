@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   Divider,
   ListItem,
@@ -81,48 +82,94 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
       )}
       <ListItem
         style={{
+          display: 'flex',
           backgroundColor: 'lightblue',
           borderRadius: '10px',
           boxShadow: '5px 10px',
-          marginBottom:'20px',
-          border: '5px dashed white'
+          marginBottom: '20px',
+          border: '5px dashed white',
         }}>
-        <ListItemAvatar>
-          <Avatar alt={listingProp.listing.name} src='#' />
-        </ListItemAvatar>
         <img className='listing-img' src={thumbnailUrl} />
-        <ListItemText
+        <div className='listing-description-wrapper'>
+          <div>
+            <Typography variant='h6'>{listingProp.listing.name}</Typography>
+            <Typography variant='body1'>
+              Developer: {listingProp.listing.developer_name}
+            </Typography>
+            <Typography>Location: {listingProp.listing.location}</Typography>
+            <Typography>
+              Project completion date:{' '}
+              {new Date(
+                listingProp.listing.completion_date
+              ).toLocaleDateString()}
+            </Typography>
+          </div>
+
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              border: '3px dashed black',
+              padding: '5px',
+              borderRadius: '5px',
+              height: '30%',
+            }}>
+            <Typography component='div' variant='body1' color='text.primary'>
+              {listingProp.listing.description}
+            </Typography>
+          </Box>
+
+          <div>
+            Contact email:{' '}
+            <a href={`mailto:${listingProp.listing.contact_email}`}>
+              {listingProp.listing.contact_email}
+            </a>
+          </div>
+          <div>posted on: {datePosted}</div>
+          <Button
+            color='secondary'
+            onClick={onViewListingButtonClick}
+            variant='outlined'>
+            View Listing {`>>`}{' '}
+          </Button>
+        </div>
+        {/* <ListItemText
           style={{ paddingRight: '10px' }}
           primary={listingProp.listing.name}
           secondary={
             <div>
+              <div>Developer: {listingProp.listing.developer_name}</div>
+              <div>Location: {listingProp.listing.location}</div>
+              <div>
+                Project completion date:{' '}
+                {new Date(
+                  listingProp.listing.completion_date
+                ).toLocaleDateString()}
+              </div>
+
+              <br></br>
+              <div>Description: </div>
               <Typography
+                sx={{
+                  backgroundColor: 'white',
+                  padding: '5px',
+                  borderRadius: '5px',
+                }}
                 component='div'
-                variant='caption'
+                variant='body1'
                 color='text.primary'>
-                Developer: {listingProp.listing.developer}
+                {listingProp.listing.description}
               </Typography>
-              <Typography
-                component='div'
-                variant='caption'
-                color='text.primary'>
-                Location: {listingProp.listing.location}
-              </Typography>
-              <Typography component='div' variant='body1' color='text.primary'>
-                Description: {listingProp.listing.description}
-              </Typography>
-              <Typography
-                component='div'
-                variant='overline'
-                color='text.primary'>
-                posted on: {datePosted}
-              </Typography>
+              <br></br>
+              <div>
+                Contact email:{' '}
+                <a href={`mailto:${listingProp.listing.contact_email}`}>
+                  {listingProp.listing.contact_email}
+                </a>
+              </div>
+              <div>posted on: {datePosted}</div>
             </div>
           }
-        />
-        <Button onClick={onViewListingButtonClick} variant='outlined'>
-          View Listing {`>`}{' '}
-        </Button>
+        /> */}
       </ListItem>
       <Divider variant='inset' component='li' />
     </Fragment>

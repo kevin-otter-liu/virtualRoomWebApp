@@ -13,7 +13,7 @@ import { VirtualHouseContext } from '../../context/virtual-house-context';
 import { VirtualHouse } from '../../types/responses/VirtualHouse';
 import { VirtualRoomObjectPropI } from '../../types/virtual-room/VirtualRoomObjectPropI';
 import AddDoorForm from '../forms/AddDoorForm';
-import ImageForm from '../forms/ImageForm';
+import ImageForm from '../forms/ImageForm.tsx.old';
 import WallTextObject from './WallTextObject';
 
 // function to calculate the position to put the door texts and buttons on the virtualroom walls

@@ -1,9 +1,11 @@
 .search-page {
   display: flex;
   margin-top: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
-.search-results-container {
+/* .search-results-container {
   display: flex;
   flex-direction: column;
-}
+} */

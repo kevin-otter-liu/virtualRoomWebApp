@@ -22,11 +22,13 @@ const SearchListingPage = () => {
       },
     });
 
+    console.log(res)
+
     setListings(res.data as ListingData[]);
     // redirect
   };
   return (
-    <Fragment>
+    <div className='search-page'>
       <NavigationBar />
       <div className='search-page'>
         <div className='search-results-container'>
@@ -34,7 +36,7 @@ const SearchListingPage = () => {
           <ListingsContainer listings={listings} />
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

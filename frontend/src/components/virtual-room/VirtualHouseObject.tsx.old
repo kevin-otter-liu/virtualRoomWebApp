@@ -1,6 +1,6 @@
 import { VirtualHouseObjectPropI } from '../../types/virtual-room/VirtualHouseObjectPropI';
 import { Fragment, useEffect, useState} from 'react';
-import VirtualRoomObject from './VirtualRoomObject';
+import VirtualRoomObject from './VirtualRoomObject.tsx.old';
 
 
 

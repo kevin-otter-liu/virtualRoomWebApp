@@ -13,16 +13,18 @@ import HouseboatIcon from '@mui/icons-material/Houseboat';
 import { AccountCircle, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { AuthContext } from '../../context/auth-context';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavigationBar = () => {
   const menuId = 'primary-search-account-menu';
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate()
 
   const authCtx = useContext(AuthContext);
 
   const onLogout = () => {
     authCtx.logout();
+    navigate('/')
   };
 
   const handleClose = () => {

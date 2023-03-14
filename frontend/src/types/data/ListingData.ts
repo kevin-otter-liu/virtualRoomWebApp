@@ -1,7 +1,9 @@
 export type ListingData = {
+  completion_date: string;
+  developer_name: string;
+  contact_email: string;
   createdAt: string;
   description: string;
-  developer: string;
   expire_at: Date;
   file_extension: string;
   id: string;

@@ -7,7 +7,7 @@ import {
   InputLabel,
   TextField,
 } from '@mui/material';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import ListingFormProp from '../../types/forms/ListingFormProp';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ax from 'axios';
@@ -19,24 +19,51 @@ const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
 });
 
-const findMaterials = (url: string) => {
-  const fbxLoader = new FBXLoader();
-  // const fbx = useLoader(FBXLoader, props.url);
-  let materialsDetected: Array<[string, Material]> = [];
+// const findMaterials = (url: string) => {
+//   const fbxLoader = new FBXLoader();
+//   // const fbx = useLoader(FBXLoader, props.url);
+//   let materialsDetected: Array<[string, Material]> = [];
 
-  fbxLoader.load(url, (fbx) => {
-    fbx.traverse((child) => {
-      if (child instanceof Mesh) {
-        let materials: Material[] = child.material;
-        materials.forEach((material) => {
-          materialsDetected.push([material.name, material]);
-          // child.material[0].map = texture;
-        });
-      }
-    });
-  });
-  return materialsDetected;
-};
+//   fbxLoader.load(url, (fbx) => {
+//     let meshes: Mesh[] = [];
+//     fbx.traverse((child) => {
+//       if (child instanceof Mesh) {
+//         meshes.push(child);
+//         // let materials: Material[] = child.material;
+//         // materials.forEach((material) => {
+//         //   materialsDetected.push([material.name, material]);
+//         //   // child.material[0].map = texture;
+//         // });
+//       }
+//     });
+//     let materials = {};
+//     for (let i = 0; i < meshes.length; i++) {
+//       let mesh = meshes[i];
+//       let material = mesh.material;
+//       if (material.name !== '') {
+//         materials[material.name] = material;
+//       }
+//     }
+
+//     let textures = {};
+//     for (let i = 0; i < meshes.length; i++) {
+//       let mesh = meshes[i];
+//       let material = mesh.material;
+//       if (material.map !== null) {
+//         let texture = material.map;
+//         textures[texture.name] = texture;
+//       }
+//     }
+
+//     // console.log(`mesh: ${JSON.stringify(meshes)}`);
+//     console.log(`fbx: ${JSON.stringify(fbx.toJSON()['materials'])}`);
+
+//     console.log(`materials: ${JSON.stringify(materials)}`);
+//     console.log(`textures: ${JSON.stringify(textures)}`);
+//   });
+
+//   return materialsDetected;
+// };
 
 const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [fbxFile, setFbxFile] = useState<File | null>(null);
@@ -44,7 +71,14 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [projectName, setProjectName] = useState<string>('');
-  const [developerName, setDeveloperName] = useState<string>('');
+  const [contactEmail, setContactEmail] = useState<string>('');
+  const [completionDate, setCompletionDate] = useState<string>('');
+
+  // texture maps : textureimage name -> texture url
+  const [textureFilePaths, setTextureFilePaths] = useState<Map<string, string>>(
+    new Map<string, string>()
+  );
+
   const [listingThumbnailFile, setListingThumbnailFile] = useState<File | null>(
     null
   );
@@ -55,8 +89,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   // form inputs
 
   useEffect(() => {
-    props.updateBuildingCanvasPreview(rawBuildingDataUrl);
-  }, [rawBuildingDataUrl]);
+    props.updateBuildingCanvasPreview(rawBuildingDataUrl,textureFilePaths);
+  }, [rawBuildingDataUrl,textureFilePaths]);
 
   // on fbx file form change
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -69,9 +103,32 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
     const reader = new FileReader();
     reader.onload = () => {
       setRawBuildingDataUrl(reader.result as string);
+      // findMaterials(reader.result as string);
     };
-
     reader.readAsDataURL(e.target.files[0]);
+  };
+
+  // on texture file changes
+  const onTextureFileChange: React.ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (!e.target.files || e.target.files.length == 0) {
+      return;
+    }
+    // read images from buffer and get object URL
+    let files = [...e.target.files];
+
+    // texture map
+    let map = new Map<string, string>();
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        map.set(file.name, reader.result as string);
+      };
+    });
+    console.log(map);
+    setTextureFilePaths(map);
   };
 
   // on image thumbnail form change
@@ -113,7 +170,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
         description: description,
         location: location,
         project_name: projectName,
-        developer_name: developerName,
+        contact_email: contactEmail,
+        completion_date: completionDate,
       })
     );
     let res = await axios.post('/api/listing/create', formData, {
@@ -152,10 +210,16 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
     setProjectName(e.currentTarget.value);
   };
 
-  const onDeveloperNameChange: React.ChangeEventHandler<HTMLInputElement> = (
+  const onContactEmailChange: React.ChangeEventHandler<HTMLInputElement> = (
     e
   ) => {
-    setDeveloperName(e.currentTarget.value);
+    setContactEmail(e.currentTarget.value);
+  };
+
+  const onCompletionDateChange: React.ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    setCompletionDate(e.currentTarget.value);
   };
 
   // check that data is not empty before submission
@@ -168,7 +232,7 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
       description.length === 0 ||
       location.length === 0 ||
       projectName.length === 0 ||
-      developerName.length === 0
+      completionDate.length === 0
     ) {
       return false;
     }
@@ -181,7 +245,6 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   return (
     <div className='listing-form'>
       <div>
-        {/* TODO onsubmit */}
         <div className='listing-form-control'>
           <label className='custom-file-upload' htmlFor='buildingModelInput'>
             <img></img>
@@ -199,6 +262,29 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
             {fbxFile.name} ({Math.round(fbxFile.size / 1000)}KB)
           </div>
         )}
+        <div className='listing-form-control'>
+          <label className='custom-file-upload' htmlFor='buildingTextureInput'>
+            <img></img>
+            <p>Upload Texture files</p>
+            <input
+              multiple
+              onChange={onTextureFileChange}
+              id='buildingTextureInput'
+              type='file'
+              accept='image/*'></input>
+          </label>
+        </div>
+        <Suspense fallback={<div>falling back</div>}>
+          {[...textureFilePaths.keys()].length > 0 &&
+            [...textureFilePaths.keys()].map((texture, i) => {
+              return (
+                <div key={i} className='texture-file-item'>
+                  <CheckBoxIcon />
+                  {texture}
+                </div>
+              );
+            })}
+        </Suspense>
       </div>
       <div>
         {/* TODO onsubmit */}
@@ -220,19 +306,19 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
           )}
         </div>
       </div>
-      <FormGroup>
+      <FormGroup sx={{ gap: '10px' }}>
+        <TextField
+          placeholder='Project Description'
+          onKeyUp={stopCanvasProp}
+          onKeyDown={stopCanvasProp}
+          onChange={onDescriptionChange}
+          multiline={true}
+          rows={10}
+          id='description'
+          type='text'
+        />
         <FormControl>
-          <InputLabel htmlFor='description'>Description</InputLabel>
-          <Input
-            onKeyUp={stopCanvasProp}
-            onKeyDown={stopCanvasProp}
-            onChange={onDescriptionChange}
-            id='description'
-            aria-describedby='description-text'
-          />
-        </FormControl>
-        <FormControl>
-          <InputLabel htmlFor='location'>Location</InputLabel>
+          <InputLabel htmlFor='location'>Project Location</InputLabel>
           <Input
             onKeyUp={stopCanvasProp}
             onKeyDown={stopCanvasProp}
@@ -251,14 +337,24 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
             aria-describedby='project-name-text'
           />
         </FormControl>
+        <InputLabel sx={{ display: 'flex' }} htmlFor='completion-date'>
+          Completion Date
+        </InputLabel>
+        <TextField
+          onChange={onCompletionDateChange}
+          defaultValue={new Date().toString()}
+          id='completion-date'
+          type='date'
+        />
+
         <FormControl>
-          <InputLabel htmlFor='developer-name'>Developer Name</InputLabel>
+          <InputLabel htmlFor='developer-name'>Contact Email</InputLabel>
           <Input
             onKeyUp={stopCanvasProp}
             onKeyDown={stopCanvasProp}
-            onChange={onDeveloperNameChange}
-            id='developer-name'
-            aria-describedby='developer-name-text'
+            onChange={onContactEmailChange}
+            id='contact-email'
+            aria-describedby='contact-email-text'
           />
         </FormControl>
       </FormGroup>

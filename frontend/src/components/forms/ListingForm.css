@@ -22,19 +22,39 @@
   height: 100%;
 }
 
+.custom-file-upload img:hover {
+  content: url('./assets/upload-file.gif');
+  height: 50px;
+  aspect-ratio: 1;
+}
+
 .texture-file-list {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-content: center;
 }
 
 .texture-file-item {
-  display:flex;
-  gap:5px;
+  display: flex;
+  gap: 5px;
 }
 
-.thumbnail-img-preview{
-  width:100%;
+.thumbnail-img-preview {
+  width: 100%;
   aspect-ratio: 1;
+}
+
+.custom-file-upload input[type='file'] {
+  display: none;
+  border: 5px solid white;
+  background-color: #c3b1e1;
+}
+
+.custom-file-upload input[type='text']:active {
+  border-color: cyan;
+}
+
+input[type='file']:active {
+  border-color: cyan;
 }

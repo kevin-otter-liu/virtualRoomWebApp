@@ -14,12 +14,14 @@ import { Link } from 'react-router-dom';
 import CardOptionProp from '../../types/displays/CardOptionProp';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Margin } from '@mui/icons-material';
+import './CardOption.css';
 
 const CardOption: React.FC<CardOptionProp> = (prop) => {
   return (
     <Box
       sx={{
-        minWidth: 700,
+        minWidth: '230px',
+        width: '100%',
         border: '5px solid lightblue',
         boxShadow: '10px 20px #888888',
       }}>
@@ -27,6 +29,7 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
         <CardHeader
           sx={{
             font: '60',
+            height: '15%',
           }}
           avatar={
             <Avatar
@@ -46,13 +49,8 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
             </Typography>
           }
         />
-        <CardMedia
-          sx={{ height: '50%' }}
-          component='img'
-          alt={prop.imgAlt}
-          image={prop.imgSrc}
-        />
-        <CardContent>
+        <img className='card-image' alt={prop.imgAlt} src={prop.imgSrc} />
+        <CardContent sx={{ height: '15%' }}>
           <Typography gutterBottom variant='h4' component='div'>
             {prop.body}
           </Typography>

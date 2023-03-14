@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
           id='outlined-basic'
           label='Search for projects!'
           variant='outlined'
-          style={{ flexGrow: 1 }}
+          style={{ width: '100%' }}
           onChange={onTextChange}
         />
         <Button onClick={onSearch} variant='outlined'>

@@ -2,17 +2,19 @@ import {
   Html,
   PerspectiveCamera,
   PresentationControls,
+  useFBX,
   useProgress,
   useTexture,
   // useFBX,
 } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Material, Mesh, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import BuildingProp from '../../types/canvas-objects/BuildingProp';
 import { useLoader } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { Suspense } from 'react';
+import { CustomFBXLoader } from '../../fbx/customFBXLoader';
 
 const Loader = () => {
   const { progress } = useProgress();
@@ -22,27 +24,41 @@ const Loader = () => {
 
 const Building: React.FC<BuildingProp> = (props) => {
   let texture = useTexture('/assets/textures/white.png');
-
   const renderBuilding = () => {
-    // const fbx = useFBX(props.url)
-    const loader = new FBXLoader();
-    const fbx = useLoader(FBXLoader, props.url);
-    // console.log(fbx)
+    const fbx = useFBX(props.url);
+
     fbx.traverse((child) => {
       if (child instanceof Mesh) {
+        console.log(child);
         let materials: Material[] = child.material;
         materials.forEach((material, i) => {
-          // console.log(material.name)
+          console.log(material)
           child.material[i].map = texture;
         });
       }
     });
+
+    // const loader = new FBXLoader()
+    // loader.load(props.url, (obj)=>{
+    //   obj.traverse((child)=>{
+    //     console.log(child)
+    //     if(child instanceof Mesh){
+    //       let material = child.material;
+    //       if (material.map){
+    //         let textureName = material.map.name
+    //         console.log(`texture name ${textureName}`)
+    //       }
+    //     }
+    //   })
+    // })
+
 
     return (
       <Suspense fallback={<Loader />}>
         <primitive object={fbx} />
       </Suspense>
     );
+    // console.log(fbx)
   };
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();

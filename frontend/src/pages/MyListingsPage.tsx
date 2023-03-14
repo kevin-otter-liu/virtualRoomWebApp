@@ -33,8 +33,8 @@ const MyListingsPage = () => {
   }, []);
 
   return (
-    <div>
-      <NavigationBar/>
+    <div className='page'>
+      <NavigationBar />
       <div className='my-listings-title'>
         <h2>My Listings</h2>
       </div>
