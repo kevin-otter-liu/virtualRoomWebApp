@@ -79,8 +79,8 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
   ];
 
   return (
-    <div>
-      <form className='signUp' onSubmit={SignUpHandler}>
+    <div className='signUp'>
+      <form onSubmit={SignUpHandler}>
         <Typography variant='h1' color='secondary'>
           SIGN UP
         </Typography>
@@ -119,15 +119,30 @@ const SignUp: React.FC<SignUpPropI> = (props) => {
                 required></input>
             </Fragment>
           )}
+          <div className='control-button'>
+            <ButtonGroup
+              variant='contained'
+              orientation='vertical'
+              sx={{ width: '100%' }}
+              color='secondary'>
+              <Button
+                sx={{ fontSize: '1.5rem' }}
+                onClick={toggleCompanySignUpHandler}>
+                Company sign up
+              </Button>
+              <Button sx={{ fontSize: '1.5rem' }} type='submit'>
+                Create Account
+              </Button>
+              <Button
+                sx={{ fontSize: '1.5rem' }}
+                color='info'
+                onClick={toggleHandler}
+                className='toggle'>
+                Login Page {'>>'}
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
-
-        <ButtonGroup variant='contained' orientation='vertical' sx={{width:'100%'}} color='secondary'>
-          <Button onClick={toggleCompanySignUpHandler}>Company sign up</Button>
-          <Button type='submit'>Create Account</Button>
-          <Button color='info' onClick={toggleHandler} className='toggle'>
-            Login Page {'>>'}
-          </Button>
-        </ButtonGroup>
       </form>
     </div>
   );

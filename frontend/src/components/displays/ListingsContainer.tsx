@@ -8,14 +8,16 @@ const ListingsContainer: React.FC<ListingsContainerProp> = (prop) => {
   const displayLists = (listings: ListingData[]) => {
     if (listings.length === 0) {
       return (
-        <div className='listings-error'>
-          <Typography color='primary'>Oops! No projects found</Typography>
+        <div className='listing-error'>
+          <Typography variant='h2' color='primary'>
+            Oops! No projects found
+          </Typography>
         </div>
       );
     }
 
     return (
-      <div className='listing-container'>
+      <div>
         {listings.map((listingData, i) => {
           return <Listing key={i.toString()} listing={listingData} />;
         })}
@@ -23,7 +25,7 @@ const ListingsContainer: React.FC<ListingsContainerProp> = (prop) => {
     );
   };
 
-  return <List>{displayLists(prop.listings)}</List>;
+  return <List sx={{ width: '100%' }}>{displayLists(prop.listings)}</List>;
 };
 
 export default ListingsContainer;

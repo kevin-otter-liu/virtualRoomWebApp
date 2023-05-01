@@ -22,7 +22,7 @@ const SearchListingPage = () => {
       },
     });
 
-    console.log(res)
+    console.log(res);
 
     setListings(res.data as ListingData[]);
     // redirect
@@ -30,12 +30,8 @@ const SearchListingPage = () => {
   return (
     <div className='search-page'>
       <NavigationBar />
-      <div className='search-page'>
-        <div className='search-results-container'>
-          <SearchBar onSearch={onSearch} />
-          <ListingsContainer listings={listings} />
-        </div>
-      </div>
+      <SearchBar onSearch={onSearch} />
+      <ListingsContainer listings={listings} />
     </div>
   );
 };

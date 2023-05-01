@@ -22,10 +22,11 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
       sx={{
         minWidth: '230px',
         width: '100%',
+        height: '100%',
         border: '5px solid lightblue',
         boxShadow: '10px 20px #888888',
       }}>
-      <Card variant='outlined' sx={{ height: '100%' }}>
+      <Card variant='outlined'>
         <CardHeader
           sx={{
             font: '60',
@@ -50,7 +51,7 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
           }
         />
         <img className='card-image' alt={prop.imgAlt} src={prop.imgSrc} />
-        <CardContent sx={{ height: '15%' }}>
+        <CardContent>
           <Typography gutterBottom variant='h4' component='div'>
             {prop.body}
           </Typography>
@@ -60,7 +61,10 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
             display: 'flex',
             justifyContent: 'center',
           }}>
-          <Button variant='outlined' size='large'>
+          <Button
+            variant='outlined'
+            size='large'
+            sx={{ width: '100%', height: '100%', fontSize: '1.5rem' }}>
             <Link style={{ color: 'inherit' }} to={prop.urlRedirectTo}>
               {prop.buttonPrompt} {'>>'}
             </Link>

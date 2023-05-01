@@ -57,13 +57,23 @@ export const Login: React.FC<LoginPropI> = (props) => {
             ref={passwordInput}
             id='password'
             required></input>
-          <ButtonGroup
-            color='secondary'
-            orientation='vertical'
-            variant='contained'>
-            <Button type='submit'>Login</Button>
-            <Button color='info' onClick={toggleHandler}>Sign Up Page {'>>'}</Button>
-          </ButtonGroup>
+          <div className='control-button'>
+            <ButtonGroup
+              color='secondary'
+              orientation='vertical'
+              variant='contained'
+              sx={{ width: '100%' }}>
+              <Button sx={{ fontSize: '1.5rem' }} type='submit' size='large'>
+                Login
+              </Button>
+              <Button
+                sx={{ fontSize: '1.5rem' }}
+                color='info'
+                onClick={toggleHandler}>
+                Sign Up Page {'>>'}
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
       </form>
     </div>

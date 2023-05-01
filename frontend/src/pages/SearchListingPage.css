@@ -1,8 +1,10 @@
 .search-page {
   display: flex;
+  flex-direction: column;
   margin-top: 20px;
   justify-content: center;
   align-items: center;
+  /* border: 10px solid red; */
 }
 
 /* .search-results-container {

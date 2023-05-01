@@ -92,7 +92,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
         <img className='listing-img' src={thumbnailUrl} />
         <div className='listing-description-wrapper'>
           <div>
-            <Typography variant='h6'>{listingProp.listing.name}</Typography>
+            <Typography variant='h4'>{listingProp.listing.name}</Typography>
             <Typography variant='body1'>
               Developer: {listingProp.listing.developer_name}
             </Typography>
