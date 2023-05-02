@@ -12,7 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import CardOptionProp from '../../types/displays/CardOptionProp';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Margin } from '@mui/icons-material';
+import avatarImgSrc from '/assets/ui/avatar.jpg';
 import './CardOption.css';
 
 const CardOption: React.FC<CardOptionProp> = (prop) => {
@@ -35,7 +35,7 @@ const CardOption: React.FC<CardOptionProp> = (prop) => {
           avatar={
             <Avatar
               sx={{ width: 80, height: 80, border: '10px solid lightblue' }}
-              src='/assets/ui/avatar.jpg'
+              src={avatarImgSrc}
               aria-label='recipe'
             />
           }

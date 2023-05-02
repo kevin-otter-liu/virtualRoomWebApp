@@ -17,13 +17,13 @@
 }
 
 .custom-file-upload img {
-  content: url('./assets/static-upload.png');
+  content: url('../../../assets/static-upload.png');
   aspect-ratio: 1;
   height: 100%;
 }
 
 .custom-file-upload img:hover {
-  content: url('./assets/upload-file.gif');
+  content: url('../../../assets/upload-file.gif');
   height: 50px;
   aspect-ratio: 1;
 }

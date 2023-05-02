@@ -5,6 +5,7 @@ import ax from 'axios';
 import './ListingBuildingCanvas.css';
 import Building from './Building';
 import ListingBuildingCanvasProp from '../../types/canvas-objects/ListingBuildingCanvasProp';
+import controlImgSrc from '../../../assets/ui/controls.png';
 
 const axios = ax.create({
   baseURL: import.meta.env.VITE_API_HOST,
@@ -16,7 +17,7 @@ const ListingBuildingCanvas: React.FC<ListingBuildingCanvasProp> = (props) => {
       <button className='listing-building-button' onClick={props.onClose}>
         EXIT VIEW
       </button>
-      <img className='listing-canvas-controls' src='/assets/ui/controls.png' />
+      <img className='listing-canvas-controls' src={controlImgSrc} />
       <Canvas camera={{ position: [0, 0, 0], far: 100000 }}>
         <group position={[0, -0.01, 0]}>
           <ambientLight intensity={0.5} />
