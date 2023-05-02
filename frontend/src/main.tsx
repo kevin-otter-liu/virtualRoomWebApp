@@ -8,7 +8,6 @@ import ErrorPage from './pages/ErrorPage';
 import { LoadingContextProvider } from './context/loading-context';
 import { ErrorContextProvider } from './context/error-context';
 import { AuthContextProvider } from './context/auth-context';
-import { VirtualHouseProvider } from './context/virtual-house-context';
 import OptionsPage from './pages/OptionsPage';
 import UploadListingPage from './pages/UploadListingPage';
 import SearchListingPage from './pages/SearchListingPage';
@@ -27,9 +26,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ErrorContextProvider>
       <AuthContextProvider>
         <LoadingContextProvider>
-          <VirtualHouseProvider>
-            <RouterProvider router={router}></RouterProvider>
-          </VirtualHouseProvider>
+          <RouterProvider router={router}></RouterProvider>
         </LoadingContextProvider>
       </AuthContextProvider>
     </ErrorContextProvider>
