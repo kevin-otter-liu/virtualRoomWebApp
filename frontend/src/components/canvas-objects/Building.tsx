@@ -7,14 +7,11 @@ import {
   useTexture,
   // useFBX,
 } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame} from '@react-three/fiber';
 import { Material, Mesh, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import BuildingProp from '../../types/canvas-objects/BuildingProp';
-import { useLoader } from '@react-three/fiber';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { Suspense } from 'react';
-import { CustomFBXLoader } from '../../fbx/customFBXLoader';
 
 const Loader = () => {
   const { progress } = useProgress();
@@ -38,27 +35,11 @@ const Building: React.FC<BuildingProp> = (props) => {
       }
     });
 
-    // const loader = new FBXLoader()
-    // loader.load(props.url, (obj)=>{
-    //   obj.traverse((child)=>{
-    //     console.log(child)
-    //     if(child instanceof Mesh){
-    //       let material = child.material;
-    //       if (material.map){
-    //         let textureName = material.map.name
-    //         console.log(`texture name ${textureName}`)
-    //       }
-    //     }
-    //   })
-    // })
-
-
     return (
       <Suspense fallback={<Loader />}>
         <primitive object={fbx} />
       </Suspense>
     );
-    // console.log(fbx)
   };
   const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
     useKeyboardControls();

@@ -1,23 +1,10 @@
 import {
-  Environment,
   GizmoHelper,
   GizmoViewport,
-  Grid,
-  OrbitControls,
-  Plane,
 } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import ax, { AxiosResponse } from 'axios';
-import {
-  Fragment,
-  Suspense,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import ax from 'axios';
 import './FormBuildingCanvas.css';
-import { useControls } from 'leva';
 import FormBuildingCanvasProp from '../../types/canvas-objects/FormBuildingCanvasProp';
 import Building from './Building';
 
@@ -26,19 +13,6 @@ const axios = ax.create({
 });
 
 const FormBuildingCanvas: React.FC<FormBuildingCanvasProp> = (props) => {
-  // const { gridSize, ...gridConfig } = useControls({
-  //   gridSize: [10.5, 10.5],
-  //   cellSize: { value: 0.6, min: 0, max: 10, step: 0.1 },
-  //   cellThickness: { value: 1, min: 0, max: 5, step: 0.1 },
-  //   cellColor: 'white',
-  //   sectionSize: { value: 3.3, min: 0, max: 10, step: 0.1 },
-  //   sectionThickness: { value: 1.5, min: 0, max: 5, step: 0.1 },
-  //   sectionColor: 'white',
-  //   fadeDistance: { value: 25, min: 0, max: 100, step: 1 },
-  //   fadeStrength: { value: 1, min: 0, max: 1, step: 0.1 },
-  //   followCamera: false,
-  //   infiniteGrid: true,
-  // });
 
   return (
     <div className='canvas-container'>
@@ -48,7 +22,7 @@ const FormBuildingCanvas: React.FC<FormBuildingCanvasProp> = (props) => {
           <directionalLight position={[0, 0, 5]} />
           <Building
             url={props.rawBuildingDataUrl}
-            texturePathMap={props.texturePathMap}></Building>
+            ></Building>
         </group>
         <GizmoHelper alignment='bottom-right' margin={[80, 80]}>
           <GizmoViewport

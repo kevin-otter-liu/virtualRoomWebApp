@@ -5,15 +5,11 @@ import ListingForm from '../components/forms/ListingForm';
 import './UploadListingPage.css';
 const UploadListingPage: React.FC = () => {
   const [rawBuildingDataUrl, setRawBuildingDataUrl] = useState<string>('');
-  const [texturePathMap, setTexturePathMap] = useState<Map<string, string>>(
-    new Map<string, string>()
-  );
+ 
   const updateBuildingCanvasPreview = (
     fileUrl: string,
-    texturePathMap: Map<string, string>
   ) => {
     setRawBuildingDataUrl(fileUrl);
-    setTexturePathMap(texturePathMap);
   };
 
   return (
@@ -24,7 +20,7 @@ const UploadListingPage: React.FC = () => {
           updateBuildingCanvasPreview={updateBuildingCanvasPreview}
         />
         <FormBuildingCanvas
-          texturePathMap={texturePathMap}
+          // texturePathMap={texturePathMap}
           rawBuildingDataUrl={rawBuildingDataUrl}
         />
       </div>

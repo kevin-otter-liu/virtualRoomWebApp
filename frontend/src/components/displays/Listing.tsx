@@ -1,11 +1,5 @@
-import {
-  Box,
-  Button,
-  Divider,
-  ListItem,
-  Typography,
-} from '@mui/material';
-import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
+import { Box, Button, Divider, ListItem, Typography } from '@mui/material';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import ax from 'axios';
 import ListingProp from '../../types/displays/ListingProp';
 import './Listing.css';
