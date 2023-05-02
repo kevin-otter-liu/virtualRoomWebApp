@@ -12,6 +12,7 @@ import { Material, Mesh, Vector3 } from 'three';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import BuildingProp from '../../types/canvas-objects/BuildingProp';
 import { Suspense } from 'react';
+import textureUrl from '../../../assets/textures/white.png'
 
 const Loader = () => {
   const { progress } = useProgress();
@@ -20,7 +21,7 @@ const Loader = () => {
 };
 
 const Building: React.FC<BuildingProp> = (props) => {
-  let texture = useTexture('/assets/textures/white.png');
+  let texture = useTexture(textureUrl);
   const renderBuilding = () => {
     const fbx = useFBX(props.url);
 
