@@ -97,6 +97,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
           </div>
 
           <Box
+            component='div'
             sx={{
               backgroundColor: 'white',
               border: '3px dashed black',

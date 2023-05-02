@@ -18,6 +18,7 @@ import './CardOption.css';
 const CardOption: React.FC<CardOptionProp> = (prop) => {
   return (
     <Box
+      component='div'
       sx={{
         minWidth: '230px',
         width: '100%',
