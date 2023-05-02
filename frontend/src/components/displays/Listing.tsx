@@ -6,7 +6,7 @@ import './Listing.css';
 import ListingBuildingCanvas from '../canvas-objects/ListingBuildingCanvas';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 const Listing: React.FC<ListingProp> = (listingProp) => {

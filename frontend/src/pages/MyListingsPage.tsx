@@ -7,7 +7,7 @@ import ListingsContainer from '../components/displays/ListingsContainer';
 import NavigationBar from '../components/displays/NavigationBar';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 const MyListingsPage = () => {

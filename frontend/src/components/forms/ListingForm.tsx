@@ -15,7 +15,7 @@ import ax from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 const ListingForm: React.FC<ListingFormProp> = (props) => {

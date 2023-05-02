@@ -8,7 +8,7 @@ import NavigationBar from '../components/displays/NavigationBar';
 import './SearchListingPage.css';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 const SearchListingPage = () => {

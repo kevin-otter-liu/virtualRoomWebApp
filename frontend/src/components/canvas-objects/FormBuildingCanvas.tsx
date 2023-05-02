@@ -9,7 +9,7 @@ import FormBuildingCanvasProp from '../../types/canvas-objects/FormBuildingCanva
 import Building from './Building';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 const FormBuildingCanvas: React.FC<FormBuildingCanvasProp> = (props) => {
