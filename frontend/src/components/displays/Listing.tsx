@@ -1,11 +1,8 @@
 import {
-  Avatar,
   Box,
   Button,
   Divider,
   ListItem,
-  ListItemAvatar,
-  ListItemText,
   Typography,
 } from '@mui/material';
 import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
@@ -132,44 +129,6 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
             View Listing {`>>`}{' '}
           </Button>
         </div>
-        {/* <ListItemText
-          style={{ paddingRight: '10px' }}
-          primary={listingProp.listing.name}
-          secondary={
-            <div>
-              <div>Developer: {listingProp.listing.developer_name}</div>
-              <div>Location: {listingProp.listing.location}</div>
-              <div>
-                Project completion date:{' '}
-                {new Date(
-                  listingProp.listing.completion_date
-                ).toLocaleDateString()}
-              </div>
-
-              <br></br>
-              <div>Description: </div>
-              <Typography
-                sx={{
-                  backgroundColor: 'white',
-                  padding: '5px',
-                  borderRadius: '5px',
-                }}
-                component='div'
-                variant='body1'
-                color='text.primary'>
-                {listingProp.listing.description}
-              </Typography>
-              <br></br>
-              <div>
-                Contact email:{' '}
-                <a href={`mailto:${listingProp.listing.contact_email}`}>
-                  {listingProp.listing.contact_email}
-                </a>
-              </div>
-              <div>posted on: {datePosted}</div>
-            </div>
-          }
-        /> */}
       </ListItem>
       <Divider variant='inset' component='li' />
     </Fragment>

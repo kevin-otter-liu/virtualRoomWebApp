@@ -23,6 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
         id='outlined-basic'
         label='Search for projects!'
         variant='outlined'
+        InputLabelProps={{ sx: { fontSize: 24 } }}
         onChange={onTextChange}
       />
       <Button sx={{ fontSize: '1.5rem' }} onClick={onSearch} variant='outlined'>
