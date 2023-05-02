@@ -1,0 +1,5 @@
+.test-page {
+    display:flex;
+    gap: space-between;
+    column-gap: 15px;
+}

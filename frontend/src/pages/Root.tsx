@@ -5,6 +5,8 @@ import { AuthContext } from '../context/auth-context';
 import LoginControl from '../components/login/LoginControl';
 import OptionsPage from './OptionsPage';
 import ErrorModalOverlay from '../components/overlays/ErrorModalOverlay';
+import NavigationBar from '../components/displays/NavigationBar';
+
 function Root() {
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);
@@ -24,6 +26,7 @@ function Root() {
         title={errCtx.errorTitle}
         message={errCtx.errorMessage}
       />
+      {authCtx.isLoggedIn && <NavigationBar />}
       {!authCtx.isLoggedIn ? <LoginControl /> : <OptionsPage />}
     </Fragment>
   );

@@ -7,8 +7,9 @@ import {
 } from 'sequelize';
 
 import dbConn from '../config';
+import Company from './Company';
 import Image from './Image';
-import VirtualHouse from './VirtualHouse';
+import Listing from './Listing';
 
 // import Token from './Token';
 
@@ -17,6 +18,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: string;
   declare username: string;
   declare password: string;
+  declare type: 'company' | 'buyer';
 }
 
 User.init(
@@ -25,6 +27,9 @@ User.init(
       type: DataTypes.STRING,
     },
     password: {
+      type: DataTypes.STRING,
+    },
+    type: {
       type: DataTypes.STRING,
     },
     id: {
@@ -43,11 +48,17 @@ User.hasMany(Image, {
   as: 'images',
   onDelete: 'CASCADE',
 });
-User.hasMany(VirtualHouse, {
+User.hasMany(Listing, {
   sourceKey: 'id',
   foreignKey: 'user_id',
-  as: 'virtual_houses',
+  as: 'listings',
   onDelete: 'CASCADE',
 });
 
+User.hasOne(Company, {
+  sourceKey: 'id',
+  foreignKey: 'user_id',
+  as: 'company',
+  onDelete: 'CASCADE',
+});
 export default User;

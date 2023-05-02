@@ -1,14 +1,22 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router } from 'express';
 import UserModel from '../../db/models/User';
 import { HttpError } from '../../libs/http-error';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { checkAuth } from '../middleware/check-auth';
+import CompanyModel from '../../db/models/Company';
 const userRouter = Router();
+
+type CompanyDetails = {
+  companyName: string;
+  companyEmail: string;
+  companyLocation: string;
+};
 
 userRouter.post('/sign-up', async (req, res, next) => {
   const { username, password } = req.body;
+  const companyDetails: CompanyDetails = req.body.companyDetails;
 
   // check user not in database
   const foundUser = await UserModel.findOne({
@@ -27,9 +35,20 @@ userRouter.post('/sign-up', async (req, res, next) => {
     id: uuidv4(),
     username: username,
     password: hashedPassword,
+    type: companyDetails ? 'company' : 'buyer',
   });
 
-  // creat JWT token for user
+  if (companyDetails) {
+    await CompanyModel.create({
+      id: uuidv4(),
+      company_name: companyDetails.companyName,
+      company_email: companyDetails.companyEmail,
+      company_location: companyDetails.companyLocation,
+      user_id: user.id,
+    });
+  }
+
+  // create JWT token for user
 
   let currentDate = new Date();
   let expireDate = new Date(currentDate.getTime() + 60 * 60 * 1000);
@@ -46,8 +65,9 @@ userRouter.post('/sign-up', async (req, res, next) => {
   res.status(200).json({
     access_token: access_token,
     expires_at: expireDate,
+    type: user.type,
   });
-  next();
+  return next();
 });
 
 userRouter.post('/sign-in', async (req, res, next) => {
@@ -86,6 +106,7 @@ userRouter.post('/sign-in', async (req, res, next) => {
   res.status(200).json({
     access_token: access_token,
     expires_at: expireDate,
+    type: user.type,
   });
   next();
 });

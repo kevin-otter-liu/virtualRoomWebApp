@@ -12,12 +12,6 @@ services:
      - ./backend/env/postgres.env
     ports:
       - '5432:5432'
-  adminer:
-    container_name: postgres-admin-container
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
   vh-backend:
     container_name: virtual-room-backend-container
     build: ./backend

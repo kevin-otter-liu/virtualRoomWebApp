@@ -1,11 +1,10 @@
-import axios from 'axios';
+import { Button, ButtonGroup, Typography } from '@mui/material';
 import { useContext, useRef } from 'react';
 import { AuthContext } from '../../context/auth-context';
 import { ErrorContext } from '../../context/error-context';
 import { LoginPropI } from '../../types/login/LoginPropI';
 import './Login.css';
 export const Login: React.FC<LoginPropI> = (props) => {
-
   const authCtx = useContext(AuthContext);
   const errCtx = useContext(ErrorContext);
 
@@ -40,8 +39,11 @@ export const Login: React.FC<LoginPropI> = (props) => {
   };
 
   return (
-    <div>
-      <form className='login' onSubmit={loginHandler}>
+    <div className='login'>
+      <Typography variant='h1' color='secondary'>
+        LOGIN
+      </Typography>
+      <form onSubmit={loginHandler}>
         <div className='control'>
           <label htmlFor='username'>Username</label>
           <input
@@ -55,12 +57,23 @@ export const Login: React.FC<LoginPropI> = (props) => {
             ref={passwordInput}
             id='password'
             required></input>
-        </div>
-        <div className='actions'>
-          <button type='submit'>Login</button>
-          <button className='toggle' onClick={toggleHandler}>
-            Sign Up Page
-          </button>
+          <div className='control-button'>
+            <ButtonGroup
+              color='secondary'
+              orientation='vertical'
+              variant='contained'
+              sx={{ width: '100%' }}>
+              <Button sx={{ fontSize: '1.5rem' }} type='submit' size='large'>
+                Login
+              </Button>
+              <Button
+                sx={{ fontSize: '1.5rem' }}
+                color='info'
+                onClick={toggleHandler}>
+                Sign Up Page {'>>'}
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
       </form>
     </div>

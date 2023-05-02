@@ -8,18 +8,19 @@ import express, {
 } from 'express';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-console.log(path.join(__dirname, '../env/server.env'));
+
 dotenv.config({
   path: path.join(__dirname, '../env/server.env'),
 });
 // import 'dotenv/config';
 import userRouter from './api/routes/user';
-import virtualHouseRouter from './api/routes/virtualHouse';
 import { Sequelize } from 'sequelize';
 import dbConn from './db/config';
-import * as Models from './db/models';
 import cors from 'cors';
 import { HttpError } from './libs/http-error';
+import listingRouter from './api/routes/listing';
+import { checkAuth } from './api/middleware/check-auth';
+import searchRouter from './api/routes/search';
 const port: number = parseInt(process.env.SERVER_PORT!) || 3000;
 
 class Server {
@@ -30,19 +31,12 @@ class Server {
   constructor(port: number, dbConn: Sequelize) {
     this.port = port;
     Server.server = express();
-
-    // register middleware for parsing request body to json
-    // {
-    //   origin: [`http://localhost:3000`, `http://localhost:5173/`],
-    //   optionsSuccessStatus: 200,
-    // }
     Server.server.use(cors());
     Server.server.use(express.json());
     Server.server.use(express.urlencoded({ extended: true }));
 
     // connect to database
     Server.db = dbConn;
-    console.log(process.env.DB_USER);
 
     dbConn.sync().then(() => {
       console.log('database synced');
@@ -84,8 +78,9 @@ const expressServer = AppServer.getExpressServer();
 // check Auth
 // registering all routes
 AppServer.registerRoute('/api/user', userRouter);
-// expressServer.use(checkAuth);
-AppServer.registerRoute('/api/virtual-house', virtualHouseRouter);
+expressServer.use(checkAuth);
+AppServer.registerRoute('/api/listing', listingRouter);
+AppServer.registerRoute('/api/search', searchRouter);
 
 // middleware for error handling
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -95,7 +90,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   if (err instanceof HttpError) {
     res.status(err.status_code).json({ message: err.message });
+    return next();
   }
+
+  res.status(500).send();
+  return next();
 };
 expressServer.use(errorHandler);
 

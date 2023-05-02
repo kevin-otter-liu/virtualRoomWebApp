@@ -1,31 +1,55 @@
-import { Fragment, useContext } from 'react';
-import Button from '../components/ui/Button';
-import { Link } from 'react-router-dom';
 import './OptionsPage.css';
-import { AuthContext } from '../context/auth-context';
-const OptionsPage: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-  const onLogout = () => {
-    authCtx.logout();
-  };
+import CardOptionProp from '../types/displays/CardOptionProp';
+import CardOption from '../components/displays/CardOption';
 
-  return (
-    <Fragment>
-      <div className='options-container'>
-        <Link to='/'>
-          <Button type='button' onClick={onLogout}>
-            logout
-          </Button>
-        </Link>
-        <Link to='/virtual-house-create'>
-          <Button type='button'>Create a Virtual House</Button>
-        </Link>
-        <Link to='/my-virtual-houses'>
-          <Button type='button'>View other Virtual Houses</Button>
-        </Link>
-      </div>
-    </Fragment>
-  );
+const companyCardDatas: CardOptionProp[] = [
+  {
+    title: 'VIEW YOUR PROJECT LISTINGS',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-1.jpg',
+    body: 'View my posted listings',
+    urlRedirectTo: '/my-listings',
+    buttonPrompt: 'VIEW YOUR LISTINGS HERE',
+  },
+  {
+    title: 'UPLOAD A LISTING',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-2.jpg',
+    body: 'Upload and post listings',
+    urlRedirectTo: '/upload-listing',
+    buttonPrompt: 'UPLOAD A PROJECT HERE',
+  },
+  {
+    title: 'SEARCH FOR A PROJECT',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-3.jpg',
+    body: 'Search and view listings in 3D',
+    urlRedirectTo: '/search-listing',
+    buttonPrompt: 'SEARCH AND VIEW A PROJECT HERE',
+  },
+];
+
+const buyerCardDatas: CardOptionProp[] = [
+  {
+    title: 'SEARCH FOR A PROJECT',
+    imgAlt: 'view houses',
+    imgSrc: '/assets/ui/card-3.jpg',
+    body: 'Search for a Listing and view the listing in 3D',
+    urlRedirectTo: '/search-listing',
+    buttonPrompt: 'SEARCH AND VIEW A PROJECT HERE',
+  },
+];
+
+const OptionsPage: React.FC = () => {
+  const renderPage = () => {
+    let userType = localStorage.getItem('user_type');
+    let data = userType == 'company' ? companyCardDatas : buyerCardDatas;
+
+    return data.map((cardData, i) => {
+      return <CardOption key={i} {...cardData}></CardOption>;
+    });
+  };
+  return <div className='options-container'>{renderPage()}</div>;
 };
 
 export default OptionsPage;

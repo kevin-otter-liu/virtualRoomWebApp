@@ -6,7 +6,8 @@ const dbHost: string = process.env.DB_HOST!;
 const dbPort: number = parseInt(process.env.DB_PORT!);
 const dbName: string = process.env.DB_NAME!;
 const dbDriver: Dialect = process.env.DB_DRIVER! as Dialect;
-console.log(dbPassword);
+console.log(`here`);
+console.log(dbHost);
 const sequelizeConnection = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   dialect: dbDriver,
