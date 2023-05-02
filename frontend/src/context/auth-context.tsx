@@ -5,7 +5,7 @@ import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
 import { ErrorContext } from './error-context';
 
 const axios = ax.create({
-  baseURL: 'http://' + import.meta.env.VITE_API_HOST,
+  baseURL: import.meta.env.VITE_API_HOST,
 });
 
 export const AuthContext = React.createContext<AuthContextI>({
