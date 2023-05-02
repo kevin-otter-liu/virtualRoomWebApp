@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Box,
   IconButton,
   Menu,
   MenuItem,
@@ -60,7 +59,6 @@ const NavigationBar = () => {
           <Typography variant='h4' color='inherit'>
             VIRTUAL HOUSE
           </Typography>
-          {/* <Box sx={{ flexGrow: 1 }} /> */}
           <div className='right-nav-controls'>
             <IconButton
               size='large'

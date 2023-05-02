@@ -1,6 +1,5 @@
 import ax from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
 import AuthContextI, { CompanyDetails } from '../types/contexts/AuthContextI';
 import AuthContextProviderI from '../types/contexts/AuthContextProviderI';
 import { ErrorContext } from './error-context';
@@ -32,12 +31,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       window.localStorage.setItem('access_token', access_token);
       window.localStorage.setItem('expires_at', expires_at);
 
-      // set a timer to automatically navigate to home page ones access token expires
 
-      // console.log(expiryInMilliseconds)
-      // setTimeout(() => {
-      //   onLogout()
-      // },expiryInMilliseconds)
       console.log(`user type: ${type}`)
 
       setIsLoggedIn(true);

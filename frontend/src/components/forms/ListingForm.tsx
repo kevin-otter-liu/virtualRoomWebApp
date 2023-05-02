@@ -7,63 +7,16 @@ import {
   InputLabel,
   TextField,
 } from '@mui/material';
-import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ListingFormProp from '../../types/forms/ListingFormProp';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ax from 'axios';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { Material, Mesh } from 'three';
+
 import { useNavigate } from 'react-router-dom';
 
 const axios = ax.create({
   baseURL: 'http://' + import.meta.env.VITE_API_HOST,
 });
-
-// const findMaterials = (url: string) => {
-//   const fbxLoader = new FBXLoader();
-//   // const fbx = useLoader(FBXLoader, props.url);
-//   let materialsDetected: Array<[string, Material]> = [];
-
-//   fbxLoader.load(url, (fbx) => {
-//     let meshes: Mesh[] = [];
-//     fbx.traverse((child) => {
-//       if (child instanceof Mesh) {
-//         meshes.push(child);
-//         // let materials: Material[] = child.material;
-//         // materials.forEach((material) => {
-//         //   materialsDetected.push([material.name, material]);
-//         //   // child.material[0].map = texture;
-//         // });
-//       }
-//     });
-//     let materials = {};
-//     for (let i = 0; i < meshes.length; i++) {
-//       let mesh = meshes[i];
-//       let material = mesh.material;
-//       if (material.name !== '') {
-//         materials[material.name] = material;
-//       }
-//     }
-
-//     let textures = {};
-//     for (let i = 0; i < meshes.length; i++) {
-//       let mesh = meshes[i];
-//       let material = mesh.material;
-//       if (material.map !== null) {
-//         let texture = material.map;
-//         textures[texture.name] = texture;
-//       }
-//     }
-
-//     // console.log(`mesh: ${JSON.stringify(meshes)}`);
-//     console.log(`fbx: ${JSON.stringify(fbx.toJSON()['materials'])}`);
-
-//     console.log(`materials: ${JSON.stringify(materials)}`);
-//     console.log(`textures: ${JSON.stringify(textures)}`);
-//   });
-
-//   return materialsDetected;
-// };
 
 const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [fbxFile, setFbxFile] = useState<File | null>(null);
@@ -73,11 +26,6 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   const [projectName, setProjectName] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
   const [completionDate, setCompletionDate] = useState<string>('');
-
-  // texture maps : textureimage name -> texture url
-  const [textureFilePaths, setTextureFilePaths] = useState<Map<string, string>>(
-    new Map<string, string>()
-  );
 
   const [listingThumbnailFile, setListingThumbnailFile] = useState<File | null>(
     null
@@ -89,8 +37,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
   // form inputs
 
   useEffect(() => {
-    props.updateBuildingCanvasPreview(rawBuildingDataUrl,textureFilePaths);
-  }, [rawBuildingDataUrl,textureFilePaths]);
+    props.updateBuildingCanvasPreview(rawBuildingDataUrl);
+  }, [rawBuildingDataUrl]);
 
   // on fbx file form change
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -106,29 +54,6 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
       // findMaterials(reader.result as string);
     };
     reader.readAsDataURL(e.target.files[0]);
-  };
-
-  // on texture file changes
-  const onTextureFileChange: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (!e.target.files || e.target.files.length == 0) {
-      return;
-    }
-    // read images from buffer and get object URL
-    let files = [...e.target.files];
-
-    // texture map
-    let map = new Map<string, string>();
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        map.set(file.name, reader.result as string);
-      };
-    });
-    console.log(map);
-    setTextureFilePaths(map);
   };
 
   // on image thumbnail form change
@@ -262,32 +187,8 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
             {fbxFile.name} ({Math.round(fbxFile.size / 1000)}KB)
           </div>
         )}
-        <div className='listing-form-control'>
-          <label className='custom-file-upload' htmlFor='buildingTextureInput'>
-            <img></img>
-            <p>Upload Texture files</p>
-            <input
-              multiple
-              onChange={onTextureFileChange}
-              id='buildingTextureInput'
-              type='file'
-              accept='image/*'></input>
-          </label>
-        </div>
-        <Suspense fallback={<div>falling back</div>}>
-          {[...textureFilePaths.keys()].length > 0 &&
-            [...textureFilePaths.keys()].map((texture, i) => {
-              return (
-                <div key={i} className='texture-file-item'>
-                  <CheckBoxIcon />
-                  {texture}
-                </div>
-              );
-            })}
-        </Suspense>
       </div>
       <div>
-        {/* TODO onsubmit */}
         <div className='listing-form-control'>
           <label className='custom-file-upload' htmlFor='thumbnailInput'>
             <img></img>

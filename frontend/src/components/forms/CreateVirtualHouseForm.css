@@ -1,8 +1,0 @@
-.create-virtual-house-form{
-    display:flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-.create-virtual-house-form div{
-    text-align: left;
-}
