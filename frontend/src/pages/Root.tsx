@@ -13,7 +13,7 @@ function Root() {
 
   useEffect(() => {
     const checkAuthRefresh = async () => {
-      console.log('checking authorization');
+      // console.log('checking authorization');
       await authCtx.checkAuth();
     };
     checkAuthRefresh();

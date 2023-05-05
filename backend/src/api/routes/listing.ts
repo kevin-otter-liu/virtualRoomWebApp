@@ -75,7 +75,6 @@ listingRouter.post(
       contact_email,
       completion_date,
     } = formData;
-    console.log(`completion_date: ${completion_date}`);
 
     let file_extension = '.' + fileNameSplit[fileNameSplit.length - 1];
     const listing_id = uuidv4();

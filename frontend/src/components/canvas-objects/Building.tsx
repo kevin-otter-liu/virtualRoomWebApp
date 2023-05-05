@@ -16,7 +16,6 @@ import textureUrl from '../../../assets/textures/white.png'
 
 const Loader = () => {
   const { progress } = useProgress();
-  console.log('progress', progress);
   return <Html center>{progress} % loaded</Html>;
 };
 
@@ -27,10 +26,8 @@ const Building: React.FC<BuildingProp> = (props) => {
 
     fbx.traverse((child) => {
       if (child instanceof Mesh) {
-        console.log(child);
         let materials: Material[] = child.material;
         materials.forEach((material, i) => {
-          console.log(material)
           child.material[i].map = texture;
         });
       }
@@ -42,7 +39,7 @@ const Building: React.FC<BuildingProp> = (props) => {
       </Suspense>
     );
   };
-  const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown } =
+  const { moveForward, moveBackward, moveLeft, moveRight, moveUp, moveDown, rotateRight, rotateLeft } =
     useKeyboardControls();
 
   useFrame((state) => {
@@ -65,6 +62,14 @@ const Building: React.FC<BuildingProp> = (props) => {
     if (moveDown) {
       state.camera.translateY(-10);
     }
+
+    if (rotateRight){
+      state.camera.rotation.y -= 0.03
+    }
+
+    if (rotateLeft){
+      state.camera.rotation.y += 0.03
+    }
   });
   return (
     <PerspectiveCamera getObjectsByProperty={undefined}>
@@ -72,7 +77,7 @@ const Building: React.FC<BuildingProp> = (props) => {
         enabled={true} // the controls can be disabled by setting this to false
         global={false} // Spin globally or by dragging the model
         cursor={true} // Whether to toggle cursor style on drag
-        snap={false} // Snap-back to center (can also be a spring config)
+        snap={true} // Snap-back to center (can also be a spring config)
         speed={1} // Speed factors
         zoom={1} // Zoom factor when half the polar-max is reached
         rotation={[0, 0, 0]} // Default rotation

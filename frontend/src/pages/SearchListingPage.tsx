@@ -22,8 +22,6 @@ const SearchListingPage = () => {
       },
     });
 
-    console.log(res);
-
     setListings(res.data as ListingData[]);
     // redirect
   };

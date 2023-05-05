@@ -38,7 +38,6 @@ class S3 {
     ContentType: string,
     folder?: string
   ): Promise<void> {
-    console.log(`${folder}/${image_id}`);
     const params = {
       Bucket: this.bucketName,
       Key: folder ? `${folder}/${image_id}` : image_id,
@@ -76,9 +75,7 @@ class S3 {
         new DeleteObjectCommand(deleteObjectParams)
       );
       return data;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 }
 
