@@ -6,6 +6,9 @@ function actionByKey(key: string): string {
     KeyS: 'moveBackward',
     KeyA: 'moveLeft',
     KeyD: 'moveRight',
+    // here
+    KeyE: 'rotateRight',
+    KeyQ: 'rotateLeft',
     Space: 'moveUp',
     ShiftLeft: 'moveDown',
   };
@@ -20,6 +23,8 @@ export const useKeyboardControls = () => {
     moveRight: false,
     moveUp: false,
     moveDown: false,
+    rotateLeft: false,
+    rotateRight: false,
   });
 
   React.useEffect(() => {

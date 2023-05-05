@@ -111,7 +111,6 @@ const ListingForm: React.FC<ListingFormProp> = (props) => {
     }
 
     navigate('/my-listings');
-    console.log(res);
   };
 
   // stop keyboard events from propagating on canvas when forms are focused

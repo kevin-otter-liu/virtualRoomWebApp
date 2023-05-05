@@ -32,15 +32,15 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       window.localStorage.setItem('expires_at', expires_at);
 
 
-      console.log(`user type: ${type}`)
+      // console.log(`user type: ${type}`)
 
       setIsLoggedIn(true);
       window.localStorage.setItem('user_type', type);
 
 
-      console.log(
-        `login() is called in auth context provider. current auth status: ${isLoggedIn}`
-      );
+      // console.log(
+      //   `login() is called in auth context provider. current auth status: ${isLoggedIn}`
+      // );
     } catch (error) {
       if (ax.isAxiosError(error)) {
         errCtx.setErrorParamsContext({
@@ -72,9 +72,9 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
       
 
       setIsLoggedIn(true);
-      console.log(
-        `sign up() is called in auth context provider. current auth status: ${isLoggedIn}`
-      );
+      // console.log(
+      //   `sign up() is called in auth context provider. current auth status: ${isLoggedIn}`
+      // );
     } catch (error) {
       if (ax.isAxiosError(error)) {
         errCtx.setErrorParamsContext({
@@ -91,16 +91,16 @@ export const AuthContextProvider: React.FC<AuthContextProviderI> = (props) => {
   const onLogout = () => {
     localStorage.removeItem('access_token');
     setIsLoggedIn(false);
-    console.log('logout');
+    // console.log('logout');
   };
 
   const checkAuth = async () => {
     let access_token = localStorage.getItem('access_token');
-    console.log('check authmethod called');
+    // console.log('check authmethod called');
     if (!access_token) {
-      console.log('no access token found');
+      // console.log('no access token found');
       setIsLoggedIn(false);
-      console.log(`user is signed out cos access_token is missing`);
+      // console.log(`user is signed out cos access_token is missing`);
       return;
     }
 

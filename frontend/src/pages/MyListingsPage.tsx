@@ -25,7 +25,6 @@ const MyListingsPage = () => {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      console.log(res.data);
 
       setListings(res.data as ListingData[]);
     };
