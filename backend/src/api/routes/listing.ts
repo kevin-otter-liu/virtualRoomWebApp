@@ -195,4 +195,25 @@ listingRouter.get('/fbx', async (req, res, next) => {
   return next();
 });
 
+listingRouter.delete('/', async (req, res, next) => {
+  console.log('alsnglasglansgljabgejblanvlksav');
+  let listing_id = req.query.listing_id;
+
+  if (!listing_id) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  let listing = await Listing.findByPk(listing_id as string);
+
+  if (!listing) {
+    return next(new HttpError(404, 'not_found'));
+  }
+
+  await listing.destroy();
+
+  res.status(200).send();
+
+  return next();
+});
+
 export default listingRouter;

@@ -13,6 +13,7 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('#');
   const [showBuildingCanvas, setShowBuildingCanvas] = useState<boolean>(false);
   const [fbxUrl, setFbxUrl] = useState<string | null>(null);
+  const [isDeleted, setIsDeleted] = useState<Boolean>(false);
 
   useEffect(() => {
     getThumbnail(listingProp.listing.id);
@@ -32,6 +33,22 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
       );
 
       setThumbnailUrl(res.data.url);
+    };
+    return send_req();
+  }, []);
+
+  const deleteListing = useCallback((id: string) => {
+    // fetch request
+    const send_req = async () => {
+      let res = await axios.delete(
+        `/api/listing/?listing_id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+      return res
     };
     return send_req();
   }, []);
@@ -62,15 +79,18 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
     setShowBuildingCanvas(true);
   };
 
-  let datePosted = new Date(listingProp.listing.createdAt).toUTCString();
-  return (
-    <Fragment>
-      {showBuildingCanvas && fbxUrl && (
-        <ListingBuildingCanvas
-          onClose={onBuildingCanvasClose}
-          rawBuildingDataUrl={fbxUrl}
-        />
-      )}
+  const onDeleteListing: React.MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
+    let res = await deleteListing(listingProp.listing.id);
+    console.log(res)
+    if (res.status === 200){
+      setIsDeleted(true)
+    }
+  };
+
+  const render = (): JSX.Element => {
+    return (
       <ListItem
         style={{
           display: 'flex',
@@ -123,8 +143,29 @@ const Listing: React.FC<ListingProp> = (listingProp) => {
             variant='outlined'>
             View Listing {`>>`}{' '}
           </Button>
+          {listingProp.isCompany && (
+            <Button
+              color='warning'
+              onClick={onDeleteListing}
+              variant='outlined'>
+              Delete Listing
+            </Button>
+          )}
         </div>
       </ListItem>
+    );
+  };
+
+  let datePosted = new Date(listingProp.listing.createdAt).toUTCString();
+  return (
+    <Fragment>
+      {showBuildingCanvas && fbxUrl && (
+        <ListingBuildingCanvas
+          onClose={onBuildingCanvasClose}
+          rawBuildingDataUrl={fbxUrl}
+        />
+      )}
+      {!isDeleted && render()}
       <Divider variant='inset' component='li' />
     </Fragment>
   );

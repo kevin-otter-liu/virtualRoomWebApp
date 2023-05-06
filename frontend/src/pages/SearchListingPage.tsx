@@ -29,7 +29,7 @@ const SearchListingPage = () => {
     <div className='search-page'>
       <NavigationBar />
       <SearchBar onSearch={onSearch} />
-      <ListingsContainer listings={listings} />
+      <ListingsContainer isCompany={false} listings={listings} />
     </div>
   );
 };
