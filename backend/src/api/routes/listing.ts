@@ -196,7 +196,6 @@ listingRouter.get('/fbx', async (req, res, next) => {
 });
 
 listingRouter.delete('/', async (req, res, next) => {
-  console.log('alsnglasglansgljabgejblanvlksav');
   let listing_id = req.query.listing_id;
 
   if (!listing_id) {
