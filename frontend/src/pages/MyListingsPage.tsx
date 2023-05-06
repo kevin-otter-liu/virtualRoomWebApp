@@ -37,7 +37,7 @@ const MyListingsPage = () => {
       <div className='my-listings-title'>
         <h2>My Listings</h2>
       </div>
-      <ListingsContainer listings={listings} />
+      <ListingsContainer isCompany={true} listings={listings} />
     </div>
   );
 };
