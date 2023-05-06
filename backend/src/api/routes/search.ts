@@ -34,13 +34,13 @@ searchRouter.get('/', async (req, res, next) => {
     where: {
       [Op.or]: [
         {
-          name: { [Op.like]: `%${search_factors}%` },
+          name: { [Op.iLike]: `%${search_factors}%` },
         },
         {
-          location: { [Op.like]: `%${search_factors}%` },
+          location: { [Op.iLike]: `%${search_factors}%` },
         },
         {
-          developer_name: { [Op.like]: `%${search_factors}%` },
+          developer_name: { [Op.iLike]: `%${search_factors}%` },
         },
       ],
     },
