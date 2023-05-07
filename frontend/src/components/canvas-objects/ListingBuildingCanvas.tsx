@@ -18,10 +18,10 @@ const ListingBuildingCanvas: React.FC<ListingBuildingCanvasProp> = (props) => {
       <button className='listing-building-button' onClick={props.onClose}>
         EXIT VIEW
       </button>
-      <KeyboardControlImage/>
+      <KeyboardControlImage />
       {/* <img className='listing-canvas-controls' src={controlImgSrc} /> */}
-      <Canvas camera={{ position: [0, 0, 0], far: 100000 }}>
-        <group position={[0, -0.01, 0]}>
+      <Canvas camera={{ position: [0, 0, 0], far: 10000 }}>
+        <group frustumCulled={true} position={[0, -0.01, 0]}>
           <ambientLight intensity={0.5} />
           <directionalLight position={[0, 0, 5]} />
           <Building url={props.rawBuildingDataUrl}></Building>
