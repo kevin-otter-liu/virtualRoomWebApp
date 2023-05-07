@@ -36,7 +36,7 @@ const NavigationBar = () => {
     <Fragment>
       <AppBar
         position='fixed'
-        style={{ zIndex: 0 }}
+        style={{ zIndex: 20 }}
         sx={{ backgroundColor: 'gray' }}>
         <Toolbar variant='dense'>
           <Link to='/' style={{ color: 'inherit' }}>
